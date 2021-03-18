@@ -185,6 +185,22 @@ def harmonize_link( link ):
 
 ##########################################################
 
+def open_first_top_stream( driver ):
+
+    a = driver.find_element_by_xpath( "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div/div/div/div[4]/div[2]/div[1]/div[1]/div[2]/div/div/div/article/div[1]/div/div[1]/div[1]/div/a" )
+
+    link = a.get_attribute( 'href' )
+
+    link = harmonize_link( link )
+
+    print( "INFO: opening top stream {}".format( link ) )
+
+    driver.get( link )
+
+    helpers.sleep( 3 )
+
+##########################################################
+
 def determine_categories( driver ):
 
     d0 = driver.find_element_by_id( "app" )
