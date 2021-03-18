@@ -58,33 +58,17 @@ def accept_banner( driver ):
 
 ##########################################################
 
-def enter_post_code( driver ):
+def enter_credentials( driver ):
 
-    d0 = driver.find_element_by_id( "app" )
-    d1 = d0.find_element_by_css_selector( "div[data-dmid='app-container']" )
-    d2 = d1.find_element_by_css_selector( "div[data-dmid='main-container']" )
-    d3 = d2.find_element_by_xpath( "//div" )
-    d4 = d3.find_element_by_xpath( "//div" )
-    d5 = d4.find_element_by_css_selector( "div[data-dmid='storefinder-wrapper']" )
-    d6 = d5.find_element_by_css_selector( "div[data-dmid='store-list-overlay-wrapper']" )
-    d7 = d6.find_element_by_xpath( "//div" )
-    d8 = d7.find_element_by_css_selector( "div[data-dmid='search-wrapper']" )
-    d9 = d8.find_element_by_xpath( "//form" )
-    d10 = d9.find_element_by_xpath( "//div" )
-    d11 = d10.find_element_by_css_selector( "div[data-dmid='store-search-container']" )
-    d12 = d11.find_element_by_css_selector( "input[data-dmid='store-search-field']" )
+    login_input = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/form/div/div[1]/div/div[2]/input" )
 
-    #d7 = d6.find_element_by_css_selector( "a[title='dm-Märkte']" )
+    print( "INFO: sending login {}".format( credentials.LOGIN ) )
 
-    print( "DEBUG: found shop selection button" )
-
-    print( "INFO: sending postcode {}".format( config.PLZ ) )
-
-    d12.send_keys( config.PLZ )
+    login_input.send_keys( credentials.LOGIN )
 
     helpers.sleep(2)
 
-    d12.send_keys( Keys.RETURN )
+    #d12.send_keys( Keys.RETURN )
 
 ##########################################################
 
@@ -126,11 +110,11 @@ def perform_login( driver ):
 
     helpers.sleep( 5 )
 
-    #enter_post_code( driver )
+    enter_credentials( driver )
 
     #select_found_shop( driver )
 
-    #helpers.sleep(3)
+    helpers.sleep(3)
 
 ##########################################################
 
