@@ -99,6 +99,26 @@ def enter_validation_code( driver, code ):
 
 ##########################################################
 
+def accept_welcome_screen( driver ):
+
+    button = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div/div[4]/button" )
+
+    helpers.sleep(1)
+
+    print( "DEBUG: clicking" )
+
+    button.click()
+
+    close_button = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div/div[1]/div/div/button" )
+
+    print( "DEBUG: clicking" )
+
+    close_button.click()
+
+    helpers.sleep(1)
+
+##########################################################
+
 def select_found_shop( driver ):
 
     d0 = driver.find_element_by_id( "app" )
@@ -142,10 +162,6 @@ def perform_login( driver ):
     validation_code = input( "Enter 6-digit validation code: " )
 
     enter_validation_code( driver, validation_code )
-
-    quit()
-
-    #select_found_shop( driver )
 
     helpers.sleep(3)
 
@@ -447,6 +463,12 @@ driver.get( 'https://www.twitch.tv' )
 accept_banner( driver )
 
 perform_login( driver )
+
+helpers.sleep( 5 )
+
+accept_welcome_screen( driver )
+
+quit()
 
 # reopen the main page again
 driver.get( 'https://www.dm.de' )
