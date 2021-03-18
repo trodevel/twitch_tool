@@ -167,6 +167,15 @@ def perform_login( driver ):
 
 ##########################################################
 
+def is_logged_in( driver ):
+
+    if helpers.does_xpath_exist( driver, "/html/body/div[1]/div/div[2]/nav/div/div[3]/div[6]/div/div/div/div/button" ):
+        return True
+
+    return False
+
+##########################################################
+
 def harmonize_link( link ):
 
     if link.endswith('/'):
