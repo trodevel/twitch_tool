@@ -58,18 +58,6 @@ def accept_banner( driver ):
 
 ##########################################################
 
-def accept_banner_2( driver ):
-
-    button = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div/div[1]/div/div/button" )
-
-    helpers.sleep(2)
-
-    print( "DEBUG: clicking" )
-
-    button.click()
-
-##########################################################
-
 def enter_credentials( driver ):
 
     login_input    = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/form/div/div[1]/div/div[2]/input" )
@@ -480,7 +468,7 @@ helpers.sleep( 5 )
 
 accept_welcome_screen( driver )
 
-accept_banner_2( driver )
+accept_banner( driver )
 
 # reopen the selected page again
 driver.get( 'https://www.twitch.tv/directory/game/Dota%202?sort=VIEWER_COUNT' )
