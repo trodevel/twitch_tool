@@ -62,15 +62,18 @@ def enter_credentials( driver ):
 
     login_input    = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/form/div/div[1]/div/div[2]/input" )
     login_password = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/form/div/div[2]/div/div[1]/div[2]/div[1]/input" )
+    login_button   = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/form/div/div[3]/button" )
 
     print( "INFO: sending login {}".format( credentials.LOGIN ) )
 
     login_input.send_keys( credentials.LOGIN )
     login_password.send_keys( credentials.PASSWORD )
 
-    helpers.sleep(2)
+    helpers.sleep(1)
 
-    #d12.send_keys( Keys.RETURN )
+    print( "DEBUG: clicking" )
+
+    login_button.click()
 
 ##########################################################
 
@@ -113,6 +116,8 @@ def perform_login( driver ):
     helpers.sleep( 5 )
 
     enter_credentials( driver )
+
+    quit()
 
     #select_found_shop( driver )
 
