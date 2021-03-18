@@ -97,10 +97,6 @@ def enter_validation_code( driver, code ):
 
     helpers.sleep(1)
 
-    #print( "DEBUG: clicking" )
-
-    #login_button.click()
-
 ##########################################################
 
 def select_found_shop( driver ):
