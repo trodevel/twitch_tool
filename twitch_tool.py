@@ -118,7 +118,7 @@ def select_found_shop( driver ):
 
 def perform_login( driver ):
 
-    login_button = d3.find_element_by_xpath( "/html/body/div[1]/div/div[2]/nav/div/div[3]/div[3]/div/div[1]/div[1]/button" )
+    login_button = driver.find_element_by_xpath( "/html/body/div[1]/div/div[2]/nav/div/div[3]/div[3]/div/div[1]/div[1]/button" )
 
     print( "DEBUG: clicking" )
 
