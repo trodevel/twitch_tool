@@ -201,6 +201,15 @@ def open_first_top_stream( driver ):
 
 ##########################################################
 
+def pause_player( driver ):
+
+    button = driver.find_element_by_xpath( "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[2]/div/div[2]/div/div/div/div[5]/div/div[2]/div[1]/div[1]/button" )
+
+    print( "INFO: pausing player" )
+
+    button.click()
+
+##########################################################
 def determine_categories( driver ):
 
     d0 = driver.find_element_by_id( "app" )
@@ -508,6 +517,8 @@ driver.get( 'https://www.twitch.tv/directory/game/Dota%202?sort=VIEWER_COUNT' )
 helpers.sleep( 3 )
 
 open_first_top_stream( driver )
+
+pause_player( driver )
 
 quit()
 
