@@ -116,31 +116,21 @@ def select_found_shop( driver ):
 
 ##########################################################
 
-def select_shop_by_post_code( driver ):
+def perform_login( driver ):
 
-    d0 = driver.find_element_by_id( "app" )
-    d1 = d0.find_element_by_css_selector( "div[data-dmid='app-container']" )
-    d2 = d1.find_element_by_css_selector( "header[data-dmid='header']" )
-    #d3 = d2.find_element_by_css_selector( "div[data-designsystem='true']" )
-    d3 = d2.find_element_by_xpath( "//div[2]" )
-    d4 = d3.find_element_by_xpath( "//div" )
-    d5 = d4.find_element_by_css_selector( "div[data-dmid='upper-header-container']" )
-    d6 = d5.find_element_by_css_selector( "nav[data-dmid='widget-container']" )
-    d7 = d6.find_element_by_css_selector( "a[title='dm-Märkte']" )
-
-    print( "DEBUG: found shop selection button" )
+    login_button = d3.find_element_by_xpath( "/html/body/div[1]/div/div[2]/nav/div/div[3]/div[3]/div/div[1]/div[1]/button" )
 
     print( "DEBUG: clicking" )
 
-    d7.click()
+    login_button.click()
 
     helpers.sleep( 5 )
 
-    enter_post_code( driver )
+    #enter_post_code( driver )
 
-    select_found_shop( driver )
+    #select_found_shop( driver )
 
-    helpers.sleep(3)
+    #helpers.sleep(3)
 
 ##########################################################
 
@@ -439,7 +429,7 @@ driver.get( 'https://www.twitch.tv' )
 
 accept_banner( driver )
 
-select_shop_by_post_code( driver )
+perform_login( driver )
 
 # reopen the main page again
 driver.get( 'https://www.dm.de' )
