@@ -60,11 +60,13 @@ def accept_banner( driver ):
 
 def enter_credentials( driver ):
 
-    login_input = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/form/div/div[1]/div/div[2]/input" )
+    login_input    = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/form/div/div[1]/div/div[2]/input" )
+    login_password = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/form/div/div[2]/div/div[1]/div[2]/div[1]/input" )
 
     print( "INFO: sending login {}".format( credentials.LOGIN ) )
 
     login_input.send_keys( credentials.LOGIN )
+    login_password.send_keys( credentials.PASSWORD )
 
     helpers.sleep(2)
 
