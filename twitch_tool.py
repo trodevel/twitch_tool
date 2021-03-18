@@ -469,15 +469,19 @@ driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY, harmoni
 
 driver.get( 'https://www.twitch.tv' )
 
-accept_banner( driver )
+helpers.sleep( 3 )
 
-perform_login( driver )
+if is_logged_in( driver ) == False:
 
-helpers.sleep( 5 )
+    accept_banner( driver )
 
-accept_welcome_screen( driver )
+    perform_login( driver )
 
-accept_banner( driver )
+    helpers.sleep( 5 )
+
+    accept_welcome_screen( driver )
+
+    accept_banner( driver )
 
 # reopen the selected page again
 driver.get( 'https://www.twitch.tv/directory/game/Dota%202?sort=VIEWER_COUNT' )
