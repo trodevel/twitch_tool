@@ -77,6 +77,32 @@ def enter_credentials( driver ):
 
 ##########################################################
 
+def enter_validation_code( driver, code ):
+
+    code_1    = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/div[2]/div/div[1]/div/input" )
+    code_2    = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/div[2]/div/div[2]/div/input" )
+    code_3    = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/div[2]/div/div[3]/div/input" )
+    code_4    = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/div[2]/div/div[4]/div/input" )
+    code_5    = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/div[2]/div/div[5]/div/input" )
+    code_6    = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/div[2]/div/div[6]/div/input" )
+
+    print( "INFO: sending validation code {}".format( code ) )
+
+    code_1.send_keys( code[0] )
+    code_2.send_keys( code[1] )
+    code_3.send_keys( code[2] )
+    code_4.send_keys( code[3] )
+    code_5.send_keys( code[4] )
+    code_6.send_keys( code[5] )
+
+    helpers.sleep(1)
+
+    #print( "DEBUG: clicking" )
+
+    #login_button.click()
+
+##########################################################
+
 def select_found_shop( driver ):
 
     d0 = driver.find_element_by_id( "app" )
@@ -116,6 +142,10 @@ def perform_login( driver ):
     helpers.sleep( 5 )
 
     enter_credentials( driver )
+
+    validation_code = input( "Enter 6-digit validation code: " )
+
+    enter_validation_code( driver, validation_code )
 
     quit()
 
