@@ -456,7 +456,7 @@ def generate_filename():
     return res
 
 ##########################################################
-driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY )
+driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY, harmonize_link( config.COOKIES_DIR ) + credentials.LOGIN )
 
 driver.get( 'https://www.twitch.tv' )
 
