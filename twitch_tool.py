@@ -455,7 +455,7 @@ def parse_user_and_follow( driver, f, category_name, user ):
 
     has_followed = follow_user( driver )
 
-    line = category_name + ';' + user + ';' + str( creation_time ) + ';' + str( has_followed ) + "\n"
+    line = category_name + ';' + user + ';' + str( creation_time ) + ';' + str( int( has_followed ) ) + "\n"
 
     f.write( line )
 
