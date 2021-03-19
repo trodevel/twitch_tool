@@ -254,7 +254,7 @@ def determine_categories( driver ):
 
     d0 = driver.find_element_by_xpath( result[1] )
 
-    elements = d0.find_elements_by_classname( "chat-viewers-list tw-pd-b-2" )
+    elements = d0.find_elements_by_class_name( "chat-viewers-list tw-pd-b-2" )
 
     print( "DEBUG: found {} categories".format( len( elements ) ) )
 
