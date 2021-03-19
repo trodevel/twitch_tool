@@ -45,14 +45,6 @@ def accept_banner( driver ):
 
     helpers.sleep(2)
 
-    #d0 = driver.find_element_by_id( "root" )
-    #d1 = d0.find_element_by_css_selector( "div[class='tw-absolute tw-bottom-0 tw-flex tw-flex-column tw-flex-nowrap tw-left-0 tw-overflow-hidden tw-right-0 tw-top-0']" )
-    #d2 = d1.find_element_by_css_selector( "div[data-dmid='cookiebar-dm-overlay']" )
-    #d3 = d2.find_element_by_css_selector( "div[data-dmid='cookiebar']" )
-    #d4 = d3.find_element_by_css_selector( "button[data-dmid='cookiebar-ok']" )
-
-    #print( "DEBUG: found banner" )
-
     print( "DEBUG: clicking" )
 
     button.click()
@@ -117,34 +109,6 @@ def accept_welcome_screen( driver ):
     close_button.click()
 
     helpers.sleep(1)
-
-##########################################################
-
-def select_found_shop( driver ):
-
-    d0 = driver.find_element_by_id( "app" )
-    d1 = d0.find_element_by_css_selector( "div[data-dmid='app-container']" )
-    d2 = d1.find_element_by_css_selector( "div[data-dmid='main-container']" )
-    d3 = d2.find_element_by_xpath( "//div" )
-    d4 = d3.find_element_by_xpath( "//div" )
-    d5 = d4.find_element_by_css_selector( "div[data-dmid='storefinder-wrapper']" )
-    d6 = d5.find_element_by_css_selector( "div[data-dmid='store-list-overlay-wrapper']" )
-
-    d8 = WebDriverWait( d6, 15 ).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, "div[data-dmid='store-list-container']"))
-        )
-
-    d9 = d8.find_element_by_css_selector( "div[data-dmid='store-list']" )
-    d10 = d9.find_element_by_css_selector( "div[data-dmid='store-teaser']" )
-    d11 = d10.find_element_by_css_selector( "div[data-dmid='store-teaser-info-container']" )
-    d12 = d11.find_element_by_css_selector( "div[data-dmid='store-teaser-button-container']" )
-    d13 = d12.find_element_by_css_selector( "button[data-dmid='store-teaser-button']" )
-
-    print( "DEBUG: selecting shop" )
-
-    d13.click()
-
-    helpers.sleep(2)
 
 ##########################################################
 
@@ -306,114 +270,6 @@ def determine_categories_and_users( driver ):
         names[ name ] = users
 
     return names
-
-##########################################################
-
-
-def determine_products( driver ):
-
-    d1 = driver.find_element_by_css_selector( "div[class='search-results-container container']" )
-
-    d2 = d1.find_element_by_css_selector( "div[class='row search-results-wrapper']" )
-
-    element = WebDriverWait(driver, 15).until(
-        EC.presence_of_element_located((By.CLASS_NAME, "search-results-item" ))
-        )
-
-    elements = d2.find_elements_by_class_name( 'search-results-item' )
-
-    print( "INFO: found {} products".format( len( elements ) ) )
-
-    if len( elements ) == 0:
-        print( "FATAL: no products found on page" )
-        exit()
-
-    links = []
-
-    for e in elements:
-
-        e1 = e.find_element_by_class_name( 'product-teaser' )
-
-        link = e1.get_attribute( 'href' )
-
-        if link == None:
-            print( "WARNING: empty link {}, ignoring".format( s2 ) )
-            continue
-
-        link = harmonize_link( link )
-
-        print( "DEBUG: determine_products: {}".format( link ) )
-
-        links.append( link )
-
-    return links
-
-##########################################################
-
-def determine_number_of_pages( driver ):
-
-    element = WebDriverWait(driver, 15).until(
-        EC.presence_of_element_located((By.CLASS_NAME, "pagination-wrapper"))
-        )
-
-    i2 = element.find_element_by_id( 'pagination' )
-
-    # we need to wait for element
-    active = WebDriverWait(driver, 15).until(
-        EC.presence_of_element_located((By.CLASS_NAME, "active_page"))
-        )
-
-    elems = i2.find_elements_by_class_name( 'page_button' )
-
-    if len( elems ) == 0:
-        print( "WARNING: no multiple pages found, using active page" )
-        return int( active.text )
-
-    last = elems[-1]
-
-    return int( last.text )
-
-##########################################################
-
-def extract_handle_from_url( url ):
-    p = re.compile( "/([a-z_\-]*)/$" )
-    result = p.search( url )
-    res = result.group( 1 )
-    return res
-
-##########################################################
-
-def parse_product( driver, f, category_handle, category_name, subcategory_handle, subcategory_name, product_url ):
-
-    driver.get( product_url )
-
-    helpers.wait_for_page_load( driver )
-
-    if helpers.does_class_exist( driver, 'product-detail-page' ) == False:
-        print( "WARNING: cannot find product on {}".format( product_url ) )
-        return
-
-    if helpers.does_css_selector_exist( driver, "div[class='message message--error']" ) == True:
-        print( "ERROR: technical problem on page {}".format( product_url ) )
-        return
-
-    d1 = driver.find_element_by_class_name( 'product-detail-page' )
-
-    p = product_parser.parse_product( d1 )
-    line = category_handle + ';' + subcategory_handle + ';' + category_name + ';' + subcategory_name + ';' + p + "\n"
-    f.write( line )
-
-##########################################################
-
-def parse_page( driver, f, category_handle, category_name, subcategory_handle, subcategory_name ):
-
-    product_urls = determine_products( driver )
-
-    for e in product_urls:
-
-        parse_product( driver, f, category_handle, category_name, subcategory_handle, subcategory_name, e )
-
-    print()
 
 ##########################################################
 
