@@ -210,6 +210,18 @@ def pause_player( driver ):
     button.click()
 
 ##########################################################
+
+def show_chat_users( driver ):
+
+    print( "TRACE: show_chat_users" )
+
+    button = driver.find_element_by_xpath( "/html/body/div[1]/div/div[2]/div/div[2]/div/div[1]/div/div/div/div/div/div/div[2]/div/button" )
+
+    button.click()
+
+    helpers.sleep( 1 )
+
+##########################################################
 def determine_categories( driver ):
 
     d0 = driver.find_element_by_id( "app" )
