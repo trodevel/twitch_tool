@@ -447,7 +447,7 @@ def parse_user_and_follow( driver, f, category_name, user ):
 
     driver.get( link )
 
-    helpers.sleep(1)
+    helpers.sleep(4)
 
     helpers.wait_for_page_load( driver )
 
