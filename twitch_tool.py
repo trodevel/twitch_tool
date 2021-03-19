@@ -237,44 +237,32 @@ def show_chat_users( driver ):
     helpers.sleep( 1 )
 
 ##########################################################
+
 def determine_categories( driver ):
 
-    d0 = driver.find_element_by_id( "app" )
-    d1 = d0.find_element_by_css_selector( "div[data-dmid='app-container']" )
-    d2 = d1.find_element_by_css_selector( "div[data-dmid='main-container']" )
-    d3 = d2.find_element_by_xpath( "div" )
-    d4 = d3.find_element_by_css_selector( "div[data-dmid='dm-modules-container']" )
-    d5 = d4.find_element_by_css_selector( "div[data-dmid='modules-container']" )
+    d0 = driver.find_element_by_xpath( "/html/body/div[1]/div/div[2]/div/div[2]/div/div[1]/div/div/div/div/div/section/div/div[5]/section/div/div[2]/div[2]/div[3]/div/div" )
 
-    el2 = d5.find_elements_by_css_selector( "div[data-dmid='module-container']" )
+    elements = d0.find_elements_by_classname( "chat-viewers-list tw-pd-b-2" )
 
-    #print( "DEBUG: found {} el2".format( len( el2 ) ) )
+    print( "DEBUG: found {} categories".format( len( elements ) ) )
 
-    d10 = d2.find_element_by_xpath( "/html/body/div[1]/div/div[5]/div/div/div/div[10]/div/div/div[2]/div[1]/div" )
-
-    elements = d10.find_elements_by_xpath( "div[starts-with(@class,'odt_TeaserGroup-module_item')]" )
-
-    print( "INFO: found {} categories".format( len( elements ) ) )
-
-    links = []
+    names = []
 
     for s in elements:
 
-        d14 = s.find_element_by_xpath( "a[starts-with(@class,'odt_TeaserGroup-module_teaserLink')]" )
+        d1 = s.find_element_by_xpath( "div[1]" )
 
-        link = d14.get_attribute( 'href' )
+        name = d1.text
 
-        link = harmonize_link( link )
+        print( "DEBUG: determine_categories: {}".format( name ) )
 
-        print( "DEBUG: determine_categories: {}".format( link ) )
-
-        if link.find( "pflanzensamen" ) == -1 and DEBUG_CATEGORY == True:
+        if name.find( "pflanzensamen" ) == -1 and DEBUG_CATEGORY == True:
             print( "DEBUG: temporary ignoring" )
             continue
 
-        links.append( link )
+        names.append( name )
 
-    return links
+    return names
 
 ##########################################################
 
