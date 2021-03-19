@@ -212,8 +212,8 @@ def pause_player( driver ):
         print( "DEBUG: found link 1" )
         link = link1
     elif helpers.does_xpath_exist( driver, link2 ):
-        print( "DEBUG: found link 1" )
-        link = link1
+        print( "DEBUG: found link 2" )
+        link = link2
     else:
         print( "WARNING: player button not found" )
         return
