@@ -238,7 +238,7 @@ def show_chat_users( driver ):
 
 ##########################################################
 
-def determine_categories( driver ):
+def determine_categories_and_users( driver ):
 
     paths = [
 "/html/body/div[1]/div/div[2]/div/div[2]/div/div[1]/div/div/div/div/div/section/div/div[5]/section/div/div[2]/div[2]/div[3]/div/div",
@@ -266,7 +266,7 @@ def determine_categories( driver ):
 
         name = d1.text
 
-        print( "DEBUG: determine_categories: {}".format( name ) )
+        print( "DEBUG: determine_categories_and_users: {}".format( name ) )
 
         if name.find( "pflanzensamen" ) == -1 and DEBUG_CATEGORY == True:
             print( "DEBUG: temporary ignoring" )
@@ -549,7 +549,7 @@ pause_player( driver )
 
 show_chat_users( driver )
 
-names = determine_categories( driver )
+names = determine_categories_and_users( driver )
 
 quit()
 
