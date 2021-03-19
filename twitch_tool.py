@@ -31,6 +31,7 @@ import credentials    # LOGIN
 import helpers        # find_element_by_tag_and_class_name
 #import product_parser # parse_product
 import re
+import time
 
 from datetime import datetime
 
@@ -416,90 +417,35 @@ def parse_page( driver, f, category_handle, category_name, subcategory_handle, s
 
 ##########################################################
 
-def parse_subcategory( driver, f, category_handle, category_name, subcategory_link, subcategory_name ):
+def parse_user_and_follow( driver, f, category_name, user ):
 
-    subcategory_handle = extract_handle_from_url( subcategory_link )
+    link = "https://www.twitch.tv/" + user
 
-    driver.get( subcategory_link )
-
-    helpers.wait_for_page_load( driver )
-
-    num_pages = determine_number_of_pages( driver )
-
-    print( "INFO: number of pages {} on {}".format( num_pages, subcategory_link ) )
-
-    page = 1
-
-    print( "INFO: parsing page {} / {}".format( page, num_pages ) )
-
-    parse_page( driver, f, category_handle, category_name, subcategory_handle, subcategory_name )
-
-    page += 1
-
-    while page <= num_pages:
-        print( "INFO: parsing page {} / {}".format( page, num_pages ) )
-
-        driver.get( subcategory_link + '?page=' + str( page ) )
-
-        helpers.wait_for_page_load( driver )
-
-        parse_page( driver, f, category_handle, category_name, subcategory_handle, subcategory_name )
-
-        page += 1
-
-##########################################################
-
-def determine_category_name( driver ):
-
-    d0 = driver.find_element_by_id( "app" )
-    d1 = d0.find_element_by_css_selector( "div[data-dmid='app-container']" )
-    d2 = d1.find_element_by_css_selector( "div[data-dmid='main-container']" )
-    d4 = d2.find_element_by_xpath( "div/div[@data-dmid='dm-modules-container']" )
-    d5 = d4.find_element_by_css_selector( "div[data-dmid='modules-container']" )
-
-    d6 = d5.find_element_by_xpath( "div[@data-dmid='module-container']/div/div[@data-dmid='richtextContainer']/div[@data-dmid='richtext']/h1" )
-
-    name = d6.text
-
-    return name
-
-##########################################################
-
-def parse_category_and_follow( driver, f, category_link ):
-
-    category_handle = extract_handle_from_url( category_link )
-
-    driver.get( category_link )
+    driver.get( link )
 
     helpers.wait_for_page_load( driver )
 
-    helpers.sleep(2)
+    creation_time = int( time.time() )
 
-    category_name = determine_category_name( driver )
+    line = category_name + ';' + user + ';' + creation_time + "\n"
 
-    print( "DEBUG: category name - {}".format( category_name ) )
+    f.write( line )
 
-    # "ostern" page has another structure, so we'll not bother us with parsing sub-categories
-    #if category_link.find( "/ostern" ) != -1:
-    #    parse_page( driver, f, category_handle, category_name, category_handle, category_name )
-    #    return
+##########################################################
 
-    return
+def parse_category_and_follow( driver, f, category_name, users ):
 
-    links = determine_subcategories( driver )
-
-    num_links = len( links )
+    num_users = len( users )
 
     i = 0
 
-    for c, name in links.items():
+    for u in users:
 
         i += 1
 
-        print( "INFO: parsing subcategory {} / {} - {}".format( i, num_links, name ) )
+        print( "INFO: parsing subcategory {} / {} - {}".format( i, num_users, u ) )
 
-        parse_subcategory( driver, f, category_handle, category_name, c, helpers.to_csv_conform_string( name ) )
-
+        parse_user_and_follow( driver, f, category_name, u )
 
 ##########################################################
 
@@ -556,10 +502,12 @@ for c in category_names:
 
     print( "INFO: parsing category {} / {} - {}".format( i, num_category_names, c ) )
 
-    if name.find( "Users" ) == -1:
+    if c.find( "Users" ) == -1:
         print( "DEBUG: temporary ignoring category {}".format( c ) )
         continue
 
-    parse_category_and_follow( driver, f, c )
+    users = category_names[ c ]
+
+    parse_category_and_follow( driver, f, c, users )
 
 print( "INFO: done" )
