@@ -417,6 +417,29 @@ def parse_page( driver, f, category_handle, category_name, subcategory_handle, s
 
 ##########################################################
 
+def follow_user( driver ):
+
+    paths = [
+"/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[1]/div[1]/div[2]/div/div[2]/div[1]/div[2]/div[1]/div/div[1]/div/div/div[1]/div/div/div/div/button"
+]
+    result = helpers.do_xpaths_exist( driver, paths )
+
+    if result[0] == False:
+        print( "ERROR: cannot find follow button" )
+        return False
+
+    #print( "DEBUG: found element link {}".format( result[2] ) )
+
+    print( "INFO: clicked follow button" )
+
+    button = driver.find_element_by_xpath( result[1] )
+
+    button.click()
+
+    return True
+
+##########################################################
+
 def parse_user_and_follow( driver, f, category_name, user ):
 
     link = "https://www.twitch.tv/" + user
