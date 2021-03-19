@@ -452,7 +452,7 @@ def parse_category_and_follow( driver, f, category_name, users ):
 def generate_filename():
     now = datetime.now()
     d1 = now.strftime( "%Y%m%d_%H%M" )
-    res = "products_" + d1 + ".csv"
+    res = "users_" + d1 + ".csv"
     return res
 
 ##########################################################
