@@ -203,7 +203,22 @@ def open_first_top_stream( driver ):
 
 def pause_player( driver ):
 
-    button = driver.find_element_by_xpath( "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[2]/div/div[2]/div/div/div/div[5]/div/div[2]/div[1]/div[1]/button" )
+    link = None
+
+    link1 = "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[2]/div/div[2]/div/div/div/div[5]/div/div[2]/div[1]/div[1]/button"
+    link2 = "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[2]/div/div[2]/div/div/div/div[3]/div/div[2]/div[1]/div[1]/button"
+
+    if helpers.does_xpath_exist( driver, link1 ):
+        print( "DEBUG: found link 1" )
+        link = link1
+    elif helpers.does_xpath_exist( driver, link2 ):
+        print( "DEBUG: found link 1" )
+        link = link1
+    else
+        print( "WARNING: player button not found" )
+        return
+
+    button = driver.find_element_by_xpath( link )
 
     print( "INFO: pausing player" )
 
@@ -531,6 +546,8 @@ helpers.sleep( 3 )
 open_first_top_stream( driver )
 
 pause_player( driver )
+
+show_chat_users( driver )
 
 quit()
 
