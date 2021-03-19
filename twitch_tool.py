@@ -197,7 +197,7 @@ def open_first_top_stream( driver ):
 
     driver.get( link )
 
-    helpers.sleep( 3 )
+    helpers.sleep( 5 )
 
 ##########################################################
 
