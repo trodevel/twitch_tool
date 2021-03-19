@@ -238,6 +238,32 @@ def show_chat_users( driver ):
 
 ##########################################################
 
+def determine_users_in_category( driver, category_name ):
+
+    elements = driver.find_elements_by_css_selector( "div[role='listitem']" )
+
+    print( "INFO: category {} - found {} users".format( category_name, len( elements ) ) )
+
+    names = []
+
+    for s in elements:
+
+        if helpers.does_tag_exist( s, "button" ) == False:
+            print( "WARNING: element without tag 'button', ignoring" )
+            continue
+
+        s2 = s.find_element_by_tag_name( "button" )
+
+        name = s2.get_attribute( 'data-username' )
+
+        print( "DEBUG: determine_users_in_category: {}".format( name ) )
+
+        names.append( name )
+
+    return names
+
+##########################################################
+
 def determine_categories_and_users( driver ):
 
     paths = [
@@ -258,7 +284,7 @@ def determine_categories_and_users( driver ):
 
     print( "DEBUG: found {} categories".format( len( elements ) ) )
 
-    names = []
+    names = dict()
 
     for s in elements:
 
@@ -272,49 +298,16 @@ def determine_categories_and_users( driver ):
             print( "DEBUG: temporary ignoring" )
             continue
 
-        names.append( name )
+        list_elem = s.find_element_by_xpath( "div[2]" )
+
+        users = determine_users_in_category( list_elem, name )
+
+        names[ name ] = users
 
     return names
 
 ##########################################################
 
-def determine_subcategories( driver ):
-
-    d1 = driver.find_element_by_class_name( 'products-sub-categories' )
-
-    d2 = d1.find_element_by_css_selector( "div[class='products-sub-categories__container swiper-container']" )
-
-    d3 = d2.find_element_by_css_selector( "div[class='products-sub-categories__items swiper-wrapper']" )
-
-    elements = d3.find_elements_by_css_selector( "div[class='products-sub-categories__item swiper-slide']" )
-
-    print( "INFO: found {} sub categories".format( len( elements ) ) )
-
-    links = dict()
-
-    for s in elements:
-
-        if helpers.does_tag_exist( s, "a" ) == False:
-            print( "WARNING: element without tag 'a', ignoring" )
-            continue
-
-        s2 = s.find_element_by_tag_name( "a" )
-
-        link = s2.get_attribute( 'href' )
-        name = s2.text
-
-        if link == None:
-            print( "WARNING: empty link {}, ignoring".format( s2 ) )
-            continue
-
-        link = harmonize_link( link )
-
-        print( "DEBUG: determine_subcategories: {} - {}".format( link, name ) )
-        links[ link ] = name
-
-    return links
-
-##########################################################
 
 def determine_products( driver ):
 
