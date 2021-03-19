@@ -2,3 +2,4 @@ config.py
 credentials.py
 credentials.py.*
 *.pyc
+cookies/*
