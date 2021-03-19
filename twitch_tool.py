@@ -544,10 +544,6 @@ show_chat_users( driver )
 
 category_names = determine_categories_and_users( driver )
 
-users = names[ "Users" ]
-
-quit()
-
 num_category_names = len( category_names )
 
 f = open( generate_filename(), "w" )
@@ -559,6 +555,10 @@ for c in category_names:
     i += 1
 
     print( "INFO: parsing category {} / {} - {}".format( i, num_category_names, c ) )
+
+    if name.find( "Users" ) == -1:
+        print( "DEBUG: temporary ignoring category {}".format( c ) )
+        continue
 
     parse_category_and_follow( driver, f, c )
 
