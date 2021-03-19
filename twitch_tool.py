@@ -544,6 +544,8 @@ show_chat_users( driver )
 
 names = determine_categories_and_users( driver )
 
+users = names[ "Users" ]
+
 quit()
 
 num_links = len( links )
