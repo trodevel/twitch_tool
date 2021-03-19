@@ -240,7 +240,19 @@ def show_chat_users( driver ):
 
 def determine_categories( driver ):
 
-    d0 = driver.find_element_by_xpath( "/html/body/div[1]/div/div[2]/div/div[2]/div/div[1]/div/div/div/div/div/section/div/div[5]/section/div/div[2]/div[2]/div[3]/div/div" )
+    paths = [
+"/html/body/div[1]/div/div[2]/div/div[2]/div/div[1]/div/div/div/div/div/section/div/div[5]/section/div/div[2]/div[2]/div[3]/div/div",
+"/html/body/div[1]/div/div[2]/div/div[2]/div/div[1]/div/div/div/div/div/section/div/div[6]/section/div/div[2]/div[2]/div[3]/div" ]
+
+    result = helpers.do_xpaths_exist( driver, paths )
+
+    if result[0] == False:
+        print( "ERROR: cannot determine categories" )
+        return
+
+    print( "DEBUG: found element link {}".format( result[2] ) )
+
+    d0 = driver.find_element_by_xpath( result[1] )
 
     elements = d0.find_elements_by_classname( "chat-viewers-list tw-pd-b-2" )
 
@@ -537,9 +549,9 @@ pause_player( driver )
 
 show_chat_users( driver )
 
-quit()
+names = determine_categories( driver )
 
-links = determine_categories( driver )
+quit()
 
 num_links = len( links )
 
