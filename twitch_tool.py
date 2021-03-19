@@ -427,7 +427,7 @@ def parse_user_and_follow( driver, f, category_name, user ):
 
     creation_time = int( time.time() )
 
-    line = category_name + ';' + user + ';' + creation_time + "\n"
+    line = category_name + ';' + user + ';' + str( creation_time ) + "\n"
 
     f.write( line )
 
