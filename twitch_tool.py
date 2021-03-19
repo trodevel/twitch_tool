@@ -465,7 +465,7 @@ def determine_category_name( driver ):
 
 ##########################################################
 
-def parse_category( driver, f, category_link ):
+def parse_category_and_follow( driver, f, category_link ):
 
     category_handle = extract_handle_from_url( category_link )
 
@@ -560,6 +560,6 @@ for c in links:
 
     print( "INFO: parsing category {} / {} - {}".format( i, num_links, c ) )
 
-    parse_category( driver, f, c )
+    parse_category_and_follow( driver, f, c )
 
 print( "INFO: done" )
