@@ -420,7 +420,8 @@ def parse_page( driver, f, category_handle, category_name, subcategory_handle, s
 def follow_user( driver ):
 
     paths = [
-"/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[1]/div[1]/div[2]/div/div[2]/div[1]/div[2]/div[1]/div/div[1]/div/div/div[1]/div/div/div/div/button"
+"/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[1]/div[1]/div[2]/div/div[2]/div[1]/div[2]/div[1]/div/div[1]/div/div/div[1]/div/div/div/div/button",
+"/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[1]/div[1]/div[2]/div/div[2]/div[1]/div[2]/div[1]/div/div/div/div/div[1]/div/div/div/div/button"
 ]
     result = helpers.do_xpaths_exist( driver, paths )
 
@@ -446,11 +447,15 @@ def parse_user_and_follow( driver, f, category_name, user ):
 
     driver.get( link )
 
+    helpers.sleep(1)
+
     helpers.wait_for_page_load( driver )
 
     creation_time = int( time.time() )
 
-    line = category_name + ';' + user + ';' + str( creation_time ) + "\n"
+    has_followed = follow_user( driver )
+
+    line = category_name + ';' + user + ';' + str( creation_time ) + ';' + str( has_followed ) + "\n"
 
     f.write( line )
 
