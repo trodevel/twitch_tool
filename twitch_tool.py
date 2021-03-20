@@ -41,9 +41,14 @@ DEBUG_CATEGORY = False
 
 def accept_banner( driver ):
 
-    button = helpers.find_element_by_xpath_with_timeout( driver, "/html/body/div[1]/div/div[2]/div[1]/div/div/div[3]/button", 5 )
+    link = "/html/body/div[1]/div/div[2]/div[1]/div/div/div[3]/button"
 
-    print( "DEBUG: clicking" )
+    if helpers.does_xpath_exist_with_timeout( driver, link, 5 ) == False:
+        print( "INFO: no banner found" )
+
+    print( "INFO: found banner, clicking" )
+
+    button = driver.find_element_by_xpath( link )
 
     button.click()
 
@@ -120,6 +125,7 @@ def perform_login( driver ):
 
 def is_logged_in( driver ):
 
+#/html/body/div[1]/div/div[2]/nav/div/div[3]/div[3]/div/div[1]/div[1]/button
     if helpers.does_xpath_exist_with_timeout( driver, "/html/body/div[1]/div/div[2]/nav/div/div[3]/div[6]/div/div/div/div/button", 5 ):
         return True
 
@@ -319,6 +325,8 @@ driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY, harmoni
 driver.get( 'https://www.twitch.tv' )
 
 if is_logged_in( driver ) == False:
+
+    print( "INFO: not logged in" )
 
     accept_banner( driver )
 
