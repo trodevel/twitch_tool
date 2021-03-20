@@ -68,7 +68,7 @@ def enter_credentials( driver ):
 
 def enter_validation_code( driver, code ):
 
-    code_1    = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/div[2]/div/div[1]/div/input" )
+    code_1    = helpers.find_element_by_xpath_with_timeout( driver, "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/div[2]/div/div[1]/div/input", 10 )
     code_2    = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/div[2]/div/div[2]/div/input" )
     code_3    = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/div[2]/div/div[3]/div/input" )
     code_4    = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/div[2]/div/div[4]/div/input" )
@@ -115,8 +115,6 @@ def perform_login( driver ):
     validation_code = input( "Enter 6-digit validation code: " )
 
     enter_validation_code( driver, validation_code )
-
-    helpers.sleep(3)
 
 ##########################################################
 
