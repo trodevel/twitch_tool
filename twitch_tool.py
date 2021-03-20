@@ -243,9 +243,13 @@ def determine_categories_and_users( driver ):
 
     print( "DEBUG: found element link {}".format( result[2] ) )
 
-    d0 = driver.find_element_by_xpath( result[1] )
+    #d0 = driver.find_element_by_xpath( result[1] )
 
-    elements = d0.find_elements_by_css_selector( "div[class='chat-viewers-list tw-pd-b-2']" )
+    if helpers.does_xpath_exist( driver, "//div[@class='chat-viewers-list tw-pd-b-2']", 10 ) == False:
+        print( "ERROR: cannot find element with chat list" )
+        quit()
+
+    elements = driver.find_elements_by_xpath( "//div[@class='chat-viewers-list tw-pd-b-2']" )
 
     print( "DEBUG: found {} categories".format( len( elements ) ) )
 
