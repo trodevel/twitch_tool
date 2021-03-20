@@ -41,11 +41,15 @@ DEBUG_CATEGORY = False
 
 def accept_banner( driver ):
 
-    button = driver.find_element_by_xpath( "/html/body/div[1]/div/div[2]/div[1]/div/div/div[3]/button" )
+    link = "/html/body/div[1]/div/div[2]/div[1]/div/div/div[3]/button"
 
-    helpers.sleep(2)
+    if helpers.does_xpath_exist_with_timeout( driver, link, 5 ) == False:
+        print( "INFO: no banner found" )
+        return
 
-    print( "DEBUG: clicking" )
+    print( "INFO: found banner, clicking" )
+
+    button = driver.find_element_by_xpath( link )
 
     button.click()
 
@@ -53,16 +57,19 @@ def accept_banner( driver ):
 
 def enter_credentials( driver ):
 
-    login_input    = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/form/div/div[1]/div/div[2]/input" )
+    login_input    = helpers.find_element_by_xpath_with_timeout( driver, "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/form/div/div[1]/div/div[2]/input", 10 )
     login_password = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/form/div/div[2]/div/div[1]/div[2]/div[1]/input" )
     login_button   = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/form/div/div[3]/button" )
 
     print( "INFO: sending login {}".format( credentials.LOGIN ) )
 
+    login_input.send_keys( Keys.CONTROL + "a" )
+    login_input.send_keys( Keys.DELETE )
     login_input.send_keys( credentials.LOGIN )
-    login_password.send_keys( credentials.PASSWORD )
 
-    helpers.sleep(1)
+    login_password.send_keys( Keys.CONTROL + "a" )
+    login_password.send_keys( Keys.DELETE )
+    login_password.send_keys( credentials.PASSWORD )
 
     print( "DEBUG: clicking" )
 
@@ -72,7 +79,7 @@ def enter_credentials( driver ):
 
 def enter_validation_code( driver, code ):
 
-    code_1    = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/div[2]/div/div[1]/div/input" )
+    code_1    = helpers.find_element_by_xpath_with_timeout( driver, "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/div[2]/div/div[1]/div/input", 10 )
     code_2    = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/div[2]/div/div[2]/div/input" )
     code_3    = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/div[2]/div/div[3]/div/input" )
     code_4    = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/div[2]/div/div[4]/div/input" )
@@ -88,15 +95,17 @@ def enter_validation_code( driver, code ):
     code_5.send_keys( code[4] )
     code_6.send_keys( code[5] )
 
-    helpers.sleep(1)
-
 ##########################################################
 
 def accept_welcome_screen( driver ):
 
-    button = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div/div[4]/button" )
+    link = "/html/body/div[3]/div/div/div/div/div/div/div[4]/button"
 
-    helpers.sleep(1)
+    if helpers.does_xpath_exist_with_timeout( driver, link, 10 ) == False:
+        print( "INFO: no welcome screen found" )
+        return
+
+    button = driver.find_element_by_xpath( link )
 
     print( "DEBUG: clicking" )
 
@@ -108,19 +117,15 @@ def accept_welcome_screen( driver ):
 
     close_button.click()
 
-    helpers.sleep(1)
-
 ##########################################################
 
 def perform_login( driver ):
 
-    login_button = driver.find_element_by_xpath( "/html/body/div[1]/div/div[2]/nav/div/div[3]/div[3]/div/div[1]/div[1]/button" )
+    login_button = helpers.find_element_by_xpath_with_timeout( driver, "/html/body/div[1]/div/div[2]/nav/div/div[3]/div[3]/div/div[1]/div[1]/button", 5 )
 
     print( "DEBUG: clicking" )
 
     login_button.click()
-
-    helpers.sleep( 5 )
 
     enter_credentials( driver )
 
@@ -128,13 +133,14 @@ def perform_login( driver ):
 
     enter_validation_code( driver, validation_code )
 
-    helpers.sleep(3)
-
 ##########################################################
 
 def is_logged_in( driver ):
 
-    if helpers.does_xpath_exist( driver, "/html/body/div[1]/div/div[2]/nav/div/div[3]/div[6]/div/div/div/div/button" ):
+    if helpers.does_xpath_exist_with_timeout( driver, "/html/body/div[1]/div/div[2]/nav/div/div[3]/div[3]/div/div[1]/div[1]/button", 1 ):
+        return False
+
+    if helpers.does_xpath_exist_with_timeout( driver, "/html/body/div[1]/div/div[2]/nav/div/div[3]/div[6]/div/div/div/div/button", 5 ):
         return True
 
     return False
@@ -152,7 +158,7 @@ def harmonize_link( link ):
 
 def open_first_top_stream( driver ):
 
-    a = driver.find_element_by_xpath( "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div/div/div/div[4]/div[2]/div[1]/div[1]/div[2]/div/div/div/article/div[1]/div/div[1]/div[1]/div/a" )
+    a = helpers.find_element_by_xpath_with_timeout( driver, "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div/div/div/div[4]/div[2]/div[1]/div[1]/div[2]/div/div/div/article/div[1]/div/div[1]/div[1]/div/a", 10 )
 
     link = a.get_attribute( 'href' )
 
@@ -162,28 +168,22 @@ def open_first_top_stream( driver ):
 
     driver.get( link )
 
-    helpers.sleep( 5 )
-
 ##########################################################
 
 def pause_player( driver ):
 
-    link = None
+    paths = [
+    "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[2]/div/div[2]/div/div/div/div[5]/div/div[2]/div[1]/div[1]/button",
+    "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[2]/div/div[2]/div/div/div/div[3]/div/div[2]/div[1]/div[1]/button",
+    "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[2]/div/div[2]/div/div/div/div[8]/div/div[2]/div[1]/div[1]/button",
+]
+    result = helpers.do_xpaths_exist_with_timeout( driver, paths, 10 )
 
-    link1 = "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[2]/div/div[2]/div/div/div/div[5]/div/div[2]/div[1]/div[1]/button"
-    link2 = "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[2]/div/div[2]/div/div/div/div[3]/div/div[2]/div[1]/div[1]/button"
-
-    if helpers.does_xpath_exist( driver, link1 ):
-        print( "DEBUG: found link 1" )
-        link = link1
-    elif helpers.does_xpath_exist( driver, link2 ):
-        print( "DEBUG: found link 2" )
-        link = link2
-    else:
+    if result[0] == False:
         print( "WARNING: player button not found" )
-        return
+        return False
 
-    button = driver.find_element_by_xpath( link )
+    button = driver.find_element_by_xpath( result[1] )
 
     print( "INFO: pausing player" )
 
@@ -198,8 +198,6 @@ def show_chat_users( driver ):
     button = driver.find_element_by_xpath( "/html/body/div[1]/div/div[2]/div/div[2]/div/div[1]/div/div/div/div/div/div/div[2]/div/button" )
 
     button.click()
-
-    helpers.sleep( 1 )
 
 ##########################################################
 
@@ -231,11 +229,13 @@ def determine_users_in_category( driver, category_name ):
 
 def determine_categories_and_users( driver ):
 
-    paths = [
-"/html/body/div[1]/div/div[2]/div/div[2]/div/div[1]/div/div/div/div/div/section/div/div[5]/section/div/div[2]/div[2]/div[3]/div/div",
-"/html/body/div[1]/div/div[2]/div/div[2]/div/div[1]/div/div/div/div/div/section/div/div[6]/section/div/div[2]/div[2]/div[3]/div" ]
+    print( "TRACE: determine_categories_and_users" )
 
-    result = helpers.do_xpaths_exist( driver, paths )
+    paths = [
+"//div[@class='tw-pd-b-5 tw-pd-x-2']"
+]
+
+    result = helpers.do_xpaths_exist_with_timeout( driver, paths, 10 )
 
     if result[0] == False:
         print( "ERROR: cannot determine categories" )
@@ -279,7 +279,7 @@ def follow_user( driver ):
 "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[1]/div[1]/div[2]/div/div[2]/div[1]/div[2]/div[1]/div/div[1]/div/div/div[1]/div/div/div/div/button",
 "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[1]/div[1]/div[2]/div/div[2]/div[1]/div[2]/div[1]/div/div/div/div/div[1]/div/div/div/div/button"
 ]
-    result = helpers.do_xpaths_exist( driver, paths )
+    result = helpers.do_xpaths_exist_with_timeout( driver, paths, 10 )
 
     if result[0] == False:
         print( "ERROR: cannot find follow button" )
@@ -291,7 +291,7 @@ def follow_user( driver ):
 
     button = driver.find_element_by_xpath( result[1] )
 
-    button.click()
+    #button.click()
 
     return True
 
@@ -302,10 +302,6 @@ def parse_user_and_follow( driver, f, category_name, user ):
     link = "https://www.twitch.tv/" + user
 
     driver.get( link )
-
-    helpers.sleep(10)
-
-    helpers.wait_for_page_load( driver )
 
     creation_time = int( time.time() )
 
@@ -344,15 +340,13 @@ driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY, harmoni
 
 driver.get( 'https://www.twitch.tv' )
 
-helpers.sleep( 3 )
-
 if is_logged_in( driver ) == False:
+
+    print( "INFO: not logged in" )
 
     accept_banner( driver )
 
     perform_login( driver )
-
-    helpers.sleep( 5 )
 
     accept_welcome_screen( driver )
 
@@ -363,8 +357,6 @@ else:
 
 # reopen the selected page again
 driver.get( 'https://www.twitch.tv/directory/game/Dota%202?sort=VIEWER_COUNT' )
-
-helpers.sleep( 3 )
 
 open_first_top_stream( driver )
 
