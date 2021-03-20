@@ -366,6 +366,8 @@ show_chat_users( driver )
 
 category_names = determine_categories_and_users( driver )
 
+quit()
+
 num_category_names = len( category_names )
 
 f = open( generate_filename(), "w" )
