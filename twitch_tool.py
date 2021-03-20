@@ -137,7 +137,9 @@ def perform_login( driver ):
 
 def is_logged_in( driver ):
 
-#/html/body/div[1]/div/div[2]/nav/div/div[3]/div[3]/div/div[1]/div[1]/button
+    if helpers.does_xpath_exist_with_timeout( driver, "/html/body/div[1]/div/div[2]/nav/div/div[3]/div[3]/div/div[1]/div[1]/button", 1 ):
+        return False
+
     if helpers.does_xpath_exist_with_timeout( driver, "/html/body/div[1]/div/div[2]/nav/div/div[3]/div[6]/div/div/div/div/button", 5 ):
         return True
 
