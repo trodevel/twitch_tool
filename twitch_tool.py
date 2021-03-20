@@ -190,8 +190,6 @@ def show_chat_users( driver ):
 
     button.click()
 
-    helpers.sleep( 1 )
-
 ##########################################################
 
 def determine_users_in_category( driver, category_name ):
@@ -226,7 +224,7 @@ def determine_categories_and_users( driver ):
 "/html/body/div[1]/div/div[2]/div/div[2]/div/div[1]/div/div/div/div/div/section/div/div[5]/section/div/div[2]/div[2]/div[3]/div/div",
 "/html/body/div[1]/div/div[2]/div/div[2]/div/div[1]/div/div/div/div/div/section/div/div[6]/section/div/div[2]/div[2]/div[3]/div" ]
 
-    result = helpers.do_xpaths_exist( driver, paths )
+    result = helpers.do_xpaths_exist_with_timeout( driver, paths, 10 )
 
     if result[0] == False:
         print( "ERROR: cannot determine categories" )
