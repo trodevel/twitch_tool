@@ -247,7 +247,7 @@ def determine_categories_and_users( driver ):
 
     #d0 = driver.find_element_by_xpath( result[1] )
 
-    if helpers.does_xpath_exist( driver, "//div[@class='chat-viewers-list tw-pd-b-2']", 10 ) == False:
+    if helpers.does_xpath_exist_with_timeout( driver, "//div[@class='chat-viewers-list tw-pd-b-2']", 10 ) == False:
         print( "ERROR: cannot find element with chat list" )
         quit()
 
