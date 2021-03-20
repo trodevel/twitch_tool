@@ -323,8 +323,6 @@ if is_logged_in( driver ) == False:
 
     perform_login( driver )
 
-    helpers.sleep( 5 )
-
     accept_welcome_screen( driver )
 
     accept_banner( driver )
