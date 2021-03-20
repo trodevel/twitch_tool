@@ -41,9 +41,7 @@ DEBUG_CATEGORY = False
 
 def accept_banner( driver ):
 
-    button = driver.find_element_by_xpath( "/html/body/div[1]/div/div[2]/div[1]/div/div/div[3]/button" )
-
-    helpers.sleep(2)
+    button = helpers.find_element_by_xpath_with_timeout( driver, "/html/body/div[1]/div/div[2]/div[1]/div/div/div[3]/button", 5 )
 
     print( "DEBUG: clicking" )
 
@@ -309,7 +307,8 @@ def parse_user_and_follow( driver, f, category_name, user ):
 
     creation_time = int( time.time() )
 
-    has_followed = follow_user( driver )
+    #has_followed = follow_user( driver )
+    has_followed = False
 
     line = category_name + ';' + user + ';' + str( creation_time ) + ';' + str( int( has_followed ) ) + "\n"
 
