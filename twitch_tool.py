@@ -99,7 +99,13 @@ def enter_validation_code( driver, code ):
 
 def accept_welcome_screen( driver ):
 
-    button = helpers.find_element_by_xpath_with_timeout( driver, "/html/body/div[3]/div/div/div/div/div/div/div[4]/button", 10 )
+    link = "/html/body/div[3]/div/div/div/div/div/div/div[4]/button"
+
+    if helpers.does_xpath_exist_with_timeout( driver, link, 10 ) == False:
+        print( "INFO: no welcome screen found" )
+        return
+
+    button = driver.find_element_by_xpath( link )
 
     print( "DEBUG: clicking" )
 
