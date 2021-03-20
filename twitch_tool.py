@@ -63,15 +63,13 @@ def enter_credentials( driver ):
 
     print( "INFO: sending login {}".format( credentials.LOGIN ) )
 
-    helpers.sleep( 1 )
-
+    login_input.send_keys( Keys.CONTROL + "a" )
+    login_input.send_keys( Keys.DELETE )
     login_input.send_keys( credentials.LOGIN )
 
-    helpers.sleep( 1 )
-
+    login_password.send_keys( Keys.CONTROL + "a" )
+    login_password.send_keys( Keys.DELETE )
     login_password.send_keys( credentials.PASSWORD )
-
-    helpers.sleep( 1 )
 
     print( "DEBUG: clicking" )
 
