@@ -229,6 +229,8 @@ def determine_users_in_category( driver, category_name ):
 
 def determine_categories_and_users( driver ):
 
+    print( "TRACE: determine_categories_and_users" )
+
     paths = [
 "/html/body/div[1]/div/div[2]/div/div[2]/div/div[1]/div/div/div/div/div/section/div/div[5]/section/div/div[2]/div[2]/div[3]/div/div",
 "/html/body/div[1]/div/div[2]/div/div[2]/div/div[1]/div/div/div/div/div/section/div/div[6]/section/div/div[2]/div[2]/div[3]/div" ]
