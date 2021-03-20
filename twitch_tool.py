@@ -45,6 +45,7 @@ def accept_banner( driver ):
 
     if helpers.does_xpath_exist_with_timeout( driver, link, 5 ) == False:
         print( "INFO: no banner found" )
+        return
 
     print( "INFO: found banner, clicking" )
 
