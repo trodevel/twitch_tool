@@ -154,7 +154,8 @@ def pause_player( driver ):
 
     paths = [
     "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[2]/div/div[2]/div/div/div/div[5]/div/div[2]/div[1]/div[1]/button",
-    "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[2]/div/div[2]/div/div/div/div[3]/div/div[2]/div[1]/div[1]/button"
+    "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[2]/div/div[2]/div/div/div/div[3]/div/div[2]/div[1]/div[1]/button",
+    "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[2]/div/div[2]/div/div/div/div[8]/div/div[2]/div[1]/div[1]/button",
 ]
     result = helpers.do_xpaths_exist_with_timeout( driver, paths, 10 )
 
