@@ -356,8 +356,6 @@ else:
 # reopen the selected page again
 driver.get( 'https://www.twitch.tv/directory/game/Dota%202?sort=VIEWER_COUNT' )
 
-helpers.sleep( 3 )
-
 open_first_top_stream( driver )
 
 pause_player( driver )
