@@ -275,7 +275,7 @@ def follow_user( driver ):
 "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[1]/div[1]/div[2]/div/div[2]/div[1]/div[2]/div[1]/div/div[1]/div/div/div[1]/div/div/div/div/button",
 "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[1]/div[1]/div[2]/div/div[2]/div[1]/div[2]/div[1]/div/div/div/div/div[1]/div/div/div/div/button"
 ]
-    result = helpers.find_elements_by_xpath_with_timeout( driver, paths, 10 )
+    result = helpers.do_xpaths_exist_with_timeout( driver, paths, 10 )
 
     if result[0] == False:
         print( "ERROR: cannot find follow button" )
