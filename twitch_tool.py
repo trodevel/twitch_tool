@@ -88,9 +88,7 @@ def enter_validation_code( driver, code ):
 
 def accept_welcome_screen( driver ):
 
-    button = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div/div[4]/button" )
-
-    helpers.sleep(1)
+    button = helpers.find_element_by_xpath_with_timeout( driver, "/html/body/div[3]/div/div/div/div/div/div/div[4]/button", 10 )
 
     print( "DEBUG: clicking" )
 
@@ -101,8 +99,6 @@ def accept_welcome_screen( driver ):
     print( "DEBUG: clicking" )
 
     close_button.click()
-
-    helpers.sleep(1)
 
 ##########################################################
 
