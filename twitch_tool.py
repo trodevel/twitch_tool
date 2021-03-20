@@ -150,7 +150,7 @@ def harmonize_link( link ):
 
 def open_first_top_stream( driver ):
 
-    a = driver.find_element_by_xpath( "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div/div/div/div[4]/div[2]/div[1]/div[1]/div[2]/div/div/div/article/div[1]/div/div[1]/div[1]/div/a" )
+    a = helpers.find_element_by_xpath_with_timeout( driver, "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div/div/div/div[4]/div[2]/div[1]/div[1]/div[2]/div/div/div/article/div[1]/div/div[1]/div[1]/div/a", 10 )
 
     link = a.get_attribute( 'href' )
 
@@ -159,8 +159,6 @@ def open_first_top_stream( driver ):
     print( "INFO: opening top stream {}".format( link ) )
 
     driver.get( link )
-
-    helpers.sleep( 5 )
 
 ##########################################################
 
