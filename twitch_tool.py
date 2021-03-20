@@ -277,7 +277,7 @@ def follow_user( driver ):
 "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[1]/div[1]/div[2]/div/div[2]/div[1]/div[2]/div[1]/div/div[1]/div/div/div[1]/div/div/div/div/button",
 "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[1]/div[1]/div[2]/div/div[2]/div[1]/div[2]/div[1]/div/div/div/div/div[1]/div/div/div/div/button"
 ]
-    result = helpers.do_xpaths_exist( driver, paths )
+    result = helpers.find_elements_by_xpath_with_timeout( driver, paths, 10 )
 
     if result[0] == False:
         print( "ERROR: cannot find follow button" )
@@ -289,7 +289,7 @@ def follow_user( driver ):
 
     button = driver.find_element_by_xpath( result[1] )
 
-    button.click()
+    #button.click()
 
     return True
 
@@ -307,8 +307,7 @@ def parse_user_and_follow( driver, f, category_name, user ):
 
     creation_time = int( time.time() )
 
-    #has_followed = follow_user( driver )
-    has_followed = False
+    has_followed = follow_user( driver )
 
     line = category_name + ';' + user + ';' + str( creation_time ) + ';' + str( int( has_followed ) ) + "\n"
 
