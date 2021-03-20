@@ -132,7 +132,7 @@ def perform_login( driver ):
 
 def is_logged_in( driver ):
 
-    if helpers.does_xpath_exist( driver, "/html/body/div[1]/div/div[2]/nav/div/div[3]/div[6]/div/div/div/div/button" ):
+    if helpers.does_xpath_exist_with_timeout( driver, "/html/body/div[1]/div/div[2]/nav/div/div[3]/div[6]/div/div/div/div/button", 5 ):
         return True
 
     return False
@@ -328,8 +328,6 @@ def generate_filename():
 driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY, harmonize_link( config.COOKIES_DIR ) + credentials.LOGIN )
 
 driver.get( 'https://www.twitch.tv' )
-
-helpers.sleep( 3 )
 
 if is_logged_in( driver ) == False:
 
