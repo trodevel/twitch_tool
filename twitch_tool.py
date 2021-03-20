@@ -51,7 +51,7 @@ def accept_banner( driver ):
 
 def enter_credentials( driver ):
 
-    login_input    = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/form/div/div[1]/div/div[2]/input" )
+    login_input    = helpers.find_element_by_xpath_with_timeout( driver, "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/form/div/div[1]/div/div[2]/input", 10 )
     login_password = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/form/div/div[2]/div/div[1]/div[2]/div[1]/input" )
     login_button   = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/form/div/div[3]/button" )
 
@@ -59,8 +59,6 @@ def enter_credentials( driver ):
 
     login_input.send_keys( credentials.LOGIN )
     login_password.send_keys( credentials.PASSWORD )
-
-    helpers.sleep(1)
 
     print( "DEBUG: clicking" )
 
@@ -112,13 +110,11 @@ def accept_welcome_screen( driver ):
 
 def perform_login( driver ):
 
-    login_button = driver.find_element_by_xpath( "/html/body/div[1]/div/div[2]/nav/div/div[3]/div[3]/div/div[1]/div[1]/button" )
+    login_button = helpers.find_element_by_xpath_with_timeout( driver, "/html/body/div[1]/div/div[2]/nav/div/div[3]/div[3]/div/div[1]/div[1]/button", 5 )
 
     print( "DEBUG: clicking" )
 
     login_button.click()
-
-    helpers.sleep( 5 )
 
     enter_credentials( driver )
 
