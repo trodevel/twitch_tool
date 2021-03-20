@@ -84,8 +84,6 @@ def enter_validation_code( driver, code ):
     code_5.send_keys( code[4] )
     code_6.send_keys( code[5] )
 
-    helpers.sleep(1)
-
 ##########################################################
 
 def accept_welcome_screen( driver ):
