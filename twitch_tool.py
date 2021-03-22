@@ -204,9 +204,9 @@ def show_chat_users( driver ):
 
 ##########################################################
 
-def determine_users_in_category( driver, category_name ):
+def determine_users_in_category( driver, parent, category_name ):
 
-    elements = driver.find_elements_by_css_selector( "div[role='listitem']" )
+    elements = parent.find_elements_by_css_selector( "div[role='listitem']" )
 
     print( "INFO: category {} - found {} users".format( category_name, len( elements ) ) )
 
@@ -228,7 +228,7 @@ def determine_users_in_category( driver, category_name ):
 
     helpers.sleep( 5 )
 
-    trigger = helpers.find_element_by_xpath_with_timeout( driver, "//div[@class='scrollable-trigger__wrapper']", 10 )
+    trigger = helpers.find_element_by_xpath_with_timeout( parent, "//div[@class='scrollable-trigger__wrapper']", 10 )
     #trigger = driver.find_element_by_css_selector( "div[class='scrollable-trigger__wrapper']" )
     #ActionChains(driver).move_to_element( trigger ).perform()
     #driver.execute_script( "document.getElementByClassName('scrollable-trigger__wrapper').scrollIntoView();" )
@@ -282,7 +282,7 @@ def determine_categories_and_users( driver ):
 
         list_elem = s.find_element_by_xpath( "div[2]" )
 
-        users = determine_users_in_category( list_elem, name )
+        users = determine_users_in_category( driver, list_elem, name )
 
         names[ name ] = users
 
