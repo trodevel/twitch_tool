@@ -225,6 +225,11 @@ def determine_users_in_category( driver, category_name ):
 
         names.append( name )
 
+    trigger = helpers.find_element_by_xpath_with_timeout( driver, "//div[@class='scrollable-trigger__wrapper']", 10 )
+    #trigger = driver.find_element_by_css_selector( "div[class='scrollable-trigger__wrapper']" )
+
+    trigger.send_keys( Keys.ARROW_DOWN )
+
     return names
 
 ##########################################################
