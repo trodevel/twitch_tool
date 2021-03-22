@@ -213,6 +213,22 @@ def show_chat_users( driver ):
 
 ##########################################################
 
+def determine_number_of_viewers( driver ):
+
+    print( "TRACE: determine_number_of_viewers" )
+
+    counter = helpers.find_element_by_xpath_with_timeout( driver, "//div[@data-a-target='animated-channel-viewers-count']", 10 )
+
+    span = counter.find_element_by_tag_name( "span" )
+
+    val_str = span.text
+
+    val = int( val_str )
+
+    return val
+
+##########################################################
+
 def determine_users_in_category( driver, parent, category_name ):
 
     elements = parent.find_elements_by_css_selector( "div[role='listitem']" )
