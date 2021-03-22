@@ -157,7 +157,7 @@ def harmonize_link( link ):
 
 ##########################################################
 
-def find_first_top_stream( driver ):
+def find_first_top_stream_on_page( driver ):
 
     a = helpers.find_element_by_xpath_with_timeout( driver, "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div/div/div/div[4]/div[2]/div[1]/div[1]/div[2]/div/div/div/article/div[1]/div/div[1]/div[1]/div/a", 10 )
 
@@ -169,12 +169,12 @@ def find_first_top_stream( driver ):
 
 ##########################################################
 
-def detect_top_stream( driver ):
+def find_first_top_stream( driver ):
 
     # reopen the selected page again
     driver.get( 'https://www.twitch.tv/directory/game/Dota%202?sort=VIEWER_COUNT' )
 
-    link = find_first_top_stream( driver )
+    link = find_first_top_stream_on_page( driver )
 
     return link
 
@@ -381,7 +381,7 @@ if is_logged_in( driver ) == False:
 else:
     print( "INFO: already logged in" )
 
-link = 'https://www.twitch.tv/' + config.TEST_STREAM if config.TEST_STREAM else detect_top_stream( driver )
+link = 'https://www.twitch.tv/' + config.TEST_STREAM if config.TEST_STREAM else find_first_top_stream( driver )
 
 print( "INFO: opening top stream {}".format( link ) )
 
