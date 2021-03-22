@@ -25,6 +25,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.expected_conditions import staleness_of
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
 
 import config         # DRIVER_PATH
 import credentials    # LOGIN
@@ -225,10 +226,13 @@ def determine_users_in_category( driver, category_name ):
 
         names.append( name )
 
+    helpers.sleep( 5 )
+
     trigger = helpers.find_element_by_xpath_with_timeout( driver, "//div[@class='scrollable-trigger__wrapper']", 10 )
     #trigger = driver.find_element_by_css_selector( "div[class='scrollable-trigger__wrapper']" )
+    ActionChains(driver).move_to_element( trigger ).perform()
 
-    trigger.send_keys( Keys.ARROW_DOWN )
+    #trigger.send_keys( Keys.ARROW_DOWN )
 
     return names
 
