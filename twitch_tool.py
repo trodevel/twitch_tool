@@ -373,9 +373,11 @@ else:
     print( "INFO: already logged in" )
 
 # reopen the selected page again
-driver.get( 'https://www.twitch.tv/directory/game/Dota%202?sort=VIEWER_COUNT' )
+#driver.get( 'https://www.twitch.tv/directory/game/Dota%202?sort=VIEWER_COUNT' )
 
-open_first_top_stream( driver )
+#open_first_top_stream( driver )
+
+driver.get( 'https://www.twitch.tv/' + config.TEST_STREAM )
 
 pause_player( driver )
 
