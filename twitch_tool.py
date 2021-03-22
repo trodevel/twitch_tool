@@ -405,6 +405,10 @@ driver.get( link )
 
 pause_player( driver )
 
+num_viewers = determine_number_of_viewers( driver )
+
+print( "INFO: number of viewers {}".format( num_viewers ) )
+
 show_chat_users( driver )
 
 category_names = determine_categories_and_users( driver )
