@@ -217,11 +217,13 @@ def determine_number_of_viewers( driver ):
 
     print( "TRACE: determine_number_of_viewers" )
 
-    counter = helpers.find_element_by_xpath_with_timeout( driver, "//div[@data-a-target='animated-channel-viewers-count']", 10 )
+    counter = helpers.find_element_by_xpath_with_timeout( driver, "//p[@data-a-target='animated-channel-viewers-count']", 10 )
 
-    span = counter.find_element_by_tag_name( "span" )
+    val_str = counter.text
 
-    val_str = span.text
+    val_str = val_str.translate( None, ',' )
+
+    print( "DEBUG: val_str {}".format( val_str ) )
 
     val = int( val_str )
 
