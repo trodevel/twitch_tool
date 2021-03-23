@@ -267,19 +267,15 @@ def determine_users_in_category( driver, parent, category_name ):
 
 def scroll_to_bottom( driver, parent, max_users ):
 
-    elements = None
+    max_iter = int( max_users / 100 )
 
-    for i in range( 3 ):
+    for i in range( max_iter ):
+
+        print( "DEBUG: scroll_to_bottom: iter {} / {}".format( i + 1, max_iter ) )
 
         helpers.sleep( 2 )
 
         scroll_user_list( driver, parent )
-
-        elements = driver.find_elements_by_xpath( "//div[@class='chat-viewers-list tw-pd-b-2']" )
-
-        print( "DEBUG: found {} categories".format( len( elements ) ) )
-
-    return elements
 
 ##########################################################
 
@@ -307,7 +303,9 @@ def determine_categories_and_users( driver, max_users ):
 
     parent = driver.find_element_by_xpath( result[1] )
 
-    elements = scroll_to_bottom( driver, parent, max_users )
+    scroll_to_bottom( driver, parent, max_users )
+
+    elements = driver.find_elements_by_xpath( "//div[@class='chat-viewers-list tw-pd-b-2']" )
 
     print( "DEBUG: found {} categories".format( len( elements ) ) )
 
