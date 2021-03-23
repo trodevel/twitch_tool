@@ -25,6 +25,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.expected_conditions import staleness_of
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
 
 import config         # DRIVER_PATH
 import credentials    # LOGIN
@@ -156,7 +157,7 @@ def harmonize_link( link ):
 
 ##########################################################
 
-def open_first_top_stream( driver ):
+def find_first_top_stream_on_page( driver ):
 
     a = helpers.find_element_by_xpath_with_timeout( driver, "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div/div/div/div[4]/div[2]/div[1]/div[1]/div[2]/div/div/div/article/div[1]/div/div[1]/div[1]/div/a", 10 )
 
@@ -164,18 +165,29 @@ def open_first_top_stream( driver ):
 
     link = harmonize_link( link )
 
-    print( "INFO: opening top stream {}".format( link ) )
+    return link
 
-    driver.get( link )
+##########################################################
+
+def find_first_top_stream( driver ):
+
+    # reopen the selected page again
+    driver.get( 'https://www.twitch.tv/directory/game/Dota%202?sort=VIEWER_COUNT' )
+
+    link = find_first_top_stream_on_page( driver )
+
+    return link
 
 ##########################################################
 
 def pause_player( driver ):
 
     paths = [
-    "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[2]/div/div[2]/div/div/div/div[5]/div/div[2]/div[1]/div[1]/button",
-    "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[2]/div/div[2]/div/div/div/div[3]/div/div[2]/div[1]/div[1]/button",
-    "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[2]/div/div[2]/div/div/div/div[8]/div/div[2]/div[1]/div[1]/button",
+    "//button[@data-a-target='player-play-pause-button']"
+#    "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[2]/div/div[2]/div/div/div/div[6]/div/div[2]/div[1]/div[1]/button",
+#    "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[2]/div/div[2]/div/div/div/div[5]/div/div[2]/div[1]/div[1]/button",
+#    "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[2]/div/div[2]/div/div/div/div[3]/div/div[2]/div[1]/div[1]/button",
+#    "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[2]/div/div[2]/div/div/div/div[8]/div/div[2]/div[1]/div[1]/button",
 ]
     result = helpers.do_xpaths_exist_with_timeout( driver, paths, 10 )
 
@@ -201,9 +213,35 @@ def show_chat_users( driver ):
 
 ##########################################################
 
-def determine_users_in_category( driver, category_name ):
+def determine_number_of_viewers( driver ):
 
-    elements = driver.find_elements_by_css_selector( "div[role='listitem']" )
+    print( "TRACE: determine_number_of_viewers" )
+
+    counter = helpers.find_element_by_xpath_with_timeout( driver, "//p[@data-a-target='animated-channel-viewers-count']", 10 )
+
+    val_str = counter.text
+
+    val_str = val_str.translate( {ord(c): None for c in ','} )
+
+    print( "DEBUG: val_str {}".format( val_str ) )
+
+    val = int( val_str )
+
+    return val
+
+##########################################################
+
+def scroll_user_list( driver, parent ):
+
+    trigger = helpers.find_element_by_xpath_with_timeout( parent, "//div[@class='scrollable-trigger__wrapper']", 10 )
+
+    driver.execute_script( "document.getElementsByClassName('scrollable-trigger__wrapper')[0].scrollIntoView();" )
+
+##########################################################
+
+def determine_users_in_category( driver, parent, category_name ):
+
+    elements = parent.find_elements_by_css_selector( "div[role='listitem']" )
 
     print( "INFO: category {} - found {} users".format( category_name, len( elements ) ) )
 
@@ -227,7 +265,21 @@ def determine_users_in_category( driver, category_name ):
 
 ##########################################################
 
-def determine_categories_and_users( driver ):
+def scroll_to_bottom( driver, parent, max_users ):
+
+    max_iter = int( max_users / 100 )
+
+    for i in range( max_iter ):
+
+        print( "DEBUG: scroll_to_bottom: iter {} / {}".format( i + 1, max_iter ) )
+
+        helpers.sleep( 2 )
+
+        scroll_user_list( driver, parent )
+
+##########################################################
+
+def determine_categories_and_users( driver, max_users ):
 
     print( "TRACE: determine_categories_and_users" )
 
@@ -243,9 +295,17 @@ def determine_categories_and_users( driver ):
 
     print( "DEBUG: found element link {}".format( result[2] ) )
 
-    d0 = driver.find_element_by_xpath( result[1] )
+    #d0 = driver.find_element_by_xpath( result[1] )
 
-    elements = d0.find_elements_by_css_selector( "div[class='chat-viewers-list tw-pd-b-2']" )
+    if helpers.does_xpath_exist_with_timeout( driver, "//div[@class='chat-viewers-list tw-pd-b-2']", 10 ) == False:
+        print( "ERROR: cannot find element with chat list" )
+        quit()
+
+    parent = driver.find_element_by_xpath( result[1] )
+
+    scroll_to_bottom( driver, parent, max_users )
+
+    elements = driver.find_elements_by_xpath( "//div[@class='chat-viewers-list tw-pd-b-2']" )
 
     print( "DEBUG: found {} categories".format( len( elements ) ) )
 
@@ -265,7 +325,7 @@ def determine_categories_and_users( driver ):
 
         list_elem = s.find_element_by_xpath( "div[2]" )
 
-        users = determine_users_in_category( list_elem, name )
+        users = determine_users_in_category( driver, list_elem, name )
 
         names[ name ] = users
 
@@ -355,16 +415,23 @@ if is_logged_in( driver ) == False:
 else:
     print( "INFO: already logged in" )
 
-# reopen the selected page again
-driver.get( 'https://www.twitch.tv/directory/game/Dota%202?sort=VIEWER_COUNT' )
+link = 'https://www.twitch.tv/' + config.TEST_STREAM if config.TEST_STREAM else find_first_top_stream( driver )
 
-open_first_top_stream( driver )
+print( "INFO: opening top stream {}".format( link ) )
+
+driver.get( link )
 
 pause_player( driver )
 
+num_viewers = determine_number_of_viewers( driver )
+
+print( "INFO: number of viewers {}".format( num_viewers ) )
+
 show_chat_users( driver )
 
-category_names = determine_categories_and_users( driver )
+category_names = determine_categories_and_users( driver, num_viewers )
+
+quit()
 
 num_category_names = len( category_names )
 
