@@ -261,8 +261,6 @@ def determine_users_in_category( driver, parent, category_name ):
 
         names.append( name )
 
-    scroll_user_list( driver, parent )
-
     return names
 
 ##########################################################
@@ -288,6 +286,10 @@ def determine_categories_and_users( driver ):
     if helpers.does_xpath_exist_with_timeout( driver, "//div[@class='chat-viewers-list tw-pd-b-2']", 10 ) == False:
         print( "ERROR: cannot find element with chat list" )
         quit()
+
+    parent = driver.find_element_by_xpath( result[1] )
+
+    scroll_user_list( driver, parent )
 
     elements = driver.find_elements_by_xpath( "//div[@class='chat-viewers-list tw-pd-b-2']" )
 
