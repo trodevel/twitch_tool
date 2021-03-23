@@ -221,7 +221,7 @@ def determine_number_of_viewers( driver ):
 
     val_str = counter.text
 
-    val_str = val_str.translate( None, ',' )
+    val_str = val_str.translate( {ord(c): None for c in ','} )
 
     print( "DEBUG: val_str {}".format( val_str ) )
 
