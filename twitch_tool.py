@@ -265,7 +265,25 @@ def determine_users_in_category( driver, parent, category_name ):
 
 ##########################################################
 
-def determine_categories_and_users( driver ):
+def scroll_to_bottom( driver, parent, max_users ):
+
+    elements = None
+
+    for i in range( 3 ):
+
+        helpers.sleep( 2 )
+
+        scroll_user_list( driver, parent )
+
+        elements = driver.find_elements_by_xpath( "//div[@class='chat-viewers-list tw-pd-b-2']" )
+
+        print( "DEBUG: found {} categories".format( len( elements ) ) )
+
+    return elements
+
+##########################################################
+
+def determine_categories_and_users( driver, max_users ):
 
     print( "TRACE: determine_categories_and_users" )
 
@@ -289,9 +307,7 @@ def determine_categories_and_users( driver ):
 
     parent = driver.find_element_by_xpath( result[1] )
 
-    scroll_user_list( driver, parent )
-
-    elements = driver.find_elements_by_xpath( "//div[@class='chat-viewers-list tw-pd-b-2']" )
+    elements = scroll_to_bottom( driver, parent, max_users )
 
     print( "DEBUG: found {} categories".format( len( elements ) ) )
 
@@ -415,7 +431,7 @@ print( "INFO: number of viewers {}".format( num_viewers ) )
 
 show_chat_users( driver )
 
-category_names = determine_categories_and_users( driver )
+category_names = determine_categories_and_users( driver, num_viewers )
 
 quit()
 
