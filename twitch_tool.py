@@ -231,6 +231,14 @@ def determine_number_of_viewers( driver ):
 
 ##########################################################
 
+def scroll_user_list( driver, parent ):
+
+    trigger = helpers.find_element_by_xpath_with_timeout( parent, "//div[@class='scrollable-trigger__wrapper']", 10 )
+
+    driver.execute_script( "document.getElementsByClassName('scrollable-trigger__wrapper')[0].scrollIntoView();" )
+
+##########################################################
+
 def determine_users_in_category( driver, parent, category_name ):
 
     elements = parent.find_elements_by_css_selector( "div[role='listitem']" )
@@ -253,15 +261,7 @@ def determine_users_in_category( driver, parent, category_name ):
 
         names.append( name )
 
-    helpers.sleep( 5 )
-
-    trigger = helpers.find_element_by_xpath_with_timeout( parent, "//div[@class='scrollable-trigger__wrapper']", 10 )
-    #trigger = driver.find_element_by_css_selector( "div[class='scrollable-trigger__wrapper']" )
-    #ActionChains(driver).move_to_element( trigger ).perform()
-    driver.execute_script( "document.getElementsByClassName('scrollable-trigger__wrapper')[0].scrollIntoView();" )
-    #driver.execute_script( "argument[0].scrollIntoView();", trigger )
-
-    #trigger.send_keys( Keys.ARROW_DOWN )
+    scroll_user_list( driver, parent )
 
     return names
 
