@@ -226,62 +226,6 @@ def determine_categories_and_users( driver, max_users ):
 
 ##########################################################
 
-def follow_user( driver ):
-
-    paths = [
-"/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[1]/div[1]/div[2]/div/div[2]/div[1]/div[2]/div[1]/div/div[1]/div/div/div[1]/div/div/div/div/button",
-"/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[1]/div[1]/div[2]/div/div[2]/div[1]/div[2]/div[1]/div/div/div/div/div[1]/div/div/div/div/button"
-]
-    result = helpers.do_xpaths_exist_with_timeout( driver, paths, 10 )
-
-    if result[0] == False:
-        print( "ERROR: cannot find follow button" )
-        return False
-
-    #print( "DEBUG: found element link {}".format( result[2] ) )
-
-    print( "INFO: clicked follow button" )
-
-    button = driver.find_element_by_xpath( result[1] )
-
-    #button.click()
-
-    return True
-
-##########################################################
-
-def parse_user_and_follow( driver, f, category_name, user ):
-
-    link = "https://www.twitch.tv/" + user
-
-    driver.get( link )
-
-    creation_time = int( time.time() )
-
-    has_followed = follow_user( driver )
-
-    line = category_name + ';' + user + ';' + str( creation_time ) + ';' + str( int( has_followed ) ) + "\n"
-
-    f.write( line )
-
-##########################################################
-
-def parse_category_and_follow( driver, f, category_name, users ):
-
-    num_users = len( users )
-
-    i = 0
-
-    for u in users:
-
-        i += 1
-
-        print( "INFO: parsing subcategory {} / {} - {}".format( i, num_users, u ) )
-
-        parse_user_and_follow( driver, f, category_name, u )
-
-##########################################################
-
 def generate_filename():
     now = datetime.now()
     d1 = now.strftime( "%Y%m%d_%H%M" )
@@ -289,6 +233,23 @@ def generate_filename():
     return res
 
 ##########################################################
+
+def write_categories_and_users( channel, categories_and_users ):
+
+    f = open( generate_filename(), "w" )
+
+    i = 0
+
+    for c in categories_and_users:
+
+        i += 1
+
+        users = categories_and_users[ c ]
+
+        write_users( f, channel, c, users )
+
+##########################################################
+
 driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY, harmonize_link( config.COOKIES_DIR ) + credentials.LOGIN )
 
 loginer.login( driver, credentials.LOGIN, credentials.PASSWORD )
@@ -307,28 +268,10 @@ print( "INFO: number of viewers {}".format( num_viewers ) )
 
 show_chat_users( driver )
 
-category_names = determine_categories_and_users( driver, num_viewers )
+categories_and_users = determine_categories_and_users( driver, num_viewers )
 
-quit()
+print( "INFO: collected" )
 
-num_category_names = len( category_names )
-
-f = open( generate_filename(), "w" )
-
-i = 0
-
-for c in category_names:
-
-    i += 1
-
-    print( "INFO: parsing category {} / {} - {}".format( i, num_category_names, c ) )
-
-    if c.find( "Users" ) == -1:
-        print( "DEBUG: temporary ignoring category {}".format( c ) )
-        continue
-
-    users = category_names[ c ]
-
-    parse_category_and_follow( driver, f, c, users )
+write_categories_and_users( link, categories_and_users )
 
 print( "INFO: done" )
