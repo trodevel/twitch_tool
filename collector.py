@@ -234,6 +234,16 @@ def generate_filename():
 
 ##########################################################
 
+def write_users( f, channel, category_name, users ):
+
+    for u in users:
+
+        users = categories_and_users[ c ]
+
+        write_user( f, channel, c, u )
+
+##########################################################
+
 def write_categories_and_users( channel, categories_and_users ):
 
     f = open( generate_filename(), "w" )
