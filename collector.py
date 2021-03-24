@@ -246,7 +246,7 @@ def write_users( f, channel, category_name, users ):
 
     for u in users:
 
-        write_user( f, channel, c, u )
+        write_user( f, channel, category_name, u )
 
 ##########################################################
 
