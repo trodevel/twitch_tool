@@ -50,6 +50,14 @@ def harmonize_link( link ):
 
 ##########################################################
 
+def extract_handle_from_url( url ):
+    p = re.compile( "/([a-z_\-]*)/$" )
+    result = p.search( url )
+    res = result.group( 1 )
+    return res
+
+##########################################################
+
 def find_first_top_stream_on_page( driver ):
 
     a = helpers.find_element_by_xpath_with_timeout( driver, "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div/div/div/div[4]/div[2]/div[1]/div[1]/div[2]/div/div/div/article/div[1]/div/div[1]/div[1]/div/a", 10 )
