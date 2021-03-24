@@ -234,6 +234,14 @@ def generate_filename():
 
 ##########################################################
 
+def write_user( f, channel, category_name, u ):
+
+    line = channel + ';' + category_name + ';' + user + "\n"
+
+    f.write( line )
+
+##########################################################
+
 def write_users( f, channel, category_name, users ):
 
     for u in users:
