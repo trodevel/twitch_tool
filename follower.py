@@ -153,22 +153,22 @@ def main( argv ):
     try:
         opts, args = getopt.getopt(argv,"hi:o:",["ifile=","ofile="])
     except getopt.GetoptError:
-        print 'follower.py -i <inputfile> -o <outputfile>'
+        print( 'follower.py -i <inputfile> -o <outputfile>' )
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print 'follower.py -i <inputfile> -o <outputfile>'
+            print( 'follower.py -i <inputfile> -o <outputfile>' )
             sys.exit()
         elif opt in ("-i", "--ifile"):
             user_file = arg
         elif opt in ("-o", "--ofile"):
             output_file = arg
 
-    print "DEBUG: input file  = ", user_file
-    print "DEBUG: output file = ", outputfile
+    print ( "DEBUG: input file  = {}".format( user_file ) )
+    print ( "DEBUG: output file = {}".format( outputfile ) )
 
     if not user_file:
-        print "FATAL: user file is not given"
+        print( "FATAL: user file is not given" )
         quit()
 
     process( user_file )
