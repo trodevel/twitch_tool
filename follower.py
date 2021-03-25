@@ -128,7 +128,7 @@ def process( user_file ):
 
     users = read_users( user_file )
 
-    print( "INFO: read {} users from {}".format( len( user_file ), user_file ) )
+    print( "INFO: read {} users from {}".format( len( users ), user_file ) )
 
     driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY, harmonize_link( config.COOKIES_DIR ) + credentials.LOGIN )
 
