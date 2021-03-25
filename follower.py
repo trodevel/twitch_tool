@@ -101,7 +101,7 @@ def follow_users( driver, f, users ):
 
         i += 1
 
-        print( "INFO: following user {} / {}".format( i, num_users ) )
+        print( "INFO: following user {} / {} - {}".format( i, num_users, u ) )
 
         follow_user( driver, f, u )
 
