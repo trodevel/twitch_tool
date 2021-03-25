@@ -296,6 +296,6 @@ categories_and_users = determine_categories_and_users( driver, num_viewers )
 
 print( "INFO: collected" )
 
-write_categories_and_users( link, categories_and_users )
+write_categories_and_users( extract_handle_from_url( harmonize_link( link ) ), categories_and_users )
 
 print( "INFO: done" )
