@@ -267,7 +267,7 @@ def parse_user_and_follow( driver, f, category_name, user ):
 
 ##########################################################
 
-def parse_category_and_follow( driver, f, category_name, users ):
+def follow_users( driver, f, users ):
 
     num_users = len( users )
 
@@ -277,9 +277,9 @@ def parse_category_and_follow( driver, f, category_name, users ):
 
         i += 1
 
-        print( "INFO: parsing subcategory {} / {} - {}".format( i, num_users, u ) )
+        print( "INFO: following user {} / {}".format( i, num_users ) )
 
-        parse_user_and_follow( driver, f, category_name, u )
+        parse_user_and_follow( driver, f, u )
 
 ##########################################################
 
@@ -310,29 +310,11 @@ def process( user_file ):
 
     loginer.login( driver, credentials.LOGIN, credentials.PASSWORD )
 
-    category_names = determine_categories_and_users( driver, num_viewers )
-
-    quit()
-
     num_category_names = len( category_names )
 
     f = open( generate_filename(), "w" )
 
-    i = 0
-
-    for c in category_names:
-
-        i += 1
-
-        print( "INFO: parsing category {} / {} - {}".format( i, num_category_names, c ) )
-
-        if c.find( "Users" ) == -1:
-            print( "DEBUG: temporary ignoring category {}".format( c ) )
-            continue
-
-        users = category_names[ c ]
-
-        parse_category_and_follow( driver, f, c, users )
+    follow_users( driver, f, users )
 
     print( "INFO: done" )
 
