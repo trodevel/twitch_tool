@@ -289,6 +289,16 @@ def generate_filename():
     return res
 
 ##########################################################
+
+def read_users( fname ):
+
+    with open(fname) as f:
+        content = f.read().splitlines()
+
+    return content
+
+##########################################################
+
 driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY, harmonize_link( config.COOKIES_DIR ) + credentials.LOGIN )
 
 loginer.login( driver, credentials.LOGIN, credentials.PASSWORD )
