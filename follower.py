@@ -104,6 +104,10 @@ def follow_user( driver, f, user ):
 
     driver.get( link )
 
+    if has_unfollow_button( driver ):
+        print( "WARNING: user {} is already followed".format( user ) )
+        return
+
     creation_time = int( time.time() )
 
     has_followed = click_follow_user( driver )
