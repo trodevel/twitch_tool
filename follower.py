@@ -302,23 +302,13 @@ def read_users( fname ):
 ##########################################################
 def process( user_file ):
 
+    users = read_users( user_file )
+
+    print( "INFO: read {} users from {}".format( len( user_file ), user_file ) )
+
     driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY, harmonize_link( config.COOKIES_DIR ) + credentials.LOGIN )
 
     loginer.login( driver, credentials.LOGIN, credentials.PASSWORD )
-
-    link = 'https://www.twitch.tv/' + config.TEST_STREAM if config.TEST_STREAM else find_first_top_stream( driver )
-
-    print( "INFO: opening top stream {}".format( link ) )
-
-    driver.get( link )
-
-    pause_player( driver )
-
-    num_viewers = determine_number_of_viewers( driver )
-
-    print( "INFO: number of viewers {}".format( num_viewers ) )
-
-    show_chat_users( driver )
 
     category_names = determine_categories_and_users( driver, num_viewers )
 
