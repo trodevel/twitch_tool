@@ -69,7 +69,7 @@ def click_follow_user( driver ):
 
     button = driver.find_element_by_xpath( result[1] )
 
-    #button.click()
+    button.click()
 
     return True
 
