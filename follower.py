@@ -134,8 +134,6 @@ def process( user_file ):
 
     loginer.login( driver, credentials.LOGIN, credentials.PASSWORD )
 
-    num_category_names = len( category_names )
-
     f = open( generate_filename(), "w" )
 
     follow_users( driver, f, users )
