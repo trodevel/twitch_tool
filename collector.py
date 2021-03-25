@@ -30,6 +30,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 import config         # DRIVER_PATH
 import credentials    # LOGIN
 import helpers        # find_element_by_tag_and_class_name
+import loginer        # login
 #import product_parser # parse_product
 import re
 import time
@@ -40,120 +41,20 @@ DEBUG_CATEGORY = False
 
 ##########################################################
 
-def accept_banner( driver ):
-
-    link = "/html/body/div[1]/div/div[2]/div[1]/div/div/div[3]/button"
-
-    if helpers.does_xpath_exist_with_timeout( driver, link, 5 ) == False:
-        print( "INFO: no banner found" )
-        return
-
-    print( "INFO: found banner, clicking" )
-
-    button = driver.find_element_by_xpath( link )
-
-    button.click()
-
-##########################################################
-
-def enter_credentials( driver ):
-
-    login_input    = helpers.find_element_by_xpath_with_timeout( driver, "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/form/div/div[1]/div/div[2]/input", 10 )
-    login_password = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/form/div/div[2]/div/div[1]/div[2]/div[1]/input" )
-    login_button   = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/form/div/div[3]/button" )
-
-    print( "INFO: sending login {}".format( credentials.LOGIN ) )
-
-    login_input.send_keys( Keys.CONTROL + "a" )
-    login_input.send_keys( Keys.DELETE )
-    login_input.send_keys( credentials.LOGIN )
-
-    login_password.send_keys( Keys.CONTROL + "a" )
-    login_password.send_keys( Keys.DELETE )
-    login_password.send_keys( credentials.PASSWORD )
-
-    print( "DEBUG: clicking" )
-
-    login_button.click()
-
-##########################################################
-
-def enter_validation_code( driver, code ):
-
-    code_1    = helpers.find_element_by_xpath_with_timeout( driver, "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/div[2]/div/div[1]/div/input", 10 )
-    code_2    = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/div[2]/div/div[2]/div/input" )
-    code_3    = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/div[2]/div/div[3]/div/input" )
-    code_4    = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/div[2]/div/div[4]/div/input" )
-    code_5    = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/div[2]/div/div[5]/div/input" )
-    code_6    = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/div[2]/div/div[6]/div/input" )
-
-    print( "INFO: sending validation code {}".format( code ) )
-
-    code_1.send_keys( code[0] )
-    code_2.send_keys( code[1] )
-    code_3.send_keys( code[2] )
-    code_4.send_keys( code[3] )
-    code_5.send_keys( code[4] )
-    code_6.send_keys( code[5] )
-
-##########################################################
-
-def accept_welcome_screen( driver ):
-
-    link = "/html/body/div[3]/div/div/div/div/div/div/div[4]/button"
-
-    if helpers.does_xpath_exist_with_timeout( driver, link, 10 ) == False:
-        print( "INFO: no welcome screen found" )
-        return
-
-    button = driver.find_element_by_xpath( link )
-
-    print( "DEBUG: clicking" )
-
-    button.click()
-
-    close_button = driver.find_element_by_xpath( "/html/body/div[3]/div/div/div/div/div/div/div[1]/div/div/button" )
-
-    print( "DEBUG: clicking" )
-
-    close_button.click()
-
-##########################################################
-
-def perform_login( driver ):
-
-    login_button = helpers.find_element_by_xpath_with_timeout( driver, "/html/body/div[1]/div/div[2]/nav/div/div[3]/div[3]/div/div[1]/div[1]/button", 5 )
-
-    print( "DEBUG: clicking" )
-
-    login_button.click()
-
-    enter_credentials( driver )
-
-    validation_code = input( "Enter 6-digit validation code: " )
-
-    enter_validation_code( driver, validation_code )
-
-##########################################################
-
-def is_logged_in( driver ):
-
-    if helpers.does_xpath_exist_with_timeout( driver, "/html/body/div[1]/div/div[2]/nav/div/div[3]/div[3]/div/div[1]/div[1]/button", 1 ):
-        return False
-
-    if helpers.does_xpath_exist_with_timeout( driver, "/html/body/div[1]/div/div[2]/nav/div/div[3]/div[6]/div/div/div/div/button", 5 ):
-        return True
-
-    return False
-
-##########################################################
-
 def harmonize_link( link ):
 
     if link.endswith('/'):
         return link
 
     return link + '/'
+
+##########################################################
+
+def extract_handle_from_url( url ):
+    p = re.compile( "/([a-z_\-]*)/$" )
+    result = p.search( url )
+    res = result.group( 1 )
+    return res
 
 ##########################################################
 
@@ -333,62 +234,6 @@ def determine_categories_and_users( driver, max_users ):
 
 ##########################################################
 
-def follow_user( driver ):
-
-    paths = [
-"/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[1]/div[1]/div[2]/div/div[2]/div[1]/div[2]/div[1]/div/div[1]/div/div/div[1]/div/div/div/div/button",
-"/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[1]/div[1]/div[2]/div/div[2]/div[1]/div[2]/div[1]/div/div/div/div/div[1]/div/div/div/div/button"
-]
-    result = helpers.do_xpaths_exist_with_timeout( driver, paths, 10 )
-
-    if result[0] == False:
-        print( "ERROR: cannot find follow button" )
-        return False
-
-    #print( "DEBUG: found element link {}".format( result[2] ) )
-
-    print( "INFO: clicked follow button" )
-
-    button = driver.find_element_by_xpath( result[1] )
-
-    #button.click()
-
-    return True
-
-##########################################################
-
-def parse_user_and_follow( driver, f, category_name, user ):
-
-    link = "https://www.twitch.tv/" + user
-
-    driver.get( link )
-
-    creation_time = int( time.time() )
-
-    has_followed = follow_user( driver )
-
-    line = category_name + ';' + user + ';' + str( creation_time ) + ';' + str( int( has_followed ) ) + "\n"
-
-    f.write( line )
-
-##########################################################
-
-def parse_category_and_follow( driver, f, category_name, users ):
-
-    num_users = len( users )
-
-    i = 0
-
-    for u in users:
-
-        i += 1
-
-        print( "INFO: parsing subcategory {} / {} - {}".format( i, num_users, u ) )
-
-        parse_user_and_follow( driver, f, category_name, u )
-
-##########################################################
-
 def generate_filename():
     now = datetime.now()
     d1 = now.strftime( "%Y%m%d_%H%M" )
@@ -396,24 +241,42 @@ def generate_filename():
     return res
 
 ##########################################################
+
+def write_user( f, channel, category_name, user_name ):
+
+    line = channel + ';' + category_name + ';' + user_name + "\n"
+
+    f.write( line )
+
+##########################################################
+
+def write_users( f, channel, category_name, users ):
+
+    for u in users:
+
+        write_user( f, channel, category_name, u )
+
+##########################################################
+
+def write_categories_and_users( channel, categories_and_users ):
+
+    f = open( generate_filename(), "w" )
+
+    i = 0
+
+    for c in categories_and_users:
+
+        i += 1
+
+        users = categories_and_users[ c ]
+
+        write_users( f, channel, c, users )
+
+##########################################################
+
 driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY, harmonize_link( config.COOKIES_DIR ) + credentials.LOGIN )
 
-driver.get( 'https://www.twitch.tv' )
-
-if is_logged_in( driver ) == False:
-
-    print( "INFO: not logged in" )
-
-    accept_banner( driver )
-
-    perform_login( driver )
-
-    accept_welcome_screen( driver )
-
-    accept_banner( driver )
-
-else:
-    print( "INFO: already logged in" )
+loginer.login( driver, credentials.LOGIN, credentials.PASSWORD )
 
 link = 'https://www.twitch.tv/' + config.TEST_STREAM if config.TEST_STREAM else find_first_top_stream( driver )
 
@@ -429,28 +292,10 @@ print( "INFO: number of viewers {}".format( num_viewers ) )
 
 show_chat_users( driver )
 
-category_names = determine_categories_and_users( driver, num_viewers )
+categories_and_users = determine_categories_and_users( driver, num_viewers )
 
-quit()
+print( "INFO: collected" )
 
-num_category_names = len( category_names )
-
-f = open( generate_filename(), "w" )
-
-i = 0
-
-for c in category_names:
-
-    i += 1
-
-    print( "INFO: parsing category {} / {} - {}".format( i, num_category_names, c ) )
-
-    if c.find( "Users" ) == -1:
-        print( "DEBUG: temporary ignoring category {}".format( c ) )
-        continue
-
-    users = category_names[ c ]
-
-    parse_category_and_follow( driver, f, c, users )
+write_categories_and_users( extract_handle_from_url( harmonize_link( link ) ), categories_and_users )
 
 print( "INFO: done" )
