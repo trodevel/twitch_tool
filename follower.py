@@ -27,6 +27,7 @@ from selenium.webdriver.support.expected_conditions import staleness_of
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 
+import sys, getopt
 import config         # DRIVER_PATH
 import credentials    # LOGIN
 import helpers        # find_element_by_tag_and_class_name
@@ -297,48 +298,86 @@ def read_users( fname ):
 
     return content
 
+
+##########################################################
+def process( user_file ):
+
+    driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY, harmonize_link( config.COOKIES_DIR ) + credentials.LOGIN )
+
+    loginer.login( driver, credentials.LOGIN, credentials.PASSWORD )
+
+    link = 'https://www.twitch.tv/' + config.TEST_STREAM if config.TEST_STREAM else find_first_top_stream( driver )
+
+    print( "INFO: opening top stream {}".format( link ) )
+
+    driver.get( link )
+
+    pause_player( driver )
+
+    num_viewers = determine_number_of_viewers( driver )
+
+    print( "INFO: number of viewers {}".format( num_viewers ) )
+
+    show_chat_users( driver )
+
+    category_names = determine_categories_and_users( driver, num_viewers )
+
+    quit()
+
+    num_category_names = len( category_names )
+
+    f = open( generate_filename(), "w" )
+
+    i = 0
+
+    for c in category_names:
+
+        i += 1
+
+        print( "INFO: parsing category {} / {} - {}".format( i, num_category_names, c ) )
+
+        if c.find( "Users" ) == -1:
+            print( "DEBUG: temporary ignoring category {}".format( c ) )
+            continue
+
+        users = category_names[ c ]
+
+        parse_category_and_follow( driver, f, c, users )
+
+    print( "INFO: done" )
+
 ##########################################################
 
-driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY, harmonize_link( config.COOKIES_DIR ) + credentials.LOGIN )
+def main( argv ):
 
-loginer.login( driver, credentials.LOGIN, credentials.PASSWORD )
+    user_file = None
 
-link = 'https://www.twitch.tv/' + config.TEST_STREAM if config.TEST_STREAM else find_first_top_stream( driver )
+    outputfile = ''
 
-print( "INFO: opening top stream {}".format( link ) )
+    try:
+        opts, args = getopt.getopt(argv,"hi:o:",["ifile=","ofile="])
+    except getopt.GetoptError:
+        print 'follower.py -i <inputfile> -o <outputfile>'
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt == '-h':
+            print 'follower.py -i <inputfile> -o <outputfile>'
+            sys.exit()
+        elif opt in ("-i", "--ifile"):
+            user_file = arg
+        elif opt in ("-o", "--ofile"):
+            output_file = arg
 
-driver.get( link )
+    print "DEBUG: input file  = ", user_file
+    print "DEBUG: output file = ", outputfile
 
-pause_player( driver )
+    if not user_file:
+        print "FATAL: user file is not given"
+        quit()
 
-num_viewers = determine_number_of_viewers( driver )
+    process( user_file )
 
-print( "INFO: number of viewers {}".format( num_viewers ) )
+##########################################################
 
-show_chat_users( driver )
-
-category_names = determine_categories_and_users( driver, num_viewers )
-
-quit()
-
-num_category_names = len( category_names )
-
-f = open( generate_filename(), "w" )
-
-i = 0
-
-for c in category_names:
-
-    i += 1
-
-    print( "INFO: parsing category {} / {} - {}".format( i, num_category_names, c ) )
-
-    if c.find( "Users" ) == -1:
-        print( "DEBUG: temporary ignoring category {}".format( c ) )
-        continue
-
-    users = category_names[ c ]
-
-    parse_category_and_follow( driver, f, c, users )
-
-print( "INFO: done" )
+if __name__ == "__main__":
+   main( sys.argv[1:] )
