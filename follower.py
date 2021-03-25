@@ -51,6 +51,29 @@ def harmonize_link( link ):
 
 ##########################################################
 
+def has_unfollow_button( driver ):
+
+    paths = [
+"/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[1]/div[1]/div[2]/div/div[2]/div[1]/div[2]/div[1]/div/div[1]/div/div/div[1]/div/div/div/div/button",
+"/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[1]/div[1]/div[2]/div/div[2]/div[1]/div[2]/div[1]/div/div/div/div/div[1]/div/div/div/div/button"
+]
+    result = helpers.do_xpaths_exist_with_timeout( driver, paths, 10 )
+
+    if result[0] == False:
+        print( "ERROR: cannot find follow/unfollow button" )
+        return False
+
+    button = driver.find_element_by_xpath( result[1] )
+
+    attr = button.get_attribute( "data-a-target" )
+
+    if attr == "unfollow-button":
+        return True
+
+    return False
+
+##########################################################
+
 def click_follow_user( driver ):
 
     paths = [
