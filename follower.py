@@ -227,7 +227,7 @@ def determine_categories_and_users( driver, max_users ):
 
 ##########################################################
 
-def follow_user( driver ):
+def click_follow_user( driver ):
 
     paths = [
 "/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[1]/div[1]/div[2]/div/div[2]/div[1]/div[2]/div[1]/div/div[1]/div/div/div[1]/div/div/div/div/button",
@@ -251,7 +251,7 @@ def follow_user( driver ):
 
 ##########################################################
 
-def parse_user_and_follow( driver, f, category_name, user ):
+def follow_user( driver, f, category_name, user ):
 
     link = "https://www.twitch.tv/" + user
 
@@ -259,7 +259,7 @@ def parse_user_and_follow( driver, f, category_name, user ):
 
     creation_time = int( time.time() )
 
-    has_followed = follow_user( driver )
+    has_followed = click_follow_user( driver )
 
     line = category_name + ';' + user + ';' + str( creation_time ) + ';' + str( int( has_followed ) ) + "\n"
 
@@ -279,7 +279,7 @@ def follow_users( driver, f, users ):
 
         print( "INFO: following user {} / {}".format( i, num_users ) )
 
-        parse_user_and_follow( driver, f, u )
+        follow_user( driver, f, u )
 
 ##########################################################
 
@@ -298,8 +298,8 @@ def read_users( fname ):
 
     return content
 
-
 ##########################################################
+
 def process( user_file ):
 
     users = read_users( user_file )
