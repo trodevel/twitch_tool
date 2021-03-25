@@ -251,7 +251,7 @@ def click_follow_user( driver ):
 
 ##########################################################
 
-def follow_user( driver, f, category_name, user ):
+def follow_user( driver, f, user ):
 
     link = "https://www.twitch.tv/" + user
 
@@ -261,7 +261,7 @@ def follow_user( driver, f, category_name, user ):
 
     has_followed = click_follow_user( driver )
 
-    line = category_name + ';' + user + ';' + str( creation_time ) + ';' + str( int( has_followed ) ) + "\n"
+    line = user + ';' + str( creation_time ) + ';' + str( int( has_followed ) ) + "\n"
 
     f.write( line )
 
