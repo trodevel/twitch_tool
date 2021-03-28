@@ -146,12 +146,23 @@ def generate_filename():
 
 ##########################################################
 
-def read_users( fname ):
+def read_text_file( fname ):
 
     with open(fname) as f:
         content = f.read().splitlines()
 
     return content
+
+##########################################################
+
+def read_users( fname ):
+    return read_text_file( fname )
+
+##########################################################
+
+def read_status_file( filename ):
+
+    lines = read_text_file( filename )
 
 ##########################################################
 
