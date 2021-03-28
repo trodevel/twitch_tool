@@ -252,7 +252,7 @@ def process( user_file, status_file ):
 
     users = determine_notfollowed_users( status, users_all )
 
-    print( "INFO: total users - {}, still to follow - {}, already followed - {}".format( len( users_all), len( users ), len( users_all) - len( users ) ) )
+    print( "INFO: total users - {}, still to follow - {}, already followed - {}".format( len( users_all ), len( users ), len( users_all) - len( users ) ) )
 
     quit()
 
