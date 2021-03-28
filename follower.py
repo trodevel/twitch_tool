@@ -99,15 +99,15 @@ def click_follow_user( driver ):
 
 ##########################################################
 
-def follow_user( driver, f, user ):
+def follow_user( driver, username ):
 
-    link = "https://www.twitch.tv/" + user
+    link = "https://www.twitch.tv/" + username
 
     driver.get( link )
 
     if has_unfollow_button( driver ):
-        print( "WARNING: user {} is already followed".format( user ) )
-        return
+        print( "WARNING: user {} is already followed".format( username ) )
+        return True
 
     creation_time = int( time.time() )
 
@@ -117,13 +117,11 @@ def follow_user( driver, f, user ):
         if has_unfollow_button( driver ):
             has_followed = True
 
-    line = user + ';' + str( creation_time ) + ';' + str( int( has_followed ) ) + "\n"
-
-    f.write( line )
+    return has_followed
 
 ##########################################################
 
-def follow_users( driver, f, users ):
+def follow_users( driver, status, status_filename, users ):
 
     num_users = len( users )
 
@@ -135,7 +133,8 @@ def follow_users( driver, f, users ):
 
         print( "INFO: following user {} / {} - {}".format( i, num_users, u ) )
 
-        follow_user( driver, f, u )
+        if follow_user( driver, u ):
+            status_file.save_status_file( status_filename, status )
 
 ##########################################################
 
@@ -168,8 +167,6 @@ def process( user_file, status_filename ):
 
     status = status_file.read_status_file( status_filename )
 
-    status_file.save_status_file( "xxx", status )
-
     users = determine_notfollowed_users( status, users_all )
 
     print( "INFO: total users - {}, still to follow - {}, already followed - {}".format( len( users_all ), len( users ), len( users_all) - len( users ) ) )
@@ -180,9 +177,7 @@ def process( user_file, status_filename ):
 
     loginer.login( driver, credentials.LOGIN, credentials.PASSWORD )
 
-    f = open( generate_filename(), "w" )
-
-    follow_users( driver, f, users )
+    follow_users( driver, status, status_filename, users )
 
     print( "INFO: done" )
 
