@@ -165,18 +165,39 @@ class StreamUser:
     timestamp    = 0
     is_following = False
 
+    def __str__(self):
+        return str( self.timestamp ) + ";" + str( int( self.is_following ) )
+
 ##########################################################
 
 def read_status_file( filename ):
+
+    status = dict()
 
     with open( filename ) as csvfile:
         reader = csv.reader( csvfile, delimiter=';' )
         for row in reader:
             ( username, timestamp, is_following ) = row[0:3]
-            print( "DEBUG: {}, {}, {}".format( username, timestamp, is_following ) )
+            #print( "DEBUG: {}, {}, {}".format( username, timestamp, is_following ) )
             s = StreamUser()
             s.timestamp    = timestamp
             s.is_following = is_following
+            #print( "DEBUG: s = {}".format( s ) )
+            status[ username ] = s
+
+    print( "INFO: read {} records from {}".format( len( status ), filename ) )
+
+    return status
+
+##########################################################
+
+def save_status_file( filename, status ):
+
+    f = open( filename, "w" )
+
+    for s in status:
+        line = s + ";" + str( status[s] ) + "\n"
+        f.write( line )
 
 ##########################################################
 
@@ -184,7 +205,9 @@ def process( user_file, status_file ):
 
     users = read_users( user_file )
 
-    read_status_file( status_file )
+    status = read_status_file( status_file )
+
+    save_status_file( "xxx", status )
 
     quit()
 
