@@ -51,6 +51,29 @@ def harmonize_link( link ):
 
 ##########################################################
 
+def has_unfollow_button( driver ):
+
+    paths = [
+"/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[1]/div[1]/div[2]/div/div[2]/div[1]/div[2]/div[1]/div/div[1]/div/div/div[1]/div/div/div/div/button",
+"/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[1]/div[1]/div[2]/div/div[2]/div[1]/div[2]/div[1]/div/div/div/div/div[1]/div/div/div/div/button"
+]
+    result = helpers.do_xpaths_exist_with_timeout( driver, paths, 10 )
+
+    if result[0] == False:
+        print( "ERROR: cannot find follow/unfollow button" )
+        return False
+
+    button = driver.find_element_by_xpath( result[1] )
+
+    attr = button.get_attribute( "data-a-target" )
+
+    if attr == "unfollow-button":
+        return True
+
+    return False
+
+##########################################################
+
 def click_follow_user( driver ):
 
     paths = [
@@ -69,7 +92,7 @@ def click_follow_user( driver ):
 
     button = driver.find_element_by_xpath( result[1] )
 
-    #button.click()
+    button.click()
 
     return True
 
@@ -81,9 +104,17 @@ def follow_user( driver, f, user ):
 
     driver.get( link )
 
+    if has_unfollow_button( driver ):
+        print( "WARNING: user {} is already followed".format( user ) )
+        return
+
     creation_time = int( time.time() )
 
-    has_followed = click_follow_user( driver )
+    has_followed = False
+
+    if( click_follow_user( driver ) ):
+        if has_unfollow_button( driver ):
+            has_followed = True
 
     line = user + ';' + str( creation_time ) + ';' + str( int( has_followed ) ) + "\n"
 
@@ -101,7 +132,7 @@ def follow_users( driver, f, users ):
 
         i += 1
 
-        print( "INFO: following user {} / {}".format( i, num_users ) )
+        print( "INFO: following user {} / {} - {}".format( i, num_users, u ) )
 
         follow_user( driver, f, u )
 
