@@ -14,6 +14,10 @@ FL_O=${filename}_users.csv
 echo "input  = $FL"
 echo "output = $FL_O"
 
+channel=$( grep -o 'content="https://www.twitch.tv/[a-z0-9_]*"' $FL | sed "s~.*/~~" | sed 's/"//g' )
+
+echo "DEBUG: channel = $channel"
+
 grep -o 'id="chat-viewers-list-header-[a-zA-Z0-9_]*"' $FL | grep -o '\-[a-zA-Z0-9_]*"' | sed 's/"//g' | sed 's/^-//g'
 grep -o 'data-username="[a-z0-9_]*"' $FL | grep -o '".*"' | sed 's/"//g' > $FL_O
 
