@@ -235,6 +235,8 @@ def determine_notfollowed_users( status, users_list ):
         if u in status:
             if status[u].is_following == False:
                 res.append( u )
+        else:
+            res.append( u )
 
     return res
 
