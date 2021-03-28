@@ -138,14 +138,6 @@ def follow_users( driver, status, status_filename, users ):
 
 ##########################################################
 
-def generate_filename():
-    now = datetime.now()
-    d1 = now.strftime( "%Y%m%d_%H%M" )
-    res = "users_" + d1 + ".csv"
-    return res
-
-##########################################################
-
 def determine_notfollowed_users( status, users_list ):
 
     res = []
