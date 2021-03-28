@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import csv            # read_status_file
 import os             # save_status_file
+import time           # time
 
 ##########################################################
 
@@ -101,5 +102,16 @@ def save_status_file( filename, status ):
     os.rename( filename_new, filename )
 
     print( "INFO: saved {} records to {}".format( size, filename ) )
+
+##########################################################
+
+def set_follow( status, username ):
+
+    s = StreamUser()
+
+    s.timestamp    = int( time.time() )
+    s.is_following = True
+
+    status[username] = s
 
 ##########################################################

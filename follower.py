@@ -35,7 +35,6 @@ import loginer        # login
 import status_file    # status_file
 #import product_parser # parse_product
 import re
-import time
 
 from datetime import datetime
 
