@@ -161,6 +161,12 @@ def read_users( fname ):
 
 ##########################################################
 
+class StreamUser:
+    timestamp    = 0
+    is_following = False
+
+##########################################################
+
 def read_status_file( filename ):
 
     with open( filename ) as csvfile:
@@ -168,6 +174,9 @@ def read_status_file( filename ):
         for row in reader:
             ( username, timestamp, is_following ) = row[0:3]
             print( "DEBUG: {}, {}, {}".format( username, timestamp, is_following ) )
+            s = StreamUser()
+            s.timestamp    = timestamp
+            s.is_following = is_following
 
 ##########################################################
 
