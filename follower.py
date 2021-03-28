@@ -108,8 +108,6 @@ def follow_user( driver, username ):
         print( "WARNING: user {} is already followed".format( username ) )
         return True
 
-    creation_time = int( time.time() )
-
     has_followed = False
 
     if( click_follow_user( driver ) ):
