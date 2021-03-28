@@ -163,12 +163,10 @@ def read_users( fname ):
 
 def read_status_file( filename ):
 
-    lines = read_text_file( filename )
-
     with open( filename ) as csvfile:
         reader = csv.reader( csvfile, delimiter=';' )
         for row in reader:
-            ( username, timestamp, is_following ) = row[0:2]
+            ( username, timestamp, is_following ) = row[0:3]
             print( "DEBUG: {}, {}, {}".format( username, timestamp, is_following ) )
 
 ##########################################################
