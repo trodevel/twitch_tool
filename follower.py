@@ -155,7 +155,7 @@ def read_users( fname ):
 
 ##########################################################
 
-def process( user_file ):
+def process( user_file, status_file ):
 
     users = read_users( user_file )
 
@@ -208,7 +208,7 @@ def main( argv ):
         print( "FATAL: status file is not given" )
         quit()
 
-    process( user_file )
+    process( user_file, status_file )
 
 ##########################################################
 
