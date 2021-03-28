@@ -32,11 +32,10 @@ import config         # DRIVER_PATH
 import credentials    # LOGIN
 import helpers        # find_element_by_tag_and_class_name
 import loginer        # login
+import status_file    # status_file
 #import product_parser # parse_product
 import re
 import time
-import csv            # read_status_file
-import os             # save_status_file
 
 from datetime import datetime
 
@@ -148,85 +147,6 @@ def generate_filename():
 
 ##########################################################
 
-def read_text_file( fname ):
-
-    with open(fname) as f:
-        content = f.read().splitlines()
-
-    return content
-
-##########################################################
-
-def read_users( filename ):
-
-    users = read_text_file( filename )
-
-    print( "INFO: read {} users from {}".format( len( users ), filename ) )
-
-    return users
-
-##########################################################
-
-class StreamUser:
-    timestamp    = 0
-    is_following = False
-
-    def __str__(self):
-        return str( self.timestamp ) + ";" + str( int( self.is_following ) )
-
-##########################################################
-
-def read_status_file( filename ):
-
-    status = dict()
-
-    with open( filename ) as csvfile:
-        reader = csv.reader( csvfile, delimiter=';' )
-        for row in reader:
-            ( username, timestamp, is_following ) = row[0:3]
-            #print( "DEBUG: {}, {}, {}".format( username, timestamp, is_following ) )
-            s = StreamUser()
-            s.timestamp    = timestamp
-            s.is_following = bool( is_following )
-            #print( "DEBUG: s = {}".format( s ) )
-            status[ username ] = s
-
-    print( "INFO: read {} records from {}".format( len( status ), filename ) )
-
-    return status
-
-##########################################################
-
-def save_status_file_direct( filename, status ):
-
-    f = open( filename, "w" )
-
-    i = 0
-
-    for s in status:
-        line = s + ";" + str( status[s] ) + "\n"
-        f.write( line )
-        i += 1
-
-    return i
-
-##########################################################
-
-def save_status_file( filename, status ):
-
-    filename_new = filename + ".new"
-
-    size = save_status_file_direct( filename_new, status )
-
-    filename_old = filename + ".old"
-
-    os.rename( filename, filename_old )
-    os.rename( filename_new, filename )
-
-    print( "INFO: saved {} records to {}".format( size, filename ) )
-
-##########################################################
-
 def determine_notfollowed_users( status, users_list ):
 
     res = []
@@ -242,13 +162,13 @@ def determine_notfollowed_users( status, users_list ):
 
 ##########################################################
 
-def process( user_file, status_file ):
+def process( user_file, status_filename ):
 
-    users_all = read_users( user_file )
+    users_all = status_file.read_users( user_file )
 
-    status = read_status_file( status_file )
+    status = status_file.read_status_file( status_filename )
 
-    save_status_file( "xxx", status )
+    status_file.save_status_file( "xxx", status )
 
     users = determine_notfollowed_users( status, users_all )
 
@@ -271,7 +191,7 @@ def process( user_file, status_file ):
 def main( argv ):
 
     user_file = None
-    status_file = None
+    status_filename = None
 
     outputfile = ''
 
@@ -287,23 +207,23 @@ def main( argv ):
         elif opt in ("-i", "--ifile"):
             user_file = arg
         elif opt in ("-s", "--status"):
-            status_file = arg
+            status_filename = arg
         elif opt in ("-o", "--ofile"):
             output_file = arg
 
     print ( "DEBUG: input file  = {}".format( user_file ) )
-    print ( "DEBUG: status file = {}".format( status_file ) )
+    print ( "DEBUG: status file = {}".format( status_filename ) )
     print ( "DEBUG: output file = {}".format( outputfile ) )
 
     if not user_file:
         print( "FATAL: user file is not given" )
         quit()
 
-    if not status_file:
+    if not status_filename:
         print( "FATAL: status file is not given" )
         quit()
 
-    process( user_file, status_file )
+    process( user_file, status_filename )
 
 ##########################################################
 
