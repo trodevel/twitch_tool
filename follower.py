@@ -130,9 +130,11 @@ def follow_users( driver, status, status_filename, users ):
 
         print( "INFO: following user {} / {} - {}".format( i, num_users, u ) )
 
-        if follow_user( driver, u ):
-            status_file.set_follow( status, u )
-            status_file.save_status_file( status_filename, status )
+        is_following = follow_user( driver, u )
+
+        status_file.set_follow( status, u, is_following )
+
+        status_file.save_status_file( status_filename, status )
 
 ##########################################################
 

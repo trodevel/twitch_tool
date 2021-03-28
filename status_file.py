@@ -105,12 +105,12 @@ def save_status_file( filename, status ):
 
 ##########################################################
 
-def set_follow( status, username ):
+def set_follow( status, username, is_following ):
 
     s = StreamUser()
 
     s.timestamp    = int( time.time() )
-    s.is_following = True
+    s.is_following = bool( is_following )
 
     status[username] = s
 
