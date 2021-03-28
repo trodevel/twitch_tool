@@ -192,8 +192,6 @@ def generate_filename():
 
 driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY, harmonize_link( config.COOKIES_DIR ) + credentials.LOGIN )
 
-loginer.login( driver, credentials.LOGIN, credentials.PASSWORD )
-
 link = 'https://www.twitch.tv/' + config.TEST_STREAM if config.TEST_STREAM else find_first_top_stream( driver )
 
 print( "INFO: opening top stream {}".format( link ) )
