@@ -157,8 +157,13 @@ def read_text_file( fname ):
 
 ##########################################################
 
-def read_users( fname ):
-    return read_text_file( fname )
+def read_users( filename ):
+
+    users = read_text_file( filename )
+
+    print( "INFO: read {} users from {}".format( len( users ), filename ) )
+
+    return users
 
 ##########################################################
 
@@ -237,15 +242,17 @@ def determine_notfollowed_users( status, users_list ):
 
 def process( user_file, status_file ):
 
-    users = read_users( user_file )
+    users_all = read_users( user_file )
 
     status = read_status_file( status_file )
 
     save_status_file( "xxx", status )
 
-    quit()
+    users = determine_notfollowed_users( status, users_all )
 
-    print( "INFO: read {} users from {}".format( len( users ), user_file ) )
+    print( "INFO: total users - {}, still to follow - {}, already followed - {}".format( len( users_all), len( users ), len( users_all) - len( users ) ) )
+
+    quit()
 
     driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY, harmonize_link( config.COOKIES_DIR ) + credentials.LOGIN )
 
