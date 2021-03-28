@@ -36,6 +36,7 @@ import loginer        # login
 import re
 import time
 import csv            # read_status_file
+import os             # save_status_file
 
 from datetime import datetime
 
@@ -191,13 +192,33 @@ def read_status_file( filename ):
 
 ##########################################################
 
-def save_status_file( filename, status ):
+def save_status_file_direct( filename, status ):
 
     f = open( filename, "w" )
+
+    i = 0
 
     for s in status:
         line = s + ";" + str( status[s] ) + "\n"
         f.write( line )
+        i += 1
+
+    return i
+
+##########################################################
+
+def save_status_file( filename, status ):
+
+    filename_new = filename + ".new"
+
+    size = save_status_file_direct( filename_new, status )
+
+    filename_old = filename + ".old"
+
+    os.rename( filename, filename_old )
+    os.rename( filename_new, filename )
+
+    print( "INFO: saved {} records to {}".format( size, filename ) )
 
 ##########################################################
 
