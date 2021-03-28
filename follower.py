@@ -110,7 +110,11 @@ def follow_user( driver, f, user ):
 
     creation_time = int( time.time() )
 
-    has_followed = click_follow_user( driver )
+    has_followed = False
+
+    if( click_follow_user( driver ) ):
+        if has_unfollow_button( driver ):
+            has_followed = True
 
     line = user + ';' + str( creation_time ) + ';' + str( int( has_followed ) ) + "\n"
 
