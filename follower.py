@@ -35,6 +35,7 @@ import loginer        # login
 #import product_parser # parse_product
 import re
 import time
+import csv            # read_status_file
 
 from datetime import datetime
 
@@ -164,11 +165,21 @@ def read_status_file( filename ):
 
     lines = read_text_file( filename )
 
+    with open( filename ) as csvfile:
+        reader = csv.reader( csvfile, delimiter=';' )
+        for row in reader:
+            ( username, timestamp, is_following ) = row[0:2]
+            print( "DEBUG: {}, {}, {}".format( username, timestamp, is_following ) )
+
 ##########################################################
 
 def process( user_file, status_file ):
 
     users = read_users( user_file )
+
+    read_status_file( status_file )
+
+    quit()
 
     print( "INFO: read {} users from {}".format( len( users ), user_file ) )
 
