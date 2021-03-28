@@ -182,7 +182,7 @@ def read_status_file( filename ):
             #print( "DEBUG: {}, {}, {}".format( username, timestamp, is_following ) )
             s = StreamUser()
             s.timestamp    = timestamp
-            s.is_following = is_following
+            s.is_following = bool( is_following )
             #print( "DEBUG: s = {}".format( s ) )
             status[ username ] = s
 
@@ -219,6 +219,19 @@ def save_status_file( filename, status ):
     os.rename( filename_new, filename )
 
     print( "INFO: saved {} records to {}".format( size, filename ) )
+
+##########################################################
+
+def determine_notfollowed_users( status, users_list ):
+
+    res = []
+
+    for u in users_list:
+        if u in status:
+            if status[u].is_following == False:
+                res.append( u )
+
+    return res
 
 ##########################################################
 
