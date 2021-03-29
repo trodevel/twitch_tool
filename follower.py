@@ -54,8 +54,7 @@ def harmonize_link( link ):
 def has_unfollow_button( driver ):
 
     paths = [
-"/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[1]/div[1]/div[2]/div/div[2]/div[1]/div[2]/div[1]/div/div[1]/div/div/div[1]/div/div/div/div/button",
-"/html/body/div[1]/div/div[2]/div/main/div[2]/div[3]/div/div/div[1]/div[1]/div[2]/div/div[2]/div[1]/div[2]/div[1]/div/div/div/div/div[1]/div/div/div/div/button"
+"//button[@data-a-target]"
 ]
     result = helpers.do_xpaths_exist_with_timeout( driver, paths, 10 )
 
