@@ -163,6 +163,10 @@ def process( user_file, status_filename ):
 
     print( "INFO: total users - {}, still to follow - {}, already followed - {}".format( len( users_all ), len( users ), len( users_all) - len( users ) ) )
 
+    if len( users ) == 0:
+        print( "INFO: nothing to do" )
+        quit()
+
     driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY, harmonize_link( config.COOKIES_DIR ) + credentials.LOGIN )
 
     loginer.login( driver, credentials.LOGIN, credentials.PASSWORD )
