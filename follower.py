@@ -32,9 +32,9 @@ import config         # DRIVER_PATH
 import credentials    # LOGIN
 import helpers        # find_element_by_tag_and_class_name
 import loginer        # login
+import status_file    # status_file
 #import product_parser # parse_product
 import re
-import time
 
 from datetime import datetime
 
@@ -98,17 +98,15 @@ def click_follow_user( driver ):
 
 ##########################################################
 
-def follow_user( driver, f, user ):
+def follow_user( driver, username ):
 
-    link = "https://www.twitch.tv/" + user
+    link = "https://www.twitch.tv/" + username
 
     driver.get( link )
 
     if has_unfollow_button( driver ):
-        print( "WARNING: user {} is already followed".format( user ) )
-        return
-
-    creation_time = int( time.time() )
+        print( "WARNING: user {} is already followed".format( username ) )
+        return True
 
     has_followed = False
 
@@ -116,13 +114,11 @@ def follow_user( driver, f, user ):
         if has_unfollow_button( driver ):
             has_followed = True
 
-    line = user + ';' + str( creation_time ) + ';' + str( int( has_followed ) ) + "\n"
-
-    f.write( line )
+    return has_followed
 
 ##########################################################
 
-def follow_users( driver, f, users ):
+def follow_users( driver, status, status_filename, users ):
 
     num_users = len( users )
 
@@ -134,40 +130,48 @@ def follow_users( driver, f, users ):
 
         print( "INFO: following user {} / {} - {}".format( i, num_users, u ) )
 
-        follow_user( driver, f, u )
+        is_following = follow_user( driver, u )
+
+        status_file.set_follow( status, u, is_following )
+
+        status_file.save_status_file( status_filename, status )
 
 ##########################################################
 
-def generate_filename():
-    now = datetime.now()
-    d1 = now.strftime( "%Y%m%d_%H%M" )
-    res = "users_" + d1 + ".csv"
+def determine_notfollowed_users( status, users_list ):
+
+    res = []
+
+    for u in users_list:
+        if u in status:
+            if status[u].is_following == False:
+                res.append( u )
+        else:
+            res.append( u )
+
     return res
 
 ##########################################################
 
-def read_users( fname ):
+def process( user_file, status_filename ):
 
-    with open(fname) as f:
-        content = f.read().splitlines()
+    users_all = status_file.read_users( user_file )
 
-    return content
+    status = status_file.load_status_file( status_filename )
 
-##########################################################
+    users = determine_notfollowed_users( status, users_all )
 
-def process( user_file ):
+    print( "INFO: total users - {}, still to follow - {}, already followed - {}".format( len( users_all ), len( users ), len( users_all) - len( users ) ) )
 
-    users = read_users( user_file )
-
-    print( "INFO: read {} users from {}".format( len( users ), user_file ) )
+    if len( users ) == 0:
+        print( "INFO: nothing to do" )
+        quit()
 
     driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY, harmonize_link( config.COOKIES_DIR ) + credentials.LOGIN )
 
     loginer.login( driver, credentials.LOGIN, credentials.PASSWORD )
 
-    f = open( generate_filename(), "w" )
-
-    follow_users( driver, f, users )
+    follow_users( driver, status, status_filename, users )
 
     print( "INFO: done" )
 
@@ -176,31 +180,39 @@ def process( user_file ):
 def main( argv ):
 
     user_file = None
+    status_filename = None
 
     outputfile = ''
 
     try:
-        opts, args = getopt.getopt(argv,"hi:o:",["ifile=","ofile="])
+        opts, args = getopt.getopt(argv,"hi:o:s:",["ifile=","ofile=","status="])
     except getopt.GetoptError:
-        print( 'follower.py -i <inputfile> -o <outputfile>' )
+        print( 'follower.py -i <inputfile> -o <outputfile> -s <userfile>' )
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print( 'follower.py -i <inputfile> -o <outputfile>' )
+            print( 'follower.py -i <inputfile> -o <outputfile> -s <userfile>' )
             sys.exit()
         elif opt in ("-i", "--ifile"):
             user_file = arg
+        elif opt in ("-s", "--status"):
+            status_filename = arg
         elif opt in ("-o", "--ofile"):
             output_file = arg
 
     print ( "DEBUG: input file  = {}".format( user_file ) )
+    print ( "DEBUG: status file = {}".format( status_filename ) )
     print ( "DEBUG: output file = {}".format( outputfile ) )
 
     if not user_file:
         print( "FATAL: user file is not given" )
         quit()
 
-    process( user_file )
+    if not status_filename:
+        print( "FATAL: status file is not given" )
+        quit()
+
+    process( user_file, status_filename )
 
 ##########################################################
 
