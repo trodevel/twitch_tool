@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
 
-import csv            # read_status_file
+import csv            # load_status_file
 import os             # save_status_file
 import time           # time
 
@@ -54,7 +54,7 @@ class StreamUser:
 
 ##########################################################
 
-def read_status_file( filename ):
+def load_status_file( filename ):
 
     status = dict()
 

@@ -157,7 +157,7 @@ def process( user_file, status_filename ):
 
     users_all = status_file.read_users( user_file )
 
-    status = status_file.read_status_file( status_filename )
+    status = status_file.load_status_file( status_filename )
 
     users = determine_notfollowed_users( status, users_all )
 
