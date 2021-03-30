@@ -65,7 +65,7 @@ def load_status_file( filename ):
             #print( "DEBUG: {}, {}, {}".format( username, timestamp, is_following ) )
             s = StreamUser()
             s.timestamp    = timestamp
-            s.is_following = bool( is_following )
+            s.is_following = bool( int ( is_following ) )
             #print( "DEBUG: s = {}".format( s ) )
             status[ username ] = s
 
