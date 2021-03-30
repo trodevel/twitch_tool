@@ -67,7 +67,7 @@ def has_unfollow_button( driver ):
 
     attr = button.get_attribute( "data-a-target" )
 
-    print( "DEBUG: attr = {}".format( attr ) )
+    #print( "DEBUG: attr = {}".format( attr ) )
 
     if attr == "unfollow-button":
         return True
