@@ -54,7 +54,8 @@ def harmonize_link( link ):
 def has_unfollow_button( driver ):
 
     paths = [
-"//button[@data-a-target]"
+"//button[contains(@data-a-target,'follow-button')]",
+"//button[contains(@data-a-target,'unfollow-button')]"
 ]
     result = helpers.do_xpaths_exist_with_timeout( driver, paths, 10 )
 
@@ -66,8 +67,14 @@ def has_unfollow_button( driver ):
 
     attr = button.get_attribute( "data-a-target" )
 
+    print( "DEBUG: attr = {}".format( attr ) )
+
     if attr == "unfollow-button":
         return True
+    elif attr == "follow-button":
+        return False
+    else:
+        print( "ERROR: unexpected value of attribute - {}".format( attr ) )
 
     return False
 
@@ -112,6 +119,9 @@ def follow_user( driver, username ):
     if( click_follow_user( driver ) ):
         if has_unfollow_button( driver ):
             has_followed = True
+        else:
+            print( "ERROR: failed to follow user {}".format( username ) )
+
 
     return has_followed
 
