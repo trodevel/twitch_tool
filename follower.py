@@ -35,6 +35,7 @@ import loginer        # login
 import status_file    # status_file
 #import product_parser # parse_product
 import re
+from print_helpers import print_error, print_warning
 
 from datetime import datetime
 
@@ -60,7 +61,7 @@ def has_unfollow_button( driver ):
     result = helpers.do_xpaths_exist_with_timeout( driver, paths, 10 )
 
     if result[0] == False:
-        print( "ERROR: cannot find follow/unfollow button" )
+        print_error( "cannot find follow/unfollow button" )
         return False
 
     button = driver.find_element_by_xpath( result[1] )
@@ -74,7 +75,7 @@ def has_unfollow_button( driver ):
     elif attr == "follow-button":
         return False
     else:
-        print( "ERROR: unexpected value of attribute - {}".format( attr ) )
+        print_error( "unexpected value of attribute - {}".format( attr ) )
 
     return False
 
@@ -89,7 +90,7 @@ def click_follow_user( driver ):
     result = helpers.do_xpaths_exist_with_timeout( driver, paths, 10 )
 
     if result[0] == False:
-        print( "ERROR: cannot find follow button" )
+        print_error( "cannot find follow button" )
         return False
 
     #print( "DEBUG: found element link {}".format( result[2] ) )
@@ -111,7 +112,7 @@ def follow_user( driver, username ):
     driver.get( link )
 
     if has_unfollow_button( driver ):
-        print( "WARNING: user {} is already followed".format( username ) )
+        print_warning( "user {} is already followed".format( username ) )
         return True
 
     has_followed = False
@@ -121,7 +122,7 @@ def follow_user( driver, username ):
         if has_unfollow_button( driver ):
             has_followed = True
         else:
-            print( "ERROR: failed to follow user {}".format( username ) )
+            print_error( "failed to follow user {}".format( username ) )
 
 
     return has_followed
