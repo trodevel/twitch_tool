@@ -31,7 +31,7 @@ def print_error( s ):
 ##########################################################
 
 def print_warning( s ):
-    pref = colored( 'ERROR: ', 'yellow' )
+    pref = colored( 'WARNING: ', 'yellow' )
     print( pref + s )
 
 ##########################################################
