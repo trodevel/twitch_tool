@@ -75,7 +75,7 @@ def has_unfollow_button( driver ):
     elif attr == "follow-button":
         return False
     else:
-        print( "ERROR: unexpected value of attribute - {}".format( attr ) )
+        print_error( "unexpected value of attribute - {}".format( attr ) )
 
     return False
 
@@ -90,7 +90,7 @@ def click_follow_user( driver ):
     result = helpers.do_xpaths_exist_with_timeout( driver, paths, 10 )
 
     if result[0] == False:
-        print( "ERROR: cannot find follow button" )
+        print_error( "cannot find follow button" )
         return False
 
     #print( "DEBUG: found element link {}".format( result[2] ) )
