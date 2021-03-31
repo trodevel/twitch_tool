@@ -35,7 +35,7 @@ import loginer        # login
 import status_file    # status_file
 #import product_parser # parse_product
 import re
-from termcolor import colored
+from print_helpers import print_error, print_warning
 
 from datetime import datetime
 
