@@ -195,10 +195,6 @@ def main( argv ):
 
     outputfile = ''
 
-    print_error( "hello world" )
-    print_warning( "hello world 2" )
-    quit()
-
     try:
         opts, args = getopt.getopt(argv,"hi:o:s:",["ifile=","ofile=","status="])
     except getopt.GetoptError:
