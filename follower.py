@@ -43,18 +43,6 @@ DEBUG_CATEGORY = False
 
 ##########################################################
 
-def print_error( s ):
-    pref = colored( 'ERROR: ', 'red' )
-    print( pref + s )
-
-##########################################################
-
-def print_warning( s ):
-    pref = colored( 'ERROR: ', 'yellow' )
-    print( pref + s )
-
-##########################################################
-
 def harmonize_link( link ):
 
     if link.endswith('/'):
