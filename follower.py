@@ -112,7 +112,7 @@ def follow_user( driver, username ):
     driver.get( link )
 
     if has_unfollow_button( driver ):
-        print( "WARNING: user {} is already followed".format( username ) )
+        print_warning( "user {} is already followed".format( username ) )
         return True
 
     has_followed = False
