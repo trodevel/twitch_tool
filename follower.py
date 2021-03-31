@@ -35,10 +35,23 @@ import loginer        # login
 import status_file    # status_file
 #import product_parser # parse_product
 import re
+from termcolor import colored
 
 from datetime import datetime
 
 DEBUG_CATEGORY = False
+
+##########################################################
+
+def print_error( s ):
+    pref = colored( 'ERROR: ', 'red' )
+    print( pref + s )
+
+##########################################################
+
+def print_warning( s ):
+    pref = colored( 'ERROR: ', 'yellow' )
+    print( pref + s )
 
 ##########################################################
 
@@ -60,7 +73,7 @@ def has_unfollow_button( driver ):
     result = helpers.do_xpaths_exist_with_timeout( driver, paths, 10 )
 
     if result[0] == False:
-        print( "ERROR: cannot find follow/unfollow button" )
+        print_error( "cannot find follow/unfollow button" )
         return False
 
     button = driver.find_element_by_xpath( result[1] )
@@ -121,7 +134,7 @@ def follow_user( driver, username ):
         if has_unfollow_button( driver ):
             has_followed = True
         else:
-            print( "ERROR: failed to follow user {}".format( username ) )
+            print_error( "failed to follow user {}".format( username ) )
 
 
     return has_followed
@@ -193,6 +206,10 @@ def main( argv ):
     status_filename = None
 
     outputfile = ''
+
+    print_error( "hello world" )
+    print_warning( "hello world 2" )
+    quit()
 
     try:
         opts, args = getopt.getopt(argv,"hi:o:s:",["ifile=","ofile=","status="])
