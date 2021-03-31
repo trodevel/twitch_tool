@@ -117,6 +117,7 @@ def follow_user( driver, username ):
     has_followed = False
 
     if( click_follow_user( driver ) ):
+        helpers.sleep( 2, False )
         if has_unfollow_button( driver ):
             has_followed = True
         else:
