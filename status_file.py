@@ -127,7 +127,7 @@ def set_follow( status, username, follow_type ):
     s = StreamUser()
 
     s.timestamp    = int( time.time() )
-    s.follow_type = bool( follow_type )
+    s.follow_type  = follow_type
 
     status[username] = s
 
