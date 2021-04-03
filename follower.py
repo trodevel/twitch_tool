@@ -169,7 +169,7 @@ def determine_notfollowed_users( status, users_list ):
 
 ##########################################################
 
-def process( user_file, status_filename, is_headless ):
+def process( user_file, status_filename, must_unfollow, is_headless ):
 
     users_all = status_file.read_users( user_file )
 
@@ -240,7 +240,7 @@ def main( argv ):
     if must_unfollow:
         print( "INFO: starting UNFOLLOW" )
 
-    process( user_file, status_filename, is_headless )
+    process( user_file, status_filename, must_unfollow, is_headless )
 
 ##########################################################
 
