@@ -82,7 +82,7 @@ def load_status_file( filename ):
             #print( "DEBUG: {}, {}, {}".format( username, timestamp, follow_type ) )
             s = StreamUser()
             s.timestamp    = timestamp
-            s.follow_type = bool( int ( follow_type ) )
+            s.follow_type  = to_follow_type( follow_type )
             #print( "DEBUG: s = {}".format( s ) )
             status[ username ] = s
 
