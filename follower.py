@@ -229,7 +229,7 @@ def main( argv ):
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print( 'follower.py -i <inputfile> -o <outputfile> -s <userfile> [-H]' )
+            print( 'follower.py -i <inputfile> -o <outputfile> -s <userfile> [-H] [-U]' )
             sys.exit()
         elif opt in ("-i", "--ifile"):
             user_file = arg
