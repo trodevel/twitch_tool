@@ -178,7 +178,7 @@ def process( user_file, status_filename, is_headless ):
         print( "INFO: nothing to do" )
         quit()
 
-    driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY, harmonize_link( config.COOKIES_DIR ) + credentials.LOGIN )
+    driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY, harmonize_link( config.COOKIES_DIR ) + credentials.LOGIN, is_headless )
 
     loginer.login( driver, credentials.LOGIN, credentials.PASSWORD )
 
