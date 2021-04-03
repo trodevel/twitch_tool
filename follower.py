@@ -160,7 +160,7 @@ def determine_notfollowed_users( status, users_list ):
 
     for u in users_list:
         if u in status:
-            if status[u].is_following == False:
+            if status[u].follow_type == status_file.NOT_FOLLOWING:
                 res.append( u )
         else:
             res.append( u )
