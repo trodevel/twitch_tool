@@ -26,8 +26,8 @@ import time           # time
 
 ##########################################################
 
-NOT_FOLLOWED=0
-FOLLOWED=1
+NOT_FOLLOWING=0
+FOLLOWING=1
 UNFOLLOWED=2
 
 ##########################################################
@@ -57,6 +57,17 @@ class StreamUser:
 
     def __str__(self):
         return str( self.timestamp ) + ";" + str( int( self.follow_type ) )
+
+##########################################################
+
+def to_follow_type( v ):
+    t = int( v )
+
+    if t != NOT_FOLLOWING and t != FOLLOWING and t != UNFOLLOWED:
+        print( "FATAL: to_follow_type(): invalid value {}".format( v ) )
+        quit()
+
+    return t
 
 ##########################################################
 
