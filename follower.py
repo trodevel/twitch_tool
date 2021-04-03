@@ -202,7 +202,7 @@ def determine_followed_users( status ):
 
     res = []
 
-    if u in status:
+    for u in status:
         if status[u].follow_type == status_file.FOLLOWING:
             res.append( u )
 
