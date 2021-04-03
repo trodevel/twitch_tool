@@ -193,11 +193,10 @@ def process( user_file, status_filename, must_unfollow, is_headless ):
     if not must_unfollow:
         users_all = status_file.read_users( user_file )
         users = determine_notfollowed_users( status, users_all )
+        print( "INFO: total users - {}, still to follow - {}, already followed - {}".format( len( users_all ), len( users ), len( users_all) - len( users ) ) )
     else:
         users = determine_followed_users( status )
-
-
-    print( "INFO: total users - {}, still to follow - {}, already followed - {}".format( len( users_all ), len( users ), len( users_all) - len( users ) ) )
+        print( "INFO: users to unfollow - {}".format( len( users ) ) )
 
     if len( users ) == 0:
         print( "INFO: nothing to do" )
