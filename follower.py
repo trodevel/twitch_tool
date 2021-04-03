@@ -135,22 +135,35 @@ def follow_users( driver, status, status_filename, users, must_unfollow ):
 
     i = 0
 
+    pref = ""
+    if must_unfollow:
+        pref="un"
+
     for u in users:
 
         i += 1
 
-        print( "INFO: following user {} / {} - {}".format( i, num_users, u ) )
+        print( "INFO: {}following user {} / {} - {}".format( pref, i, num_users, u ) )
 
-        is_following = follow_user( driver, u )
+        is_succeded = follow_user( driver, u, must_unfollow )
 
-        follow_type = status_file.NOT_FOLLOWING
+        follow_type = None
+        is_dirty    = True
 
-        if is_following:
-            follow_type = status_file.FOLLOWING
+        if must_unfollow:
+            if is_succeded:
+                follow_type = status_file.UNFOLLOWED
+            else
+                is_dirty    = False
+        else:
+            if is_succeded:
+                follow_type = status_file.FOLLOWING
+            else:
+                follow_type = status_file.NOT_FOLLOWING
 
-        status_file.set_follow_type( status, u, follow_type )
-
-        status_file.save_status_file( status_filename, status )
+        if is_dirty:
+            status_file.set_follow_type( status, u, follow_type )
+            status_file.save_status_file( status_filename, status )
 
 ##########################################################
 
