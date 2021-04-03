@@ -198,11 +198,12 @@ def main( argv ):
     user_file = None
     status_filename = None
     is_headless = False
+    must_unfollow = False
 
     outputfile = ''
 
     try:
-        opts, args = getopt.getopt(argv,"hi:o:s:H",["ifile=","ofile=","status=","HEADLESS"])
+        opts, args = getopt.getopt(argv,"hi:o:s:HU",["ifile=","ofile=","status=","HEADLESS","UNFOLLOW"])
     except getopt.GetoptError:
         print( 'follower.py -i <inputfile> -o <outputfile> -s <userfile>' )
         sys.exit(2)
@@ -218,6 +219,8 @@ def main( argv ):
             output_file = arg
         elif opt in ("-H", "--HEADLESS"):
             is_headless = True
+        elif opt in ("-U", "--UNFOLLOW"):
+            must_unfollow = True
 
     print ( "DEBUG: input file  = {}".format( user_file ) )
     print ( "DEBUG: status file = {}".format( status_filename ) )
@@ -233,6 +236,9 @@ def main( argv ):
 
     if is_headless:
         print( "INFO: starting in HEADLESS mode" )
+
+    if must_unfollow:
+        print( "INFO: starting UNFOLLOW" )
 
     process( user_file, status_filename, is_headless )
 
