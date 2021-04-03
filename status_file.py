@@ -122,7 +122,7 @@ def save_status_file( filename, status ):
 
 ##########################################################
 
-def set_follow( status, username, follow_type ):
+def set_follow_type( status, username, follow_type ):
 
     s = StreamUser()
 
