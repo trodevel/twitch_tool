@@ -169,7 +169,7 @@ def follow_users( driver, status, status_filename, users, must_unfollow ):
         if must_unfollow:
             if is_succeded:
                 follow_type = status_file.UNFOLLOWED
-            else
+            else:
                 is_dirty    = False
         else:
             if is_succeded:
