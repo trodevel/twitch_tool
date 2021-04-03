@@ -226,6 +226,9 @@ def main( argv ):
         print( "FATAL: status file is not given" )
         quit()
 
+    if is_headless:
+        print( "INFO: starting in HEADLESS mode" )
+
     process( user_file, status_filename, is_headless )
 
 ##########################################################
