@@ -26,6 +26,12 @@ import time           # time
 
 ##########################################################
 
+NOT_FOLLOWED=0
+FOLLOWED=1
+UNFOLLOWED=2
+
+##########################################################
+
 def read_text_file( fname ):
 
     with open(fname) as f:
