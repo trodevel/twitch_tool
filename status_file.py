@@ -26,6 +26,12 @@ import time           # time
 
 ##########################################################
 
+NOT_FOLLOWING=0
+FOLLOWING=1
+UNFOLLOWED=2
+
+##########################################################
+
 def read_text_file( fname ):
 
     with open(fname) as f:
@@ -47,10 +53,21 @@ def read_users( filename ):
 
 class StreamUser:
     timestamp    = 0
-    is_following = False
+    follow_type = False
 
     def __str__(self):
-        return str( self.timestamp ) + ";" + str( int( self.is_following ) )
+        return str( self.timestamp ) + ";" + str( int( self.follow_type ) )
+
+##########################################################
+
+def to_follow_type( v ):
+    t = int( v )
+
+    if t != NOT_FOLLOWING and t != FOLLOWING and t != UNFOLLOWED:
+        print( "FATAL: to_follow_type(): invalid value {}".format( v ) )
+        quit()
+
+    return t
 
 ##########################################################
 
@@ -61,11 +78,11 @@ def load_status_file( filename ):
     with open( filename ) as csvfile:
         reader = csv.reader( csvfile, delimiter=';' )
         for row in reader:
-            ( username, timestamp, is_following ) = row[0:3]
-            #print( "DEBUG: {}, {}, {}".format( username, timestamp, is_following ) )
+            ( username, timestamp, follow_type ) = row[0:3]
+            #print( "DEBUG: {}, {}, {}".format( username, timestamp, follow_type ) )
             s = StreamUser()
             s.timestamp    = timestamp
-            s.is_following = bool( int ( is_following ) )
+            s.follow_type  = to_follow_type( follow_type )
             #print( "DEBUG: s = {}".format( s ) )
             status[ username ] = s
 
@@ -105,12 +122,12 @@ def save_status_file( filename, status ):
 
 ##########################################################
 
-def set_follow( status, username, is_following ):
+def set_follow_type( status, username, follow_type ):
 
     s = StreamUser()
 
     s.timestamp    = int( time.time() )
-    s.is_following = bool( is_following )
+    s.follow_type  = follow_type
 
     status[username] = s
 

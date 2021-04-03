@@ -143,7 +143,12 @@ def follow_users( driver, status, status_filename, users ):
 
         is_following = follow_user( driver, u )
 
-        status_file.set_follow( status, u, is_following )
+        follow_type = status_file.NOT_FOLLOWING
+
+        if is_following:
+            follow_type = status_file.FOLLOWING
+
+        status_file.set_follow_type( status, u, follow_type )
 
         status_file.save_status_file( status_filename, status )
 
@@ -155,7 +160,7 @@ def determine_notfollowed_users( status, users_list ):
 
     for u in users_list:
         if u in status:
-            if status[u].is_following == False:
+            if status[u].follow_type == status_file.NOT_FOLLOWING:
                 res.append( u )
         else:
             res.append( u )
