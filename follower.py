@@ -171,11 +171,16 @@ def determine_notfollowed_users( status, users_list ):
 
 def process( user_file, status_filename, must_unfollow, is_headless ):
 
-    users_all = status_file.read_users( user_file )
-
     status = status_file.load_status_file( status_filename )
 
-    users = determine_notfollowed_users( status, users_all )
+    users = None
+
+    if not must_unfollow:
+        users_all = status_file.read_users( user_file )
+        users = determine_notfollowed_users( status, users_all )
+    else:
+        users = determine_followed_users( status )
+
 
     print( "INFO: total users - {}, still to follow - {}, already followed - {}".format( len( users_all ), len( users ), len( users_all) - len( users ) ) )
 
