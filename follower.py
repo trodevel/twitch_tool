@@ -164,7 +164,7 @@ def determine_notfollowed_users( status, users_list ):
 
 ##########################################################
 
-def process( user_file, status_filename ):
+def process( user_file, status_filename, is_headless ):
 
     users_all = status_file.read_users( user_file )
 
@@ -192,17 +192,18 @@ def main( argv ):
 
     user_file = None
     status_filename = None
+    is_headless = False
 
     outputfile = ''
 
     try:
-        opts, args = getopt.getopt(argv,"hi:o:s:",["ifile=","ofile=","status="])
+        opts, args = getopt.getopt(argv,"hi:o:s:H",["ifile=","ofile=","status=","HEADLESS"])
     except getopt.GetoptError:
         print( 'follower.py -i <inputfile> -o <outputfile> -s <userfile>' )
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print( 'follower.py -i <inputfile> -o <outputfile> -s <userfile>' )
+            print( 'follower.py -i <inputfile> -o <outputfile> -s <userfile> [-H]' )
             sys.exit()
         elif opt in ("-i", "--ifile"):
             user_file = arg
@@ -210,6 +211,8 @@ def main( argv ):
             status_filename = arg
         elif opt in ("-o", "--ofile"):
             output_file = arg
+        elif opt in ("-H", "--HEADLESS"):
+            is_headless = True
 
     print ( "DEBUG: input file  = {}".format( user_file ) )
     print ( "DEBUG: status file = {}".format( status_filename ) )
@@ -223,7 +226,7 @@ def main( argv ):
         print( "FATAL: status file is not given" )
         quit()
 
-    process( user_file, status_filename )
+    process( user_file, status_filename, is_headless )
 
 ##########################################################
 
