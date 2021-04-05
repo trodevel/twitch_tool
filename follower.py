@@ -132,7 +132,7 @@ def follow_user( driver, username ):
 
 ##########################################################
 
-def unfollow_user( driver, username, must_unfollow ):
+def unfollow_user( driver, username ):
 
     link = "https://www.twitch.tv/" + username
 
@@ -140,14 +140,9 @@ def unfollow_user( driver, username, must_unfollow ):
 
     has_unfollow_button1 = has_unfollow_button( driver )
 
-    if must_unfollow:
-        if not has_unfollow_button1:
-            print_warning( "user {} doesn't have unfollow button".format( username ) )
-            return True
-    else:
-        if has_unfollow_button1:
-            print_warning( "user {} is already followed".format( username ) )
-            return True
+    if not has_unfollow_button1:
+        print_warning( "user {} doesn't have unfollow button".format( username ) )
+        return True
 
     is_succeded = False
 
@@ -155,18 +150,10 @@ def unfollow_user( driver, username, must_unfollow ):
         helpers.sleep( 2, False )
         has_unfollow_button2 = has_unfollow_button( driver )
 
-        if must_unfollow:
-
-            if not has_unfollow_button2:
-                is_succeded = True
-            else:
-                print_error( "failed to unfollow user {}".format( username ) )
-        else:
-
-            if has_unfollow_button2:
-                is_succeded = True
-            else:
-                print_error( "failed to follow user {}".format( username ) )
+    if not has_unfollow_button2:
+        is_succeded = True
+    else:
+        print_error( "failed to unfollow user {}".format( username ) )
 
     return is_succeded
 
