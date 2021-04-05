@@ -105,6 +105,30 @@ def click_follow_user( driver ):
 
 ##########################################################
 
+def click_modal_unfollow_user( driver ):
+
+    paths = [
+"//button[contains(@data-a-target,'modal-unfollow-button')]"
+
+]
+    result = helpers.do_xpaths_exist_with_timeout( driver, paths, 10 )
+
+    if result[0] == False:
+        print_error( "cannot find modal unfollow button" )
+        return False
+
+    #print( "DEBUG: found element link {}".format( result[2] ) )
+
+    print( "INFO: clicked modfal unfollow button" )
+
+    button = driver.find_element_by_xpath( result[1] )
+
+    button.click()
+
+    return True
+
+##########################################################
+
 def follow_user( driver, username ):
 
     link = "https://www.twitch.tv/" + username
@@ -146,9 +170,11 @@ def unfollow_user( driver, username ):
 
     is_succeded = False
 
-    if( click_follow_user( driver ) ):
-        helpers.sleep( 2, False )
-        has_unfollow_button2 = has_unfollow_button( driver )
+    if not click_follow_user( driver ):
+        return False
+
+    helpers.sleep( 2, False )
+    has_unfollow_button2 = has_unfollow_button( driver )
 
     if not has_unfollow_button2:
         is_succeded = True
