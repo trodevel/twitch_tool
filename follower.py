@@ -105,7 +105,34 @@ def click_follow_user( driver ):
 
 ##########################################################
 
-def follow_user( driver, username, must_unfollow ):
+def follow_user( driver, username ):
+
+    link = "https://www.twitch.tv/" + username
+
+    driver.get( link )
+
+    has_unfollow_button1 = has_unfollow_button( driver )
+
+    if has_unfollow_button1:
+        print_warning( "user {} is already followed".format( username ) )
+        return True
+
+    is_succeded = False
+
+    if( click_follow_user( driver ) ):
+        helpers.sleep( 2, False )
+        has_unfollow_button2 = has_unfollow_button( driver )
+
+        if has_unfollow_button2:
+            is_succeded = True
+        else:
+            print_error( "failed to follow user {}".format( username ) )
+
+    return is_succeded
+
+##########################################################
+
+def unfollow_user( driver, username, must_unfollow ):
 
     link = "https://www.twitch.tv/" + username
 
