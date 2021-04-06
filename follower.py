@@ -162,26 +162,23 @@ def unfollow_user( driver, username ):
 
     driver.get( link )
 
-    has_unfollow_button1 = has_unfollow_button( driver )
-
-    if not has_unfollow_button1:
+    if not has_unfollow_button( driver ):
         print_warning( "user {} doesn't have unfollow button".format( username ) )
         return True
-
-    is_succeded = False
 
     if not click_follow_user( driver ):
         return False
 
+    if not click_modal_unfollow_user( driver ):
+        return False
+
     helpers.sleep( 2, False )
-    has_unfollow_button2 = has_unfollow_button( driver )
 
-    if not has_unfollow_button2:
-        is_succeded = True
-    else:
+    if not has_unfollow_button( driver ):
         print_error( "failed to unfollow user {}".format( username ) )
+        return False
 
-    return is_succeded
+    return True
 
 ##########################################################
 
