@@ -212,11 +212,13 @@ def follow_users( driver, status, status_filename, users, must_unfollow ):
         if must_unfollow:
             if is_succeded:
                 follow_type = status_file.UNFOLLOWED
+                print( "INFO: unfollowed user {} / {} - {}".format( i, num_users, u ) )
             else:
                 is_dirty    = False
         else:
             if is_succeded:
                 follow_type = status_file.FOLLOWING
+                print( "INFO: followed user {} / {} - {}".format( i, num_users, u ) )
             else:
                 follow_type = status_file.NOT_FOLLOWING
 
