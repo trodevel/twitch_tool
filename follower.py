@@ -190,9 +190,15 @@ def unfollow_user( driver, username ):
 
     driver.get( link )
 
-    if not has_unfollow_button( driver ):
-        print_warning( "user {} doesn't have unfollow button".format( username ) )
+    b1 = detect_follow_unfollow_button( driver )
+
+    if b1 == BTN_FOLLOW:
+        print_warning( "user {} is already unfollowed".format( username ) )
         return True
+
+    if b1 == BTN_NONE:
+        print_error( "user {} doesn't have follow/unfollow button".format( username ) )
+        return False
 
     if not click_follow_user( driver ):
         return False
