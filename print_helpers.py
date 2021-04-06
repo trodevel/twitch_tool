@@ -35,3 +35,9 @@ def print_warning( s ):
     print( pref + s )
 
 ##########################################################
+
+def print_debug( s ):
+    pref = colored( 'DEBUG: ', 'grey' )
+    print( pref + s )
+
+##########################################################
