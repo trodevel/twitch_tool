@@ -52,7 +52,13 @@ def harmonize_link( link ):
 
 ##########################################################
 
-def has_unfollow_button( driver ):
+BTN_NONE = 0
+BTN_FOLLOW = 1
+BTN_UNFOLLOW = 2
+
+##########################################################
+
+def detect_follow_unfollow_button( driver ):
 
     paths = [
 "//button[contains(@data-a-target,'follow-button')]",
@@ -62,7 +68,7 @@ def has_unfollow_button( driver ):
 
     if result[0] == False:
         print_error( "cannot find follow/unfollow button" )
-        return False
+        return NONE
 
     button = driver.find_element_by_xpath( result[1] )
 
@@ -71,11 +77,33 @@ def has_unfollow_button( driver ):
     #print( "DEBUG: attr = {}".format( attr ) )
 
     if attr == "unfollow-button":
-        return True
+        return BTN_UNFOLLOW
     elif attr == "follow-button":
-        return False
+        return BTN_FOLLOW
     else:
         print_error( "unexpected value of attribute - {}".format( attr ) )
+
+    return BTN_NONE
+
+##########################################################
+
+def has_follow_button( driver ):
+
+    b = detect_follow_unfollow_button( driver )
+
+    if b == BTN_FOLLOW:
+        return True
+
+    return False
+
+##########################################################
+
+def has_unfollow_button( driver ):
+
+    b = detect_follow_unfollow_button( driver )
+
+    if b == BTN_UNFOLLOW:
+        return True
 
     return False
 
