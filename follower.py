@@ -119,7 +119,7 @@ def click_modal_unfollow_user( driver ):
 
     #print( "DEBUG: found element link {}".format( result[2] ) )
 
-    print( "INFO: clicked modfal unfollow button" )
+    print( "INFO: clicked modal unfollow button" )
 
     button = driver.find_element_by_xpath( result[1] )
 
