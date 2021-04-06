@@ -35,7 +35,7 @@ import loginer        # login
 import status_file    # status_file
 #import product_parser # parse_product
 import re
-from print_helpers import print_error, print_warning
+from print_helpers import print_error, print_warning, print_debug
 
 from datetime import datetime
 
