@@ -174,7 +174,7 @@ def unfollow_user( driver, username ):
 
     helpers.sleep( 2, False )
 
-    if not has_unfollow_button( driver ):
+    if has_unfollow_button( driver ):
         print_error( "failed to unfollow user {}".format( username ) )
         return False
 
