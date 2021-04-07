@@ -123,7 +123,7 @@ def click_follow_user( driver ):
         print_error( "cannot find follow button" )
         return False
 
-    #print( "DEBUG: found element link {}".format( result[2] ) )
+    print_debug( "found element link {}".format( result[2] ) )
 
     print( "INFO: clicked follow button" )
 
