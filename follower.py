@@ -35,7 +35,7 @@ import loginer        # login
 import status_file    # status_file
 #import product_parser # parse_product
 import re
-from print_helpers import print_error, print_warning
+from print_helpers import print_error, print_warning, print_debug
 
 from datetime import datetime
 
@@ -52,7 +52,13 @@ def harmonize_link( link ):
 
 ##########################################################
 
-def has_unfollow_button( driver ):
+BTN_NONE = 0
+BTN_FOLLOW = 1
+BTN_UNFOLLOW = 2
+
+##########################################################
+
+def detect_follow_unfollow_button( driver ):
 
     paths = [
 "//button[contains(@data-a-target,'follow-button')]",
@@ -62,7 +68,7 @@ def has_unfollow_button( driver ):
 
     if result[0] == False:
         print_error( "cannot find follow/unfollow button" )
-        return False
+        return NONE
 
     button = driver.find_element_by_xpath( result[1] )
 
@@ -71,11 +77,35 @@ def has_unfollow_button( driver ):
     #print( "DEBUG: attr = {}".format( attr ) )
 
     if attr == "unfollow-button":
-        return True
+        print_debug( "found UNFOLLOW button" )
+        return BTN_UNFOLLOW
     elif attr == "follow-button":
-        return False
+        print_debug( "found FOLLOW button" )
+        return BTN_FOLLOW
     else:
         print_error( "unexpected value of attribute - {}".format( attr ) )
+
+    return BTN_NONE
+
+##########################################################
+
+def has_follow_button( driver ):
+
+    b = detect_follow_unfollow_button( driver )
+
+    if b == BTN_FOLLOW:
+        return True
+
+    return False
+
+##########################################################
+
+def has_unfollow_button( driver ):
+
+    b = detect_follow_unfollow_button( driver )
+
+    if b == BTN_UNFOLLOW:
+        return True
 
     return False
 
@@ -105,52 +135,134 @@ def click_follow_user( driver ):
 
 ##########################################################
 
+def click_modal_unfollow_user( driver ):
+
+    paths = [
+"//button[contains(@data-a-target,'modal-unfollow-button')]"
+
+]
+    result = helpers.do_xpaths_exist_with_timeout( driver, paths, 10 )
+
+    if result[0] == False:
+        print_error( "cannot find modal unfollow button" )
+        return False
+
+    #print( "DEBUG: found element link {}".format( result[2] ) )
+
+    print_debug( "clicked modal unfollow button" )
+
+    button = driver.find_element_by_xpath( result[1] )
+
+    button.click()
+
+    return True
+
+##########################################################
+
 def follow_user( driver, username ):
 
     link = "https://www.twitch.tv/" + username
 
     driver.get( link )
 
-    if has_unfollow_button( driver ):
+    b1 = detect_follow_unfollow_button( driver )
+
+    if b1 == BTN_UNFOLLOW:
         print_warning( "user {} is already followed".format( username ) )
         return True
 
-    has_followed = False
+    if b1 == BTN_NONE:
+        print_error( "user {} doesn't have follow/unfollow button".format( username ) )
+        return False
 
-    if( click_follow_user( driver ) ):
-        helpers.sleep( 2, False )
-        if has_unfollow_button( driver ):
-            has_followed = True
-        else:
-            print_error( "failed to follow user {}".format( username ) )
+    if not click_follow_user( driver ):
+        return False
 
+    helpers.sleep( 2, False )
 
-    return has_followed
+    if has_follow_button( driver ):
+        print_error( "failed to follow user {}".format( username ) )
+        return False
+
+    return True
 
 ##########################################################
 
-def follow_users( driver, status, status_filename, users ):
+def unfollow_user( driver, username ):
+
+    link = "https://www.twitch.tv/" + username
+
+    driver.get( link )
+
+    b1 = detect_follow_unfollow_button( driver )
+
+    if b1 == BTN_FOLLOW:
+        print_warning( "user {} is already unfollowed".format( username ) )
+        return True
+
+    if b1 == BTN_NONE:
+        print_error( "user {} doesn't have follow/unfollow button".format( username ) )
+        return False
+
+    if not click_follow_user( driver ):
+        return False
+
+    if not click_modal_unfollow_user( driver ):
+        return False
+
+    helpers.sleep( 2, False )
+
+    if has_unfollow_button( driver ):
+        print_error( "failed to unfollow user {}".format( username ) )
+        return False
+
+    return True
+
+##########################################################
+
+def follow_users( driver, status, status_filename, users, must_unfollow ):
 
     num_users = len( users )
 
     i = 0
 
+    pref = ""
+    if must_unfollow:
+        pref="un"
+
     for u in users:
 
         i += 1
 
-        print( "INFO: following user {} / {} - {}".format( i, num_users, u ) )
+        print( "INFO: {}following user {} / {} - {}".format( pref, i, num_users, u ) )
 
-        is_following = follow_user( driver, u )
 
-        follow_type = status_file.NOT_FOLLOWING
+        is_succeded = False
 
-        if is_following:
-            follow_type = status_file.FOLLOWING
+        if must_unfollow:
+            is_succeded = unfollow_user( driver, u )
+        else:
+            is_succeded = follow_user( driver, u )
 
-        status_file.set_follow_type( status, u, follow_type )
+        follow_type = None
+        is_dirty    = True
 
-        status_file.save_status_file( status_filename, status )
+        if must_unfollow:
+            if is_succeded:
+                follow_type = status_file.UNFOLLOWED
+                print( "INFO: unfollowed user {} / {} - {}".format( i, num_users, u ) )
+            else:
+                is_dirty    = False
+        else:
+            if is_succeded:
+                follow_type = status_file.FOLLOWING
+                print( "INFO: followed user {} / {} - {}".format( i, num_users, u ) )
+            else:
+                follow_type = status_file.NOT_FOLLOWING
+
+        if is_dirty:
+            status_file.set_follow_type( status, u, follow_type )
+            status_file.save_status_file( status_filename, status )
 
 ##########################################################
 
@@ -169,15 +281,31 @@ def determine_notfollowed_users( status, users_list ):
 
 ##########################################################
 
-def process( user_file, status_filename, is_headless ):
+def determine_followed_users( status ):
 
-    users_all = status_file.read_users( user_file )
+    res = []
+
+    for u in status:
+        if status[u].follow_type == status_file.FOLLOWING:
+            res.append( u )
+
+    return res
+
+##########################################################
+
+def process( user_file, status_filename, must_unfollow, is_headless ):
 
     status = status_file.load_status_file( status_filename )
 
-    users = determine_notfollowed_users( status, users_all )
+    users = None
 
-    print( "INFO: total users - {}, still to follow - {}, already followed - {}".format( len( users_all ), len( users ), len( users_all) - len( users ) ) )
+    if not must_unfollow:
+        users_all = status_file.read_users( user_file )
+        users = determine_notfollowed_users( status, users_all )
+        print( "INFO: total users - {}, still to follow - {}, already followed - {}".format( len( users_all ), len( users ), len( users_all) - len( users ) ) )
+    else:
+        users = determine_followed_users( status )
+        print( "INFO: users to unfollow - {}".format( len( users ) ) )
 
     if len( users ) == 0:
         print( "INFO: nothing to do" )
@@ -187,7 +315,7 @@ def process( user_file, status_filename, is_headless ):
 
     loginer.login( driver, credentials.LOGIN, credentials.PASSWORD )
 
-    follow_users( driver, status, status_filename, users )
+    follow_users( driver, status, status_filename, users, must_unfollow )
 
     print( "INFO: done" )
 
@@ -198,17 +326,18 @@ def main( argv ):
     user_file = None
     status_filename = None
     is_headless = False
+    must_unfollow = False
 
     outputfile = ''
 
     try:
-        opts, args = getopt.getopt(argv,"hi:o:s:H",["ifile=","ofile=","status=","HEADLESS"])
+        opts, args = getopt.getopt(argv,"hi:o:s:HU",["ifile=","ofile=","status=","HEADLESS","UNFOLLOW"])
     except getopt.GetoptError:
         print( 'follower.py -i <inputfile> -o <outputfile> -s <userfile>' )
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print( 'follower.py -i <inputfile> -o <outputfile> -s <userfile> [-H]' )
+            print( 'follower.py -i <inputfile> -o <outputfile> -s <userfile> [-H] [-U]' )
             sys.exit()
         elif opt in ("-i", "--ifile"):
             user_file = arg
@@ -218,6 +347,8 @@ def main( argv ):
             output_file = arg
         elif opt in ("-H", "--HEADLESS"):
             is_headless = True
+        elif opt in ("-U", "--UNFOLLOW"):
+            must_unfollow = True
 
     print ( "DEBUG: input file  = {}".format( user_file ) )
     print ( "DEBUG: status file = {}".format( status_filename ) )
@@ -234,7 +365,10 @@ def main( argv ):
     if is_headless:
         print( "INFO: starting in HEADLESS mode" )
 
-    process( user_file, status_filename, is_headless )
+    if must_unfollow:
+        print( "INFO: starting UNFOLLOW" )
+
+    process( user_file, status_filename, must_unfollow, is_headless )
 
 ##########################################################
 
