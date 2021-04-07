@@ -52,6 +52,31 @@ def harmonize_link( link ):
 
 ##########################################################
 
+def has_follow_or_unfollow_button( driver, need_unfollow ):
+
+    path = None
+
+    if need_unfollow:
+        path = "//button[@data-a-target='unfollow-button']";
+    else:
+        path = "//button[@data-a-target='follow-button']";
+
+    return helpers.does_xpath_exist_with_timeout( driver, path, 10 )
+
+##########################################################
+
+def has_follow_button( driver ):
+
+    return has_follow_or_unfollow_button( driver, False )
+
+##########################################################
+
+def has_unfollow_button( driver ):
+
+    return has_follow_or_unfollow_button( driver, False )
+
+##########################################################
+
 BTN_NONE = 0
 BTN_FOLLOW = 1
 BTN_UNFOLLOW = 2
@@ -86,28 +111,6 @@ def detect_follow_unfollow_button( driver ):
         print_error( "unexpected value of attribute - {}".format( attr ) )
 
     return BTN_NONE
-
-##########################################################
-
-def has_follow_button( driver ):
-
-    b = detect_follow_unfollow_button( driver )
-
-    if b == BTN_FOLLOW:
-        return True
-
-    return False
-
-##########################################################
-
-def has_unfollow_button( driver ):
-
-    b = detect_follow_unfollow_button( driver )
-
-    if b == BTN_UNFOLLOW:
-        return True
-
-    return False
 
 ##########################################################
 
