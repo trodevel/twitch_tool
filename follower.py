@@ -114,8 +114,8 @@ def has_unfollow_button( driver ):
 def click_follow_user( driver ):
 
     paths = [
-"//button[contains(@data-a-target,'follow-button')]",
-"//button[contains(@data-a-target,'unfollow-button')]"
+"//button[@data-a-target='follow-button']",
+"//button[@data-a-target='unfollow-button']"
 ]
     result = helpers.do_xpaths_exist_with_timeout( driver, paths, 10 )
 
