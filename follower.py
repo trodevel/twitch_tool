@@ -77,8 +77,10 @@ def detect_follow_unfollow_button( driver ):
     #print( "DEBUG: attr = {}".format( attr ) )
 
     if attr == "unfollow-button":
+        print_debug( "found UNFOLLOW button" )
         return BTN_UNFOLLOW
     elif attr == "follow-button":
+        print_debug( "found FOLLOW button" )
         return BTN_FOLLOW
     else:
         print_error( "unexpected value of attribute - {}".format( attr ) )
