@@ -73,7 +73,7 @@ def has_follow_button( driver ):
 
 def has_unfollow_button( driver ):
 
-    return has_follow_or_unfollow_button( driver, False )
+    return has_follow_or_unfollow_button( driver, True )
 
 ##########################################################
 
@@ -85,30 +85,22 @@ BTN_UNFOLLOW = 2
 
 def detect_follow_unfollow_button( driver ):
 
-    paths = [
-"//button[@data-a-target='unfollow-button']",
-"//button[@data-a-target='follow-button']"
-]
-    result = helpers.do_xpaths_exist_with_timeout( driver, paths, 10 )
+    b1 = has_follow_button( driver )
+    b2 = has_unfollow_button( driver )
 
-    if result[0] == False:
-        print_error( "cannot find follow/unfollow button" )
-        return NONE
+    print_debug( "has_follow = {}, has_unfollow = {}".format( b1, b2 ) )
 
-    button = driver.find_element_by_xpath( result[1] )
-
-    attr = button.get_attribute( "data-a-target" )
-
-    print( "DEBUG: attr = {}, path = {}".format( attr, result[1] ) )
-
-    if attr == "unfollow-button":
+    if not b1 and b2:
         print_debug( "found UNFOLLOW button" )
         return BTN_UNFOLLOW
-    elif attr == "follow-button":
+    elif b1 and not b2:
         print_debug( "found FOLLOW button" )
         return BTN_FOLLOW
+    elif b1 and b2:
+        print_error( "found FOLLOW and UNFOLLOW buttons" )
+        return BTN_NONE
     else:
-        print_error( "unexpected value of attribute - {}".format( attr ) )
+        print_error( "cannot find follow/unfollow button" )
 
     return BTN_NONE
 
