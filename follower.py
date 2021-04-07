@@ -129,7 +129,7 @@ def click_follow_user( driver ):
 
     button = driver.find_element_by_xpath( result[1] )
 
-    helpers.wait_till_clickable_and_click( button )
+    helpers.wait_till_clickable_and_click( button, 10 )
 
     return True
 
@@ -153,7 +153,7 @@ def click_modal_unfollow_user( driver ):
 
     button = driver.find_element_by_xpath( result[1] )
 
-    helpers.wait_till_clickable_and_click( button )
+    helpers.wait_till_clickable_and_click( button, 10 )
 
     return True
 
