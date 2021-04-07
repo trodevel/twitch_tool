@@ -125,11 +125,11 @@ def click_follow_user( driver ):
 
     print_debug( "found element link {}".format( result[2] ) )
 
-    print( "INFO: clicked follow button" )
-
     button = driver.find_element_by_xpath( result[1] )
 
     helpers.wait_till_clickable_and_click( button, 10 )
+
+    print( "INFO: clicked follow button" )
 
     return True
 
