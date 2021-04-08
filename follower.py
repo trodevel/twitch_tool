@@ -35,7 +35,7 @@ import loginer        # login
 import status_file    # status_file
 #import product_parser # parse_product
 import re
-from print_helpers import print_fatal, print_error, print_warning, print_debug
+from print_helpers import print_fatal, print_error, print_warning, print_info, print_debug
 
 from datetime import datetime
 
@@ -236,6 +236,20 @@ def mode_to_text( mode ):
 
 ##########################################################
 
+def mode_to_string( mode ):
+    if mode == MODE_UNFOLLOW:
+        return "MODE_UNFOLLOW"
+    elif mode == MODE_FOLLOW:
+        return "MODE_FOLLOW"
+    elif mode == MODE_FOLLOW_UNFOLLOW:
+        return "MODE_FOLLOW_UNFOLLOW"
+    elif mode == MODE_REFOLLOW:
+        return "MODE_REFOLLOW"
+    else:
+        return "?"
+
+##########################################################
+
 def process_users( driver, status, status_filename, users, mode ):
 
     num_users = len( users )
@@ -383,7 +397,7 @@ def main( argv ):
     print ( "DEBUG: status file = {}".format( status_filename ) )
     print ( "DEBUG: output file = {}".format( outputfile ) )
 
-    print_info( "mode = {}".format( mode ) )
+    print_info( "starting in {}".format( mode_to_string( mode ) ) )
 
     quit()
 
