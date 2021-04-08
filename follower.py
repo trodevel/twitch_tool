@@ -35,7 +35,7 @@ import loginer        # login
 import status_file    # status_file
 #import product_parser # parse_product
 import re
-from print_helpers import print_error, print_warning, print_debug
+from print_helpers import print_fatal, print_error, print_warning, print_debug
 
 from datetime import datetime
 
@@ -330,7 +330,7 @@ def main( argv ):
     user_file = None
     status_filename = None
     is_headless = False
-    must_unfollow = False
+    mode = MODE_FOLLOW
 
     outputfile = ''
 
@@ -351,12 +351,25 @@ def main( argv ):
             output_file = arg
         elif opt in ("-H", "--HEADLESS"):
             is_headless = True
-        elif opt in ("-U", "--UNFOLLOW"):
-            must_unfollow = True
+        elif opt in ("-m", "--mode"):
+            if arg == 'F':
+                mode = MODE_FOLLOW
+            elif arg == 'U':
+                mode = MODE_UNFOLLOW
+            elif arg == 'L':
+                mode = MODE_FOLLOW_UNFOLLOW
+            elif arg == 'R':
+                mode = MODE_REFOLLOW
+            else:
+                print_fatal( "unsupported mode: {}".format( arg ) )
+                quit()
 
     print ( "DEBUG: input file  = {}".format( user_file ) )
     print ( "DEBUG: status file = {}".format( status_filename ) )
     print ( "DEBUG: output file = {}".format( outputfile ) )
+    print ( "INFO: mode = {}".format( mode ) )
+
+    quit()
 
     if not user_file:
         print( "FATAL: user file is not given" )
