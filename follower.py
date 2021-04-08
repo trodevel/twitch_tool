@@ -240,17 +240,17 @@ def follow_unfollow_user( driver, username ):
 
     driver.get( link )
 
-    b1 = follow_user_core( driver, username )
+    b1, status = follow_user_core( driver, username )
 
     if not b1:
-        return False
+        return False, status
 
-    b2 = unfollow_user_core( driver, username )
+    b2, status = unfollow_user_core( driver, username )
 
     if not b2:
-        return False
+        return False, status
 
-    return True
+    return True, status
 
 ##########################################################
 
