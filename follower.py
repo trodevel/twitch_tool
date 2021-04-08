@@ -300,6 +300,8 @@ def process_users( driver, status, status_filename, users, mode ):
             is_succeded = unfollow_user( driver, u )
         elif mode == MODE_FOLLOW:
             is_succeded = follow_user( driver, u )
+        elif mode == MODE_FOLLOW_UNFOLLOW:
+            is_succeded = follow_unfollow_user( driver, u )
         else:
             print_fatal( "unsupported mode" )
             quit()
@@ -321,6 +323,12 @@ def process_users( driver, status, status_filename, users, mode ):
             else:
                 print_error( "failed to follow user {} / {} - {}".format( i, num_users, u ) )
                 follow_type = status_file.NOT_FOLLOWING
+
+        elif mode == MODE_FOLLOW_UNFOLLOW:
+            if is_succeded:
+                print_info( "followed and unfollowed user {} / {} - {}".format( i, num_users, u ) )
+            else:
+                print_error( "failed to follow/unfollow user {} / {} - {}".format( i, num_users, u ) )
 
         if is_dirty:
             status_file.set_follow_type( status, u, follow_type )
