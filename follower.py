@@ -297,19 +297,22 @@ def determine_followed_users( status ):
 
 ##########################################################
 
-def process( user_file, status_filename, must_unfollow, is_headless ):
+def process( user_file, status_filename, mode, is_headless ):
 
     status = status_file.load_status_file( status_filename )
 
     users = None
 
-    if not must_unfollow:
+    if mode == MODE_FOLLOW or mode == MODE_FOLLOW_UNFOLLOW:
         users_all = status_file.read_users( user_file )
         users = determine_notfollowed_users( status, users_all )
         print( "INFO: total users - {}, still to follow - {}, already followed - {}".format( len( users_all ), len( users ), len( users_all) - len( users ) ) )
-    else:
+    elif mode == MODE_UNFOLLOW:
         users = determine_followed_users( status )
         print( "INFO: users to unfollow - {}".format( len( users ) ) )
+    else:
+        print_error( "unsupported mode {}".format( mode ) )
+        quit()
 
     if len( users ) == 0:
         print( "INFO: nothing to do" )
@@ -319,7 +322,7 @@ def process( user_file, status_filename, must_unfollow, is_headless ):
 
     loginer.login( driver, credentials.LOGIN, credentials.PASSWORD )
 
-    follow_users( driver, status, status_filename, users, must_unfollow )
+    follow_users( driver, status, status_filename, users, mode )
 
     print( "INFO: done" )
 
@@ -367,7 +370,8 @@ def main( argv ):
     print ( "DEBUG: input file  = {}".format( user_file ) )
     print ( "DEBUG: status file = {}".format( status_filename ) )
     print ( "DEBUG: output file = {}".format( outputfile ) )
-    print ( "INFO: mode = {}".format( mode ) )
+
+    print_info( "mode = {}".format( mode ) )
 
     quit()
 
@@ -382,10 +386,7 @@ def main( argv ):
     if is_headless:
         print( "INFO: starting in HEADLESS mode" )
 
-    if must_unfollow:
-        print( "INFO: starting UNFOLLOW" )
-
-    process( user_file, status_filename, must_unfollow, is_headless )
+    process( user_file, status_filename, mode, is_headless )
 
 ##########################################################
 
