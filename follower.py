@@ -52,6 +52,31 @@ def harmonize_link( link ):
 
 ##########################################################
 
+def has_follow_or_unfollow_button( driver, need_unfollow ):
+
+    path = None
+
+    if need_unfollow:
+        path = "//button[@data-a-target='unfollow-button']";
+    else:
+        path = "//button[@data-a-target='follow-button']";
+
+    return helpers.does_xpath_exist_with_timeout( driver, path, 10 )
+
+##########################################################
+
+def has_follow_button( driver ):
+
+    return has_follow_or_unfollow_button( driver, False )
+
+##########################################################
+
+def has_unfollow_button( driver ):
+
+    return has_follow_or_unfollow_button( driver, True )
+
+##########################################################
+
 BTN_NONE = 0
 BTN_FOLLOW = 1
 BTN_UNFOLLOW = 2
@@ -60,62 +85,32 @@ BTN_UNFOLLOW = 2
 
 def detect_follow_unfollow_button( driver ):
 
-    paths = [
-"//button[contains(@data-a-target,'follow-button')]",
-"//button[contains(@data-a-target,'unfollow-button')]"
-]
-    result = helpers.do_xpaths_exist_with_timeout( driver, paths, 10 )
+    b1 = has_follow_button( driver )
+    b2 = has_unfollow_button( driver )
 
-    if result[0] == False:
-        print_error( "cannot find follow/unfollow button" )
-        return NONE
+    print_debug( "has_follow = {}, has_unfollow = {}".format( b1, b2 ) )
 
-    button = driver.find_element_by_xpath( result[1] )
-
-    attr = button.get_attribute( "data-a-target" )
-
-    #print( "DEBUG: attr = {}".format( attr ) )
-
-    if attr == "unfollow-button":
+    if not b1 and b2:
         print_debug( "found UNFOLLOW button" )
         return BTN_UNFOLLOW
-    elif attr == "follow-button":
+    elif b1 and not b2:
         print_debug( "found FOLLOW button" )
         return BTN_FOLLOW
+    elif b1 and b2:
+        print_error( "found FOLLOW and UNFOLLOW buttons" )
+        return BTN_NONE
     else:
-        print_error( "unexpected value of attribute - {}".format( attr ) )
+        print_error( "cannot find follow/unfollow button" )
 
     return BTN_NONE
-
-##########################################################
-
-def has_follow_button( driver ):
-
-    b = detect_follow_unfollow_button( driver )
-
-    if b == BTN_FOLLOW:
-        return True
-
-    return False
-
-##########################################################
-
-def has_unfollow_button( driver ):
-
-    b = detect_follow_unfollow_button( driver )
-
-    if b == BTN_UNFOLLOW:
-        return True
-
-    return False
 
 ##########################################################
 
 def click_follow_user( driver ):
 
     paths = [
-"//button[contains(@data-a-target,'follow-button')]",
-"//button[contains(@data-a-target,'unfollow-button')]"
+"//button[@data-a-target='follow-button']",
+"//button[@data-a-target='unfollow-button']"
 ]
     result = helpers.do_xpaths_exist_with_timeout( driver, paths, 10 )
 
@@ -123,13 +118,13 @@ def click_follow_user( driver ):
         print_error( "cannot find follow button" )
         return False
 
-    #print( "DEBUG: found element link {}".format( result[2] ) )
-
-    print( "INFO: clicked follow button" )
+    print_debug( "found element link {}".format( result[2] ) )
 
     button = driver.find_element_by_xpath( result[1] )
 
     helpers.wait_till_clickable_and_click( button, 10 )
+
+    print( "INFO: clicked follow button" )
 
     return True
 
@@ -252,12 +247,14 @@ def follow_users( driver, status, status_filename, users, must_unfollow ):
                 follow_type = status_file.UNFOLLOWED
                 print( "INFO: unfollowed user {} / {} - {}".format( i, num_users, u ) )
             else:
+                print_error( "failed to unfollow user {} / {} - {}".format( i, num_users, u ) )
                 is_dirty    = False
         else:
             if is_succeded:
                 follow_type = status_file.FOLLOWING
                 print( "INFO: followed user {} / {} - {}".format( i, num_users, u ) )
             else:
+                print_error( "failed to follow user {} / {} - {}".format( i, num_users, u ) )
                 follow_type = status_file.NOT_FOLLOWING
 
         if is_dirty:
