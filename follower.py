@@ -161,11 +161,7 @@ def click_modal_unfollow_user( driver ):
 
 ##########################################################
 
-def follow_user( driver, username ):
-
-    link = "https://www.twitch.tv/" + username
-
-    driver.get( link )
+def follow_user_core( driver, username ):
 
     b1 = detect_follow_unfollow_button( driver )
 
@@ -187,6 +183,16 @@ def follow_user( driver, username ):
         return False
 
     return True
+
+##########################################################
+
+def follow_user( driver, username ):
+
+    link = "https://www.twitch.tv/" + username
+
+    driver.get( link )
+
+    follow_user_core( driver, username )
 
 ##########################################################
 
