@@ -192,7 +192,7 @@ def follow_user( driver, username ):
 
     driver.get( link )
 
-    follow_user_core( driver, username )
+    return follow_user_core( driver, username )
 
 ##########################################################
 
@@ -230,7 +230,7 @@ def unfollow_user( driver, username ):
 
     driver.get( link )
 
-    unfollow_user_core( driver, username )
+    return unfollow_user_core( driver, username )
 
 ##########################################################
 
