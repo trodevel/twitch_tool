@@ -234,6 +234,18 @@ def unfollow_user( driver, username ):
 
 ##########################################################
 
+def follow_unfollow_user( driver, username ):
+
+    link = "https://www.twitch.tv/" + username
+
+    driver.get( link )
+
+    follow_user_core( driver, username )
+
+    unfollow_user_core( driver, username )
+
+##########################################################
+
 def mode_to_text( mode ):
     if mode == MODE_UNFOLLOW:
         return "unfollowing"
