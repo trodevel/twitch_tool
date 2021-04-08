@@ -43,6 +43,13 @@ DEBUG_CATEGORY = False
 
 ##########################################################
 
+MODE_FOLLOW = 0
+MODE_UNFOLLOW = 1
+MODE_FOLLOW_UNFOLLOW = 2
+MODE_REFOLLOW = 3
+
+##########################################################
+
 def harmonize_link( link ):
 
     if link.endswith('/'):
@@ -328,7 +335,7 @@ def main( argv ):
     outputfile = ''
 
     try:
-        opts, args = getopt.getopt(argv,"hi:o:s:HU",["ifile=","ofile=","status=","HEADLESS","UNFOLLOW"])
+        opts, args = getopt.getopt(argv,"hi:o:s:Hm:",["ifile=","ofile=","status=","HEADLESS","mode"])
     except getopt.GetoptError:
         print( 'follower.py -i <inputfile> -o <outputfile> -s <userfile>' )
         sys.exit(2)
