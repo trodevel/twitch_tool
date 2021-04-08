@@ -222,14 +222,16 @@ def unfollow_user( driver, username ):
 
 ##########################################################
 
-def process_users( driver, status, status_filename, users, must_unfollow ):
+##########################################################
+
+def process_users( driver, status, status_filename, users, mode ):
 
     num_users = len( users )
 
     i = 0
 
     pref = ""
-    if must_unfollow:
+    if mode == MODE_UNFOLLOW:
         pref="un"
 
     for u in users:
@@ -238,25 +240,27 @@ def process_users( driver, status, status_filename, users, must_unfollow ):
 
         print( "INFO: {}following user {} / {} - {}".format( pref, i, num_users, u ) )
 
-
         is_succeded = False
 
-        if must_unfollow:
+        if mode == MODE_UNFOLLOW:
             is_succeded = unfollow_user( driver, u )
-        else:
+        elif mode == MODE_FOLLOW:
             is_succeded = follow_user( driver, u )
+        else:
+            print_fatal( "unsupported mode" )
+            quit()
 
         follow_type = None
         is_dirty    = True
 
-        if must_unfollow:
+        if mode == MODE_UNFOLLOW:
             if is_succeded:
                 follow_type = status_file.UNFOLLOWED
                 print( "INFO: unfollowed user {} / {} - {}".format( i, num_users, u ) )
             else:
                 print_error( "failed to unfollow user {} / {} - {}".format( i, num_users, u ) )
                 is_dirty    = False
-        else:
+        elif mode == MODE_FOLLOW:
             if is_succeded:
                 follow_type = status_file.FOLLOWING
                 print( "INFO: followed user {} / {} - {}".format( i, num_users, u ) )
