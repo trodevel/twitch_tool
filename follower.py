@@ -242,15 +242,11 @@ def process_users( driver, status, status_filename, users, mode ):
 
     i = 0
 
-    pref = ""
-    if mode == MODE_UNFOLLOW:
-        pref="un"
-
     for u in users:
 
         i += 1
 
-        print( "INFO: {}following user {} / {} - {}".format( pref, i, num_users, u ) )
+        print_info( "{} user {} / {} - {}".format( mode_to_text( mode ), i, num_users, u ) )
 
         is_succeded = False
 
