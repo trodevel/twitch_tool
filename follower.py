@@ -222,7 +222,7 @@ def unfollow_user( driver, username ):
 
 ##########################################################
 
-def follow_users( driver, status, status_filename, users, must_unfollow ):
+def process_users( driver, status, status_filename, users, must_unfollow ):
 
     num_users = len( users )
 
@@ -322,7 +322,7 @@ def process( user_file, status_filename, mode, is_headless ):
 
     loginer.login( driver, credentials.LOGIN, credentials.PASSWORD )
 
-    follow_users( driver, status, status_filename, users, mode )
+    process_users( driver, status, status_filename, users, mode )
 
     print( "INFO: done" )
 
