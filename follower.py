@@ -399,8 +399,6 @@ def main( argv ):
 
     print_info( "starting in {}".format( mode_to_string( mode ) ) )
 
-    quit()
-
     if not user_file:
         print( "FATAL: user file is not given" )
         quit()
