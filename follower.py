@@ -222,6 +222,18 @@ def unfollow_user( driver, username ):
 
 ##########################################################
 
+def mode_to_text( mode ):
+    if mode == MODE_UNFOLLOW:
+        return "unfollowing"
+    elif mode == MODE_FOLLOW:
+        return "following"
+    elif mode == MODE_FOLLOW_UNFOLLOW:
+        return "following/unfollowing"
+    elif mode == MODE_REFOLLOW:
+        return "refollowing"
+    else:
+        return "?"
+
 ##########################################################
 
 def process_users( driver, status, status_filename, users, mode ):
