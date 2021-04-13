@@ -35,11 +35,18 @@ import loginer        # login
 import status_file    # status_file
 #import product_parser # parse_product
 import re
-from print_helpers import print_error, print_warning, print_debug
+from print_helpers import print_fatal, print_error, print_warning, print_info, print_debug
 
 from datetime import datetime
 
 DEBUG_CATEGORY = False
+
+##########################################################
+
+MODE_FOLLOW = 0
+MODE_UNFOLLOW = 1
+MODE_FOLLOW_UNFOLLOW = 2
+MODE_REFOLLOW = 3
 
 ##########################################################
 
@@ -154,32 +161,66 @@ def click_modal_unfollow_user( driver ):
 
 ##########################################################
 
+def follow_user_core( driver, username ):
+
+    b1 = detect_follow_unfollow_button( driver )
+
+    if b1 == BTN_UNFOLLOW:
+        print_warning( "user {} is already followed".format( username ) )
+        return True, status_file.FOLLOWING
+
+    if b1 == BTN_NONE:
+        print_error( "user {} doesn't have follow/unfollow button".format( username ) )
+        return False, status_file.NOT_FOLLOWING
+
+    if not click_follow_user( driver ):
+        return False, status_file.NOT_FOLLOWING
+
+    helpers.sleep( 2, False )
+
+    if has_follow_button( driver ):
+        print_error( "failed to follow user {}".format( username ) )
+        return False, status_file.NOT_FOLLOWING
+
+    return True, status_file.FOLLOWING
+
+##########################################################
+
 def follow_user( driver, username ):
 
     link = "https://www.twitch.tv/" + username
 
     driver.get( link )
 
+    return follow_user_core( driver, username )
+
+##########################################################
+
+def unfollow_user_core( driver, username ):
+
     b1 = detect_follow_unfollow_button( driver )
 
-    if b1 == BTN_UNFOLLOW:
-        print_warning( "user {} is already followed".format( username ) )
-        return True
+    if b1 == BTN_FOLLOW:
+        print_warning( "user {} is already unfollowed".format( username ) )
+        return True, status_file.NOT_FOLLOWING
 
     if b1 == BTN_NONE:
         print_error( "user {} doesn't have follow/unfollow button".format( username ) )
-        return False
+        return False, status_file.FOLLOWING
 
     if not click_follow_user( driver ):
-        return False
+        return False, status_file.FOLLOWING
+
+    if not click_modal_unfollow_user( driver ):
+        return False, status_file.FOLLOWING
 
     helpers.sleep( 2, False )
 
-    if has_follow_button( driver ):
-        print_error( "failed to follow user {}".format( username ) )
-        return False
+    if has_unfollow_button( driver ):
+        print_error( "failed to unfollow user {}".format( username ) )
+        return False, status_file.FOLLOWING
 
-    return True
+    return True, status_file.UNFOLLOWED
 
 ##########################################################
 
@@ -189,73 +230,102 @@ def unfollow_user( driver, username ):
 
     driver.get( link )
 
-    b1 = detect_follow_unfollow_button( driver )
-
-    if b1 == BTN_FOLLOW:
-        print_warning( "user {} is already unfollowed".format( username ) )
-        return True
-
-    if b1 == BTN_NONE:
-        print_error( "user {} doesn't have follow/unfollow button".format( username ) )
-        return False
-
-    if not click_follow_user( driver ):
-        return False
-
-    if not click_modal_unfollow_user( driver ):
-        return False
-
-    helpers.sleep( 2, False )
-
-    if has_unfollow_button( driver ):
-        print_error( "failed to unfollow user {}".format( username ) )
-        return False
-
-    return True
+    return unfollow_user_core( driver, username )
 
 ##########################################################
 
-def follow_users( driver, status, status_filename, users, must_unfollow ):
+def follow_unfollow_user( driver, username ):
+
+    link = "https://www.twitch.tv/" + username
+
+    driver.get( link )
+
+    b1, status = follow_user_core( driver, username )
+
+    if not b1:
+        return False, status
+
+    b2, status = unfollow_user_core( driver, username )
+
+    if not b2:
+        return False, status
+
+    return True, status
+
+##########################################################
+
+def mode_to_text( mode ):
+    if mode == MODE_UNFOLLOW:
+        return "unfollowing"
+    elif mode == MODE_FOLLOW:
+        return "following"
+    elif mode == MODE_FOLLOW_UNFOLLOW:
+        return "following/unfollowing"
+    elif mode == MODE_REFOLLOW:
+        return "refollowing"
+    else:
+        return "?"
+
+##########################################################
+
+def mode_to_string( mode ):
+    if mode == MODE_UNFOLLOW:
+        return "MODE_UNFOLLOW"
+    elif mode == MODE_FOLLOW:
+        return "MODE_FOLLOW"
+    elif mode == MODE_FOLLOW_UNFOLLOW:
+        return "MODE_FOLLOW_UNFOLLOW"
+    elif mode == MODE_REFOLLOW:
+        return "MODE_REFOLLOW"
+    else:
+        return "?"
+
+##########################################################
+
+def process_users( driver, status, status_filename, users, mode ):
 
     num_users = len( users )
 
     i = 0
 
-    pref = ""
-    if must_unfollow:
-        pref="un"
-
     for u in users:
 
         i += 1
 
-        print( "INFO: {}following user {} / {} - {}".format( pref, i, num_users, u ) )
-
+        print_info( "{} user {} / {} - {}".format( mode_to_text( mode ), i, num_users, u ) )
 
         is_succeded = False
-
-        if must_unfollow:
-            is_succeded = unfollow_user( driver, u )
-        else:
-            is_succeded = follow_user( driver, u )
-
         follow_type = None
+
+        if mode == MODE_UNFOLLOW:
+            is_succeded, follow_type = unfollow_user( driver, u )
+        elif mode == MODE_FOLLOW:
+            is_succeded, follow_type = follow_user( driver, u )
+        elif mode == MODE_FOLLOW_UNFOLLOW:
+            is_succeded, follow_type = follow_unfollow_user( driver, u )
+        else:
+            print_fatal( "unsupported mode" )
+            quit()
+
         is_dirty    = True
 
-        if must_unfollow:
+        if mode == MODE_UNFOLLOW:
             if is_succeded:
-                follow_type = status_file.UNFOLLOWED
                 print( "INFO: unfollowed user {} / {} - {}".format( i, num_users, u ) )
             else:
                 print_error( "failed to unfollow user {} / {} - {}".format( i, num_users, u ) )
                 is_dirty    = False
-        else:
+        elif mode == MODE_FOLLOW:
             if is_succeded:
-                follow_type = status_file.FOLLOWING
                 print( "INFO: followed user {} / {} - {}".format( i, num_users, u ) )
             else:
                 print_error( "failed to follow user {} / {} - {}".format( i, num_users, u ) )
-                follow_type = status_file.NOT_FOLLOWING
+
+        elif mode == MODE_FOLLOW_UNFOLLOW:
+            if is_succeded:
+                print_info( "followed and unfollowed user {} / {} - {}".format( i, num_users, u ) )
+            else:
+                print_error( "failed to follow/unfollow user {} / {} - {}".format( i, num_users, u ) )
 
         if is_dirty:
             status_file.set_follow_type( status, u, follow_type )
@@ -290,19 +360,22 @@ def determine_followed_users( status ):
 
 ##########################################################
 
-def process( user_file, status_filename, must_unfollow, is_headless ):
+def process( user_file, status_filename, mode, is_headless ):
 
     status = status_file.load_status_file( status_filename )
 
     users = None
 
-    if not must_unfollow:
+    if mode == MODE_FOLLOW or mode == MODE_FOLLOW_UNFOLLOW:
         users_all = status_file.read_users( user_file )
         users = determine_notfollowed_users( status, users_all )
         print( "INFO: total users - {}, still to follow - {}, already followed - {}".format( len( users_all ), len( users ), len( users_all) - len( users ) ) )
-    else:
+    elif mode == MODE_UNFOLLOW:
         users = determine_followed_users( status )
         print( "INFO: users to unfollow - {}".format( len( users ) ) )
+    else:
+        print_error( "unsupported mode {}".format( mode ) )
+        quit()
 
     if len( users ) == 0:
         print( "INFO: nothing to do" )
@@ -312,7 +385,7 @@ def process( user_file, status_filename, must_unfollow, is_headless ):
 
     loginer.login( driver, credentials.LOGIN, credentials.PASSWORD )
 
-    follow_users( driver, status, status_filename, users, must_unfollow )
+    process_users( driver, status, status_filename, users, mode )
 
     print( "INFO: done" )
 
@@ -323,12 +396,12 @@ def main( argv ):
     user_file = None
     status_filename = None
     is_headless = False
-    must_unfollow = False
+    mode = MODE_FOLLOW
 
     outputfile = ''
 
     try:
-        opts, args = getopt.getopt(argv,"hi:o:s:HU",["ifile=","ofile=","status=","HEADLESS","UNFOLLOW"])
+        opts, args = getopt.getopt(argv,"hi:o:s:Hm:",["ifile=","ofile=","status=","HEADLESS","mode"])
     except getopt.GetoptError:
         print( 'follower.py -i <inputfile> -o <outputfile> -s <userfile>' )
         sys.exit(2)
@@ -344,12 +417,24 @@ def main( argv ):
             output_file = arg
         elif opt in ("-H", "--HEADLESS"):
             is_headless = True
-        elif opt in ("-U", "--UNFOLLOW"):
-            must_unfollow = True
+        elif opt in ("-m", "--mode"):
+            if arg == 'F':
+                mode = MODE_FOLLOW
+            elif arg == 'U':
+                mode = MODE_UNFOLLOW
+            elif arg == 'L':
+                mode = MODE_FOLLOW_UNFOLLOW
+            elif arg == 'R':
+                mode = MODE_REFOLLOW
+            else:
+                print_fatal( "unsupported mode: {}".format( arg ) )
+                quit()
 
     print ( "DEBUG: input file  = {}".format( user_file ) )
     print ( "DEBUG: status file = {}".format( status_filename ) )
     print ( "DEBUG: output file = {}".format( outputfile ) )
+
+    print_info( "starting in {}".format( mode_to_string( mode ) ) )
 
     if not user_file:
         print( "FATAL: user file is not given" )
@@ -362,10 +447,7 @@ def main( argv ):
     if is_headless:
         print( "INFO: starting in HEADLESS mode" )
 
-    if must_unfollow:
-        print( "INFO: starting UNFOLLOW" )
-
-    process( user_file, status_filename, must_unfollow, is_headless )
+    process( user_file, status_filename, mode, is_headless )
 
 ##########################################################
 

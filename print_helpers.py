@@ -24,6 +24,12 @@ from termcolor import colored
 
 ##########################################################
 
+def print_fatal( s ):
+    pref = colored( 'FATAL: ', 'magenta' )
+    print( pref + s )
+
+##########################################################
+
 def print_error( s ):
     pref = colored( 'ERROR: ', 'red' )
     print( pref + s )
@@ -33,6 +39,11 @@ def print_error( s ):
 def print_warning( s ):
     pref = colored( 'WARNING: ', 'yellow' )
     print( pref + s )
+
+##########################################################
+
+def print_info( s ):
+    print( "INFO: " + s )
 
 ##########################################################
 
