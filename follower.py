@@ -29,11 +29,10 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 import sys, getopt
 import config         # DRIVER_PATH
-import credentials    # LOGIN
 import helpers        # find_element_by_tag_and_class_name
 import loginer        # login
 import status_file    # status_file
-#import product_parser # parse_product
+import configparser   # load_credentials
 import re
 from print_helpers import print_fatal, print_error, print_warning, print_info, print_debug
 
@@ -131,7 +130,7 @@ def click_follow_user( driver ):
 
     helpers.wait_till_clickable_and_click( button, 10 )
 
-    print( "INFO: clicked follow button" )
+    print_info( "clicked follow button" )
 
     return True
 
@@ -149,7 +148,7 @@ def click_modal_unfollow_user( driver ):
         print_error( "cannot find modal unfollow button" )
         return False
 
-    #print( "DEBUG: found element link {}".format( result[2] ) )
+    #print_debug( "found element link {}".format( result[2] ) )
 
     print_debug( "clicked modal unfollow button" )
 
@@ -311,13 +310,13 @@ def process_users( driver, status, status_filename, users, mode ):
 
         if mode == MODE_UNFOLLOW:
             if is_succeded:
-                print( "INFO: unfollowed user {} / {} - {}".format( i, num_users, u ) )
+                print_info( "unfollowed user {} / {} - {}".format( i, num_users, u ) )
             else:
                 print_error( "failed to unfollow user {} / {} - {}".format( i, num_users, u ) )
                 is_dirty    = False
         elif mode == MODE_FOLLOW:
             if is_succeded:
-                print( "INFO: followed user {} / {} - {}".format( i, num_users, u ) )
+                print_info( "followed user {} / {} - {}".format( i, num_users, u ) )
             else:
                 print_error( "failed to follow user {} / {} - {}".format( i, num_users, u ) )
 
@@ -360,7 +359,28 @@ def determine_followed_users( status ):
 
 ##########################################################
 
-def process( user_file, status_filename, mode, is_headless ):
+def load_credentials( credentials_filename ):
+
+    print_debug( "load_credentials: from {}".format( credentials_filename ) )
+
+    config = configparser.ConfigParser()
+    config.read( credentials_filename )
+
+    login    = config['credentials']['login']
+    password = config['credentials']['password']
+
+    print_debug( "login    = {}".format( login ) )
+    #print_debug( "password = {}".format( password ) )
+
+    print_info( "load_credentials: OK, from {}".format( credentials_filename ) )
+
+    return login, password
+
+##########################################################
+
+def process( user_file, credentials_filename, status_filename, cookies_dir, mode, is_headless ):
+
+    login, password = load_credentials( credentials_filename )
 
     status = status_file.load_status_file( status_filename )
 
@@ -369,25 +389,25 @@ def process( user_file, status_filename, mode, is_headless ):
     if mode == MODE_FOLLOW or mode == MODE_FOLLOW_UNFOLLOW:
         users_all = status_file.read_users( user_file )
         users = determine_notfollowed_users( status, users_all )
-        print( "INFO: total users - {}, still to follow - {}, already followed - {}".format( len( users_all ), len( users ), len( users_all) - len( users ) ) )
+        print_info( "total users - {}, still to follow - {}, already followed - {}".format( len( users_all ), len( users ), len( users_all) - len( users ) ) )
     elif mode == MODE_UNFOLLOW:
         users = determine_followed_users( status )
-        print( "INFO: users to unfollow - {}".format( len( users ) ) )
+        print_info( "users to unfollow - {}".format( len( users ) ) )
     else:
         print_error( "unsupported mode {}".format( mode ) )
         quit()
 
     if len( users ) == 0:
-        print( "INFO: nothing to do" )
+        print_info( "nothing to do" )
         quit()
 
-    driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY, harmonize_link( config.COOKIES_DIR ) + credentials.LOGIN, is_headless )
+    driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY, cookies_dir, is_headless )
 
-    loginer.login( driver, credentials.LOGIN, credentials.PASSWORD )
+    loginer.login( driver, login, password )
 
     process_users( driver, status, status_filename, users, mode )
 
-    print( "INFO: done" )
+    print_info( "done" )
 
 ##########################################################
 
@@ -395,24 +415,27 @@ def main( argv ):
 
     user_file = None
     status_filename = None
+    user_dir = None
     is_headless = False
     mode = MODE_FOLLOW
 
     outputfile = ''
 
     try:
-        opts, args = getopt.getopt(argv,"hi:o:s:Hm:",["ifile=","ofile=","status=","HEADLESS","mode"])
+        opts, args = getopt.getopt(argv,"hi:o:s:u:Hm:",["ifile=","ofile=","status=","userdir=","HEADLESS","mode"])
     except getopt.GetoptError:
-        print( 'follower.py -i <inputfile> -o <outputfile> -s <userfile>' )
+        print( 'follower.py -i <inputfile> -o <outputfile> -u <userdir> -s <statusfile> -m <MODE>' )
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print( 'follower.py -i <inputfile> -o <outputfile> -s <userfile> [-H] [-U]' )
+            print( 'follower.py -i <inputfile> -o <outputfile> -u <userdir> -s <statusfile> -m <MODE> [-H]' )
             sys.exit()
         elif opt in ("-i", "--ifile"):
             user_file = arg
         elif opt in ("-s", "--status"):
             status_filename = arg
+        elif opt in ("-u", "--userdir"):
+            user_dir = arg
         elif opt in ("-o", "--ofile"):
             output_file = arg
         elif opt in ("-H", "--HEADLESS"):
@@ -430,24 +453,33 @@ def main( argv ):
                 print_fatal( "unsupported mode: {}".format( arg ) )
                 quit()
 
-    print ( "DEBUG: input file  = {}".format( user_file ) )
-    print ( "DEBUG: status file = {}".format( status_filename ) )
-    print ( "DEBUG: output file = {}".format( outputfile ) )
+    print_debug( "input file  = {}".format( user_file ) )
+    print_debug( "status file = {}".format( status_filename ) )
+    print_debug( "user dir    = {}".format( user_dir ) )
+    print_debug( "output file = {}".format( outputfile ) )
+
+    if not user_file:
+        print_fatal( "user file is not given" )
+        quit()
+
+    if not user_dir:
+        print_fatal( "user dir is not given" )
+        quit()
 
     print_info( "starting in {}".format( mode_to_string( mode ) ) )
 
-    if not user_file:
-        print( "FATAL: user file is not given" )
-        quit()
+    if is_headless:
+        print_info( "starting in HEADLESS mode" )
+
+    user_dir = harmonize_link( user_dir )
+
+    credentials_filename = user_dir + "credentials.ini"
+    cookies_dir          = user_dir + "cookies"
 
     if not status_filename:
-        print( "FATAL: status file is not given" )
-        quit()
+        status_filename      = user_dir + "status.csv"
 
-    if is_headless:
-        print( "INFO: starting in HEADLESS mode" )
-
-    process( user_file, status_filename, mode, is_headless )
+    process( user_file, credentials_filename, status_filename, cookies_dir, mode, is_headless )
 
 ##########################################################
 
