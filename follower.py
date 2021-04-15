@@ -360,7 +360,7 @@ def determine_followed_users( status ):
 
 ##########################################################
 
-def process( user_file, status_filename, cookies_dir, mode, is_headless ):
+def process( user_file, credentials_file, status_filename, cookies_dir, mode, is_headless ):
 
     status = status_file.load_status_file( status_filename )
 
@@ -449,13 +449,13 @@ def main( argv ):
 
     user_dir = harmonize_link( user_dir )
 
-    status_file     = user_dir + "status.csv"
-    credential_file = user_dir + "credentials.ini"
-    cookies_dir     = user_dir + "cookies"
+    credentials_file = user_dir + "credentials.ini"
+    status_file      = user_dir + "status.csv"
+    cookies_dir      = user_dir + "cookies"
 
     quit()
 
-    process( user_file, status_filename, cookies_dir, mode, is_headless )
+    process( user_file, credentials_file, status_filename, cookies_dir, mode, is_headless )
 
 ##########################################################
 
