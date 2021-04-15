@@ -394,25 +394,25 @@ def process( user_file, status_filename, mode, is_headless ):
 def main( argv ):
 
     user_file = None
-    status_filename = None
+    user_dir = None
     is_headless = False
     mode = MODE_FOLLOW
 
     outputfile = ''
 
     try:
-        opts, args = getopt.getopt(argv,"hi:o:s:Hm:",["ifile=","ofile=","status=","HEADLESS","mode"])
+        opts, args = getopt.getopt(argv,"hi:o:u:Hm:",["ifile=","ofile=","userdir=","HEADLESS","mode"])
     except getopt.GetoptError:
-        print( 'follower.py -i <inputfile> -o <outputfile> -s <userfile>' )
+        print( 'follower.py -i <inputfile> -o <outputfile> -u <userdir>' )
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print( 'follower.py -i <inputfile> -o <outputfile> -s <userfile> [-H] [-U]' )
+            print( 'follower.py -i <inputfile> -o <outputfile> -u <userdir> [-H] [-U]' )
             sys.exit()
         elif opt in ("-i", "--ifile"):
             user_file = arg
-        elif opt in ("-s", "--status"):
-            status_filename = arg
+        elif opt in ("-u", "--userdir"):
+            user_dir = arg
         elif opt in ("-o", "--ofile"):
             output_file = arg
         elif opt in ("-H", "--HEADLESS"):
@@ -431,7 +431,7 @@ def main( argv ):
                 quit()
 
     print ( "DEBUG: input file  = {}".format( user_file ) )
-    print ( "DEBUG: status file = {}".format( status_filename ) )
+    print ( "DEBUG: user dir    = {}".format( user_dir ) )
     print ( "DEBUG: output file = {}".format( outputfile ) )
 
     print_info( "starting in {}".format( mode_to_string( mode ) ) )
@@ -440,12 +440,20 @@ def main( argv ):
         print( "FATAL: user file is not given" )
         quit()
 
-    if not status_filename:
-        print( "FATAL: status file is not given" )
+    if not user_dir:
+        print( "FATAL: user dir is not given" )
         quit()
 
     if is_headless:
         print( "INFO: starting in HEADLESS mode" )
+
+    user_dir = harmonize_link( user_dir )
+
+    status_file     = user_dir + "status.csv"
+    credential_file = user_dir + "credentials.ini"
+    cookies_dir     = user_dir + "cookies"
+
+    quit()
 
     process( user_file, status_filename, mode, is_headless )
 
