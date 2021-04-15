@@ -434,8 +434,6 @@ def main( argv ):
     print_debug( "user dir    = {}".format( user_dir ) )
     print_debug( "output file = {}".format( outputfile ) )
 
-    print_info( "starting in {}".format( mode_to_string( mode ) ) )
-
     if not user_file:
         print_fatal( "user file is not given" )
         quit()
@@ -443,6 +441,8 @@ def main( argv ):
     if not user_dir:
         print_fatal( "user dir is not given" )
         quit()
+
+    print_info( "starting in {}".format( mode_to_string( mode ) ) )
 
     if is_headless:
         print_info( "starting in HEADLESS mode" )
