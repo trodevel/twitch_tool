@@ -149,7 +149,7 @@ def click_modal_unfollow_user( driver ):
         print_error( "cannot find modal unfollow button" )
         return False
 
-    #print_debug( " found element link {}".format( result[2] ) )
+    #print_debug( "found element link {}".format( result[2] ) )
 
     print_debug( "clicked modal unfollow button" )
 
@@ -430,9 +430,9 @@ def main( argv ):
                 print_fatal( "unsupported mode: {}".format( arg ) )
                 quit()
 
-    print_debug( " input file  = {}".format( user_file ) )
-    print_debug( " user dir    = {}".format( user_dir ) )
-    print_debug( " output file = {}".format( outputfile ) )
+    print_debug( "input file  = {}".format( user_file ) )
+    print_debug( "user dir    = {}".format( user_dir ) )
+    print_debug( "output file = {}".format( outputfile ) )
 
     print_info( "starting in {}".format( mode_to_string( mode ) ) )
 
