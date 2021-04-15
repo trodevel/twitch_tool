@@ -360,7 +360,21 @@ def determine_followed_users( status ):
 
 ##########################################################
 
+def load_credentials( credentials_file ):
+
+    config = configparser.ConfigParser()
+    config.read( credentials_file )
+
+    print_debug( "login    = {}".format( config['DEFAULT']['login'] ) )
+    print_debug( "password = {}".format( config['DEFAULT']['password'] ) )
+
+##########################################################
+
 def process( user_file, credentials_file, status_filename, cookies_dir, mode, is_headless ):
+
+    load_credentials( credentials_file )
+
+    quit()
 
     status = status_file.load_status_file( status_filename )
 
@@ -452,8 +466,6 @@ def main( argv ):
     credentials_file = user_dir + "credentials.ini"
     status_file      = user_dir + "status.csv"
     cookies_dir      = user_dir + "cookies"
-
-    quit()
 
     process( user_file, credentials_file, status_filename, cookies_dir, mode, is_headless )
 
