@@ -382,8 +382,6 @@ def process( user_file, credentials_filename, status_filename, cookies_dir, mode
 
     load_credentials( credentials_filename )
 
-    quit()
-
     status = status_file.load_status_file( status_filename )
 
     users = None
@@ -405,7 +403,9 @@ def process( user_file, credentials_filename, status_filename, cookies_dir, mode
 
     driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY, cookies_dir, is_headless )
 
-    loginer.login( driver, credentials.LOGIN, credentials.PASSWORD )
+    loginer.login( driver, login, password )
+
+    quit()
 
     process_users( driver, status, status_filename, users, mode )
 
