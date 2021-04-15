@@ -416,6 +416,7 @@ def process( user_file, credentials_filename, status_filename, cookies_dir, mode
 def main( argv ):
 
     user_file = None
+    status_filename = None
     user_dir = None
     is_headless = False
     mode = MODE_FOLLOW
@@ -433,6 +434,8 @@ def main( argv ):
             sys.exit()
         elif opt in ("-i", "--ifile"):
             user_file = arg
+        elif opt in ("-s", "--status"):
+            status_filename = arg
         elif opt in ("-u", "--userdir"):
             user_dir = arg
         elif opt in ("-o", "--ofile"):
@@ -453,6 +456,7 @@ def main( argv ):
                 quit()
 
     print_debug( "input file  = {}".format( user_file ) )
+    print_debug( "status file = {}".format( status_filename ) )
     print_debug( "user dir    = {}".format( user_dir ) )
     print_debug( "output file = {}".format( outputfile ) )
 
@@ -472,8 +476,10 @@ def main( argv ):
     user_dir = harmonize_link( user_dir )
 
     credentials_filename = user_dir + "credentials.ini"
-    status_filename      = user_dir + "status.csv"
     cookies_dir          = user_dir + "cookies"
+
+    if not status_filename:
+        status_filename      = user_dir + "status.csv"
 
     process( user_file, credentials_filename, status_filename, cookies_dir, mode, is_headless )
 
