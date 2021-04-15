@@ -405,8 +405,6 @@ def process( user_file, credentials_filename, status_filename, cookies_dir, mode
 
     loginer.login( driver, login, password )
 
-    quit()
-
     process_users( driver, status, status_filename, users, mode )
 
     print_info( "done" )
