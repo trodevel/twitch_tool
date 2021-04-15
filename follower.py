@@ -131,7 +131,7 @@ def click_follow_user( driver ):
 
     helpers.wait_till_clickable_and_click( button, 10 )
 
-    print( "INFO: clicked follow button" )
+    print_info( "clicked follow button" )
 
     return True
 
@@ -311,13 +311,13 @@ def process_users( driver, status, status_filename, users, mode ):
 
         if mode == MODE_UNFOLLOW:
             if is_succeded:
-                print( "INFO: unfollowed user {} / {} - {}".format( i, num_users, u ) )
+                print_info( "unfollowed user {} / {} - {}".format( i, num_users, u ) )
             else:
                 print_error( "failed to unfollow user {} / {} - {}".format( i, num_users, u ) )
                 is_dirty    = False
         elif mode == MODE_FOLLOW:
             if is_succeded:
-                print( "INFO: followed user {} / {} - {}".format( i, num_users, u ) )
+                print_info( "followed user {} / {} - {}".format( i, num_users, u ) )
             else:
                 print_error( "failed to follow user {} / {} - {}".format( i, num_users, u ) )
 
@@ -369,16 +369,16 @@ def process( user_file, status_filename, mode, is_headless ):
     if mode == MODE_FOLLOW or mode == MODE_FOLLOW_UNFOLLOW:
         users_all = status_file.read_users( user_file )
         users = determine_notfollowed_users( status, users_all )
-        print( "INFO: total users - {}, still to follow - {}, already followed - {}".format( len( users_all ), len( users ), len( users_all) - len( users ) ) )
+        print_info( "total users - {}, still to follow - {}, already followed - {}".format( len( users_all ), len( users ), len( users_all) - len( users ) ) )
     elif mode == MODE_UNFOLLOW:
         users = determine_followed_users( status )
-        print( "INFO: users to unfollow - {}".format( len( users ) ) )
+        print_info( "users to unfollow - {}".format( len( users ) ) )
     else:
         print_error( "unsupported mode {}".format( mode ) )
         quit()
 
     if len( users ) == 0:
-        print( "INFO: nothing to do" )
+        print_info( "nothing to do" )
         quit()
 
     driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY, harmonize_link( config.COOKIES_DIR ) + credentials.LOGIN, is_headless )
@@ -387,7 +387,7 @@ def process( user_file, status_filename, mode, is_headless ):
 
     process_users( driver, status, status_filename, users, mode )
 
-    print( "INFO: done" )
+    print_info( "done" )
 
 ##########################################################
 
@@ -437,15 +437,15 @@ def main( argv ):
     print_info( "starting in {}".format( mode_to_string( mode ) ) )
 
     if not user_file:
-        print( "FATAL: user file is not given" )
+        print_fatal( "user file is not given" )
         quit()
 
     if not user_dir:
-        print( "FATAL: user dir is not given" )
+        print_fatal( "user dir is not given" )
         quit()
 
     if is_headless:
-        print( "INFO: starting in HEADLESS mode" )
+        print_info( "starting in HEADLESS mode" )
 
     user_dir = harmonize_link( user_dir )
 
