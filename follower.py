@@ -424,11 +424,11 @@ def main( argv ):
     try:
         opts, args = getopt.getopt(argv,"hi:o:s:u:Hm:",["ifile=","ofile=","status=","userdir=","HEADLESS","mode"])
     except getopt.GetoptError:
-        print( 'follower.py -i <inputfile> -o <outputfile> -u <userdir>' )
+        print( 'follower.py -i <inputfile> -o <outputfile> -u <userdir> -s <statusfile> -m <MODE>' )
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print( 'follower.py -i <inputfile> -o <outputfile> -u <userdir> [-H] [-U]' )
+            print( 'follower.py -i <inputfile> -o <outputfile> -u <userdir> -s <statusfile> -m <MODE> [-H]' )
             sys.exit()
         elif opt in ("-i", "--ifile"):
             user_file = arg
