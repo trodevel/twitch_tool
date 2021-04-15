@@ -360,7 +360,7 @@ def determine_followed_users( status ):
 
 ##########################################################
 
-def process( user_file, status_filename, mode, is_headless ):
+def process( user_file, status_filename, cookies_dir, mode, is_headless ):
 
     status = status_file.load_status_file( status_filename )
 
@@ -381,7 +381,7 @@ def process( user_file, status_filename, mode, is_headless ):
         print_info( "nothing to do" )
         quit()
 
-    driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY, harmonize_link( config.COOKIES_DIR ) + credentials.LOGIN, is_headless )
+    driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY, cookies_dir, is_headless )
 
     loginer.login( driver, credentials.LOGIN, credentials.PASSWORD )
 
@@ -455,7 +455,7 @@ def main( argv ):
 
     quit()
 
-    process( user_file, status_filename, mode, is_headless )
+    process( user_file, status_filename, cookies_dir, mode, is_headless )
 
 ##########################################################
 
