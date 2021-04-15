@@ -380,7 +380,7 @@ def load_credentials( credentials_filename ):
 
 def process( user_file, credentials_filename, status_filename, cookies_dir, mode, is_headless ):
 
-    load_credentials( credentials_filename )
+    login, password = load_credentials( credentials_filename )
 
     status = status_file.load_status_file( status_filename )
 
