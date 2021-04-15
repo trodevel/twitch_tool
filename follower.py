@@ -366,8 +366,15 @@ def load_credentials( credentials_filename ):
     config = configparser.ConfigParser()
     config.read( credentials_filename )
 
-    print_debug( "login    = {}".format( config['credentials']['login'] ) )
-    print_debug( "password = {}".format( config['credentials']['password'] ) )
+    login    = config['credentials']['login']
+    password = config['credentials']['password']
+
+    print_debug( "login    = {}".format( login ) )
+    #print_debug( "password = {}".format( password ) )
+
+    print_info( "load_credentials: OK, from {}".format( credentials_filename ) )
+
+    return login, password
 
 ##########################################################
 
