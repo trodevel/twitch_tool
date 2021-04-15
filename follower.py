@@ -29,11 +29,10 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 import sys, getopt
 import config         # DRIVER_PATH
-import credentials    # LOGIN
 import helpers        # find_element_by_tag_and_class_name
 import loginer        # login
 import status_file    # status_file
-#import product_parser # parse_product
+import configparser   # load_credentials
 import re
 from print_helpers import print_fatal, print_error, print_warning, print_info, print_debug
 
@@ -361,6 +360,8 @@ def determine_followed_users( status ):
 ##########################################################
 
 def load_credentials( credentials_filename ):
+
+    print_debug( "load_credentials: from {}".format( credentials_filename ) )
 
     config = configparser.ConfigParser()
     config.read( credentials_filename )
