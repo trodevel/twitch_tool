@@ -423,7 +423,7 @@ def main( argv ):
     outputfile = ''
 
     try:
-        opts, args = getopt.getopt(argv,"hi:o:u:Hm:",["ifile=","ofile=","userdir=","HEADLESS","mode"])
+        opts, args = getopt.getopt(argv,"hi:o:s:u:Hm:",["ifile=","ofile=","status=","userdir=","HEADLESS","mode"])
     except getopt.GetoptError:
         print( 'follower.py -i <inputfile> -o <outputfile> -u <userdir>' )
         sys.exit(2)
