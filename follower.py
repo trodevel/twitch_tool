@@ -281,6 +281,25 @@ def mode_to_string( mode ):
 
 ##########################################################
 
+def process_user( driver, user, mode ):
+
+    is_succeded = False
+    follow_type = None
+
+    if mode == MODE_UNFOLLOW:
+        is_succeded, follow_type = unfollow_user( driver, user )
+    elif mode == MODE_FOLLOW:
+        is_succeded, follow_type = follow_user( driver, user )
+    elif mode == MODE_FOLLOW_UNFOLLOW:
+        is_succeded, follow_type = follow_unfollow_user( driver, user )
+    else:
+        print_fatal( "unsupported mode" )
+        quit()
+
+    return is_succeeded, follow_type
+
+##########################################################
+
 def process_users( driver, status, status_filename, users, mode ):
 
     num_users = len( users )
@@ -293,18 +312,7 @@ def process_users( driver, status, status_filename, users, mode ):
 
         print_info( "{} user {} / {} - {}".format( mode_to_text( mode ), i, num_users, u ) )
 
-        is_succeded = False
-        follow_type = None
-
-        if mode == MODE_UNFOLLOW:
-            is_succeded, follow_type = unfollow_user( driver, u )
-        elif mode == MODE_FOLLOW:
-            is_succeded, follow_type = follow_user( driver, u )
-        elif mode == MODE_FOLLOW_UNFOLLOW:
-            is_succeded, follow_type = follow_unfollow_user( driver, u )
-        else:
-            print_fatal( "unsupported mode" )
-            quit()
+        is_succeded, follow_type = process_user( driver, u, mode )
 
         is_dirty    = True
 
