@@ -296,7 +296,7 @@ def process_user( driver, user, mode ):
         print_fatal( "unsupported mode" )
         quit()
 
-    return is_succeeded, follow_type
+    return is_succeded, follow_type
 
 ##########################################################
 
