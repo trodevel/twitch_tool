@@ -26,7 +26,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.expected_conditions import staleness_of
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.common.exceptions import NoSuchWindowException
+from selenium.common.exceptions import NoSuchWindowException, WebDriverException
 
 import sys, getopt
 import config         # DRIVER_PATH
@@ -309,6 +309,11 @@ def process_user( driver, user, mode ):
     except NoSuchWindowException:
 
         print_fatal( "browser window/tab was closed" )
+        quit()
+
+    except WebDriverException:
+
+        print_error( "page crashed" )
         quit()
 
 ##########################################################
