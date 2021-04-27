@@ -26,6 +26,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.expected_conditions import staleness_of
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import NoSuchWindowException
 
 import sys, getopt
 import config         # DRIVER_PATH
@@ -281,7 +282,7 @@ def mode_to_string( mode ):
 
 ##########################################################
 
-def process_user( driver, user, mode ):
+def process_user__throwing( driver, user, mode ):
 
     is_succeded = False
     follow_type = None
@@ -297,6 +298,18 @@ def process_user( driver, user, mode ):
         quit()
 
     return is_succeded, follow_type
+
+##########################################################
+
+def process_user( driver, user, mode ):
+
+    try:
+        return process_user__throwing( driver, user, mode )
+
+    except NoSuchWindowException:
+
+        print_fatal( "browser window/tab was closed" )
+        quit()
 
 ##########################################################
 
