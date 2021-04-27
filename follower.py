@@ -314,7 +314,7 @@ def process_user( driver, user, mode ):
     except WebDriverException:
 
         print_error( "page crashed" )
-        quit()
+        return False, status_file.BROKEN
 
 ##########################################################
 
