@@ -451,7 +451,7 @@ def main( argv ):
     outputfile = ''
 
     try:
-        opts, args = getopt.getopt(argv,"hi:o:s:u:Hm:",["ifile=","ofile=","status=","userdir=","HEADLESS","mode","pagesize","pagenum"])
+        opts, args = getopt.getopt(argv,"hi:o:s:u:Hm:",["ifile=","ofile=","status=","userdir=","HEADLESS","mode","pagesize=","pagenum="])
     except getopt.GetoptError:
         print( 'follower.py -i <inputfile> -o <outputfile> -u <userdir> -s <statusfile> -m <MODE>' )
         sys.exit(2)
@@ -492,6 +492,8 @@ def main( argv ):
     print_debug( "output file = {}".format( outputfile ) )
     print_debug( "pagesize    = {}".format( pagesize ) )
     print_debug( "pagenum     = {}".format( pagenum ) )
+
+    quit()
 
     if not user_file:
         print_fatal( "user file is not given" )
