@@ -462,6 +462,8 @@ def process( user_file, credentials_filename, status_filename, cookies_dir, mode
         print_info( "nothing to do" )
         quit()
 
+    quit()
+
     driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY, cookies_dir, is_headless )
 
     loginer.login( driver, login, password )
@@ -551,8 +553,6 @@ def main( argv ):
     if limit < 0:
         print_fatal( "limit < 0" )
         quit()
-
-    quit()
 
     print_info( "starting in {}".format( mode_to_string( mode ) ) )
 
