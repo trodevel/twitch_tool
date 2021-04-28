@@ -445,10 +445,13 @@ def main( argv ):
     is_headless = False
     mode = MODE_FOLLOW
 
+    pagesize = 0
+    pagenum = 0
+
     outputfile = ''
 
     try:
-        opts, args = getopt.getopt(argv,"hi:o:s:u:Hm:",["ifile=","ofile=","status=","userdir=","HEADLESS","mode"])
+        opts, args = getopt.getopt(argv,"hi:o:s:u:Hm:",["ifile=","ofile=","status=","userdir=","HEADLESS","mode","pagesize","pagenum"])
     except getopt.GetoptError:
         print( 'follower.py -i <inputfile> -o <outputfile> -u <userdir> -s <statusfile> -m <MODE>' )
         sys.exit(2)
