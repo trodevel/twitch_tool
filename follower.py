@@ -447,11 +447,12 @@ def main( argv ):
 
     pagesize = 0
     pagenum = 0
+    limit   = 0
 
     outputfile = ''
 
     try:
-        opts, args = getopt.getopt(argv,"hi:o:s:u:Hm:",["ifile=","ofile=","status=","userdir=","HEADLESS","mode","pagesize=","pagenum="])
+        opts, args = getopt.getopt(argv,"hi:o:s:u:Hm:",["ifile=","ofile=","status=","userdir=","HEADLESS","mode","pagesize=","pagenum=","limit="])
     except getopt.GetoptError:
         print( 'follower.py -i <inputfile> -o <outputfile> -u <userdir> -s <statusfile> -m <MODE>' )
         sys.exit(2)
@@ -473,6 +474,8 @@ def main( argv ):
             pagesize = int( arg )
         elif opt in ( "--pagenum" ):
             pagenum = int( arg )
+        elif opt in ( "--limit" ):
+            limit = int( arg )
         elif opt in ("-m", "--mode"):
             if arg == 'F':
                 mode = MODE_FOLLOW
@@ -492,8 +495,7 @@ def main( argv ):
     print_debug( "output file = {}".format( outputfile ) )
     print_debug( "pagesize    = {}".format( pagesize ) )
     print_debug( "pagenum     = {}".format( pagenum ) )
-
-    quit()
+    print_debug( "limit       = {}".format( limit ) )
 
     if not user_file:
         print_fatal( "user file is not given" )
@@ -502,6 +504,20 @@ def main( argv ):
     if not user_dir:
         print_fatal( "user dir is not given" )
         quit()
+
+    if pagesize < 0:
+        print_fatal( "pagesize < 0" )
+        quit()
+
+    if pagenum < 0:
+        print_fatal( "pagenum < 0" )
+        quit()
+
+    if limit < 0:
+        print_fatal( "limit < 0" )
+        quit()
+
+    quit()
 
     print_info( "starting in {}".format( mode_to_string( mode ) ) )
 
