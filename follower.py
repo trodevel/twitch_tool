@@ -404,7 +404,7 @@ def load_credentials( credentials_filename ):
 
 ##########################################################
 
-def process( user_file, credentials_filename, status_filename, cookies_dir, mode, is_headless ):
+def process( user_file, credentials_filename, status_filename, cookies_dir, mode, is_headless, limit, pagesize, pagenum ):
 
     login, password = load_credentials( credentials_filename )
 
@@ -532,7 +532,7 @@ def main( argv ):
     if not status_filename:
         status_filename      = user_dir + "status.csv"
 
-    process( user_file, credentials_filename, status_filename, cookies_dir, mode, is_headless )
+    process( user_file, credentials_filename, status_filename, cookies_dir, mode, is_headless, limit, pagesize, pagenum )
 
 ##########################################################
 
