@@ -385,6 +385,16 @@ def determine_followed_users( status ):
 
 ##########################################################
 
+def limit_and_paginate_user_list( users, limit, pagesize, pagenum  ):
+
+    users_l = limit_user_list( users, limit )
+
+    users_p = paginate_user_list( users_l, pagesize, pagenum )
+
+    return users_p
+
+##########################################################
+
 def load_credentials( credentials_filename ):
 
     print_debug( "load_credentials: from {}".format( credentials_filename ) )
