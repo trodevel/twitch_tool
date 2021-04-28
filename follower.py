@@ -394,6 +394,16 @@ def limit_user_list( users, limit ):
 
 ##########################################################
 
+def paginate_user_list( users, pagesize, pagenum ):
+
+    if pagesize > 0:
+        offset = pagesize * pagenum
+        return users[ offset : offset + pagesize ]
+
+    return users
+
+##########################################################
+
 def limit_and_paginate_user_list( users, limit, pagesize, pagenum ):
 
     users_l = limit_user_list( users, limit )
