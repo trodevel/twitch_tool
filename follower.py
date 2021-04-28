@@ -26,6 +26,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.expected_conditions import staleness_of
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import NoSuchWindowException, WebDriverException
 
 import sys, getopt
 import config         # DRIVER_PATH
@@ -170,7 +171,7 @@ def follow_user_core( driver, username ):
 
     if b1 == BTN_NONE:
         print_error( "user {} doesn't have follow/unfollow button".format( username ) )
-        return False, status_file.NOT_FOLLOWING
+        return True, status_file.BROKEN
 
     if not click_follow_user( driver ):
         return False, status_file.NOT_FOLLOWING
@@ -205,7 +206,7 @@ def unfollow_user_core( driver, username ):
 
     if b1 == BTN_NONE:
         print_error( "user {} doesn't have follow/unfollow button".format( username ) )
-        return False, status_file.FOLLOWING
+        return True, status_file.BROKEN
 
     if not click_follow_user( driver ):
         return False, status_file.FOLLOWING
@@ -281,6 +282,45 @@ def mode_to_string( mode ):
 
 ##########################################################
 
+def process_user__throwing( driver, user, mode ):
+
+    is_dirty = False
+    follow_type = None
+
+    if mode == MODE_UNFOLLOW:
+        is_dirty, follow_type = unfollow_user( driver, user )
+    elif mode == MODE_FOLLOW:
+        is_dirty, follow_type = follow_user( driver, user )
+    elif mode == MODE_FOLLOW_UNFOLLOW:
+        is_dirty, follow_type = follow_unfollow_user( driver, user )
+    else:
+        print_fatal( "unsupported mode" )
+        quit()
+
+    return is_dirty, follow_type
+
+##########################################################
+
+def process_user( driver, user, mode ):
+
+    try:
+        return process_user__throwing( driver, user, mode )
+
+    except NoSuchWindowException:
+
+        print_fatal( "browser window/tab was closed" )
+        quit()
+
+    except WebDriverException:
+
+        print_error( "page crashed" )
+        # return will not help, as it looks like it is necessary to re-initialize the driver
+        # the most appropriate handling now is to quit()
+        #return False, status_file.BROKEN
+        quit()
+
+##########################################################
+
 def process_users( driver, status, status_filename, users, mode ):
 
     num_users = len( users )
@@ -293,35 +333,21 @@ def process_users( driver, status, status_filename, users, mode ):
 
         print_info( "{} user {} / {} - {}".format( mode_to_text( mode ), i, num_users, u ) )
 
-        is_succeded = False
-        follow_type = None
+        is_dirty, follow_type = process_user( driver, u, mode )
 
         if mode == MODE_UNFOLLOW:
-            is_succeded, follow_type = unfollow_user( driver, u )
-        elif mode == MODE_FOLLOW:
-            is_succeded, follow_type = follow_user( driver, u )
-        elif mode == MODE_FOLLOW_UNFOLLOW:
-            is_succeded, follow_type = follow_unfollow_user( driver, u )
-        else:
-            print_fatal( "unsupported mode" )
-            quit()
-
-        is_dirty    = True
-
-        if mode == MODE_UNFOLLOW:
-            if is_succeded:
+            if is_dirty:
                 print_info( "unfollowed user {} / {} - {}".format( i, num_users, u ) )
             else:
                 print_error( "failed to unfollow user {} / {} - {}".format( i, num_users, u ) )
-                is_dirty    = False
         elif mode == MODE_FOLLOW:
-            if is_succeded:
+            if is_dirty:
                 print_info( "followed user {} / {} - {}".format( i, num_users, u ) )
             else:
                 print_error( "failed to follow user {} / {} - {}".format( i, num_users, u ) )
 
         elif mode == MODE_FOLLOW_UNFOLLOW:
-            if is_succeded:
+            if is_dirty:
                 print_info( "followed and unfollowed user {} / {} - {}".format( i, num_users, u ) )
             else:
                 print_error( "failed to follow/unfollow user {} / {} - {}".format( i, num_users, u ) )

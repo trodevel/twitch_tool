@@ -29,6 +29,7 @@ import time           # time
 NOT_FOLLOWING=0
 FOLLOWING=1
 UNFOLLOWED=2
+BROKEN=3
 
 ##########################################################
 
@@ -63,7 +64,7 @@ class StreamUser:
 def to_follow_type( v ):
     t = int( v )
 
-    if t != NOT_FOLLOWING and t != FOLLOWING and t != UNFOLLOWED:
+    if t != NOT_FOLLOWING and t != FOLLOWING and t != UNFOLLOWED and t != BROKEN:
         print( "FATAL: to_follow_type(): invalid value {}".format( v ) )
         quit()
 
