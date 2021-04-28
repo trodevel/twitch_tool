@@ -385,7 +385,16 @@ def determine_followed_users( status ):
 
 ##########################################################
 
-def limit_and_paginate_user_list( users, limit, pagesize, pagenum  ):
+def limit_user_list( users, limit ):
+
+    if limit > 0:
+        return users[ 0 : limit ]
+
+    return users
+
+##########################################################
+
+def limit_and_paginate_user_list( users, limit, pagesize, pagenum ):
 
     users_l = limit_user_list( users, limit )
 
