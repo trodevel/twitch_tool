@@ -469,6 +469,10 @@ def main( argv ):
             output_file = arg
         elif opt in ("-H", "--HEADLESS"):
             is_headless = True
+        elif opt in ( "--pagesize" ):
+            pagesize = int( arg )
+        elif opt in ( "--pagenum" ):
+            pagenum = int( arg )
         elif opt in ("-m", "--mode"):
             if arg == 'F':
                 mode = MODE_FOLLOW
@@ -486,6 +490,8 @@ def main( argv ):
     print_debug( "status file = {}".format( status_filename ) )
     print_debug( "user dir    = {}".format( user_dir ) )
     print_debug( "output file = {}".format( outputfile ) )
+    print_debug( "pagesize    = {}".format( pagesize ) )
+    print_debug( "pagenum     = {}".format( pagenum ) )
 
     if not user_file:
         print_fatal( "user file is not given" )
