@@ -424,8 +424,14 @@ def process( user_file, credentials_filename, status_filename, cookies_dir, mode
 
     if mode == MODE_FOLLOW or mode == MODE_FOLLOW_UNFOLLOW:
         users_all = status_file.read_users( user_file )
-        users = determine_notfollowed_users( status, users_all )
-        print_info( "total users - {}, still to follow - {}, already followed - {}".format( len( users_all ), len( users ), len( users_all) - len( users ) ) )
+
+        users_0 = determine_notfollowed_users( status, users_all )
+
+        users = limit_and_paginate_user_list( users_0, limit, pagesize, pagenum )
+
+        print_info( "total users - {}, still to follow - {}, already followed - {}".format( len( users_all ), len( users_0 ), len( users_all ) - len( users_0 ) ) )
+        print_info( "page {}, users on page - {}".format( pagenum, len( users ) ) )
+
     elif mode == MODE_UNFOLLOW:
         users = determine_followed_users( status )
         print_info( "users to unfollow - {}".format( len( users ) ) )
