@@ -385,6 +385,35 @@ def determine_followed_users( status ):
 
 ##########################################################
 
+def limit_user_list( users, limit ):
+
+    if limit > 0:
+        return users[ 0 : limit ]
+
+    return users
+
+##########################################################
+
+def paginate_user_list( users, pagesize, pagenum ):
+
+    if pagesize > 0:
+        offset = pagesize * pagenum
+        return users[ offset : offset + pagesize ]
+
+    return users
+
+##########################################################
+
+def limit_and_paginate_user_list( users, limit, pagesize, pagenum ):
+
+    users_l = limit_user_list( users, limit )
+
+    users_p = paginate_user_list( users_l, pagesize, pagenum )
+
+    return users_p
+
+##########################################################
+
 def load_credentials( credentials_filename ):
 
     print_debug( "load_credentials: from {}".format( credentials_filename ) )
@@ -404,7 +433,7 @@ def load_credentials( credentials_filename ):
 
 ##########################################################
 
-def process( user_file, credentials_filename, status_filename, cookies_dir, mode, is_headless ):
+def process( user_file, credentials_filename, status_filename, cookies_dir, mode, is_headless, limit, pagesize, pagenum ):
 
     login, password = load_credentials( credentials_filename )
 
@@ -414,8 +443,14 @@ def process( user_file, credentials_filename, status_filename, cookies_dir, mode
 
     if mode == MODE_FOLLOW or mode == MODE_FOLLOW_UNFOLLOW:
         users_all = status_file.read_users( user_file )
-        users = determine_notfollowed_users( status, users_all )
-        print_info( "total users - {}, still to follow - {}, already followed - {}".format( len( users_all ), len( users ), len( users_all) - len( users ) ) )
+
+        users_0 = determine_notfollowed_users( status, users_all )
+
+        users = limit_and_paginate_user_list( users_0, limit, pagesize, pagenum )
+
+        print_info( "total users - {}, still to follow - {}, already followed - {}".format( len( users_all ), len( users_0 ), len( users_all ) - len( users_0 ) ) )
+        print_info( "page {}, users on page - {}".format( pagenum, len( users ) ) )
+
     elif mode == MODE_UNFOLLOW:
         users = determine_followed_users( status )
         print_info( "users to unfollow - {}".format( len( users ) ) )
@@ -445,10 +480,14 @@ def main( argv ):
     is_headless = False
     mode = MODE_FOLLOW
 
+    pagesize = 0
+    pagenum = 0
+    limit   = 0
+
     outputfile = ''
 
     try:
-        opts, args = getopt.getopt(argv,"hi:o:s:u:Hm:",["ifile=","ofile=","status=","userdir=","HEADLESS","mode"])
+        opts, args = getopt.getopt(argv,"hi:o:s:u:Hm:",["ifile=","ofile=","status=","userdir=","HEADLESS","mode","pagesize=","pagenum=","limit="])
     except getopt.GetoptError:
         print( 'follower.py -i <inputfile> -o <outputfile> -u <userdir> -s <statusfile> -m <MODE>' )
         sys.exit(2)
@@ -466,6 +505,12 @@ def main( argv ):
             output_file = arg
         elif opt in ("-H", "--HEADLESS"):
             is_headless = True
+        elif opt in ( "--pagesize" ):
+            pagesize = int( arg )
+        elif opt in ( "--pagenum" ):
+            pagenum = int( arg )
+        elif opt in ( "--limit" ):
+            limit = int( arg )
         elif opt in ("-m", "--mode"):
             if arg == 'F':
                 mode = MODE_FOLLOW
@@ -483,6 +528,9 @@ def main( argv ):
     print_debug( "status file = {}".format( status_filename ) )
     print_debug( "user dir    = {}".format( user_dir ) )
     print_debug( "output file = {}".format( outputfile ) )
+    print_debug( "pagesize    = {}".format( pagesize ) )
+    print_debug( "pagenum     = {}".format( pagenum ) )
+    print_debug( "limit       = {}".format( limit ) )
 
     if not user_file:
         print_fatal( "user file is not given" )
@@ -490,6 +538,18 @@ def main( argv ):
 
     if not user_dir:
         print_fatal( "user dir is not given" )
+        quit()
+
+    if pagesize < 0:
+        print_fatal( "pagesize < 0" )
+        quit()
+
+    if pagenum < 0:
+        print_fatal( "pagenum < 0" )
+        quit()
+
+    if limit < 0:
+        print_fatal( "limit < 0" )
         quit()
 
     print_info( "starting in {}".format( mode_to_string( mode ) ) )
@@ -505,7 +565,7 @@ def main( argv ):
     if not status_filename:
         status_filename      = user_dir + "status.csv"
 
-    process( user_file, credentials_filename, status_filename, cookies_dir, mode, is_headless )
+    process( user_file, credentials_filename, status_filename, cookies_dir, mode, is_headless, limit, pagesize, pagenum )
 
 ##########################################################
 
