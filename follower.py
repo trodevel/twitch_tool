@@ -451,6 +451,10 @@ def process( user_file, credentials_filename, status_filename, cookies_dir, mode
 
         users_0 = determine_notfollowed_users( status, users_all )
 
+        pagesize = calculate_page_size( len( users_0 ), parallel_inst )
+
+        pagenum = inst_num - 1
+
         users = limit_and_paginate_user_list( users_0, limit, pagesize, pagenum )
 
         print_info( "total users - {}, still to follow - {}, already followed - {}".format( len( users_all ), len( users_0 ), len( users_all ) - len( users_0 ) ) )
