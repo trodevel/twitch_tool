@@ -548,6 +548,10 @@ def main( argv ):
         print_fatal( "inst_num < 1" )
         quit()
 
+    if inst_num > parallel_inst:
+        print_fatal( "inst_num > parallel_inst" )
+        quit()
+
     if limit < 0:
         print_fatal( "limit < 0" )
         quit()
