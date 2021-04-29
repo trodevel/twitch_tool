@@ -433,7 +433,12 @@ def load_credentials( credentials_filename ):
 
 ##########################################################
 
-def process( user_file, credentials_filename, status_filename, cookies_dir, mode, is_headless, limit, pagesize, pagenum ):
+def calculate_page_size( num_users, parallel_inst ):
+    return int( num_users / parallel_inst )
+
+##########################################################
+
+def process( user_file, credentials_filename, status_filename, cookies_dir, mode, is_headless, limit, parallel_inst, inst_num ):
 
     login, password = load_credentials( credentials_filename )
 
