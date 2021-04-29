@@ -480,14 +480,14 @@ def main( argv ):
     is_headless = False
     mode = MODE_FOLLOW
 
-    pagesize = 0
-    pagenum = 0
+    parallel_inst = 0
+    inst_num = 0
     limit   = 0
 
     outputfile = ''
 
     try:
-        opts, args = getopt.getopt(argv,"hi:o:s:u:Hm:",["ifile=","ofile=","status=","userdir=","HEADLESS","mode","pagesize=","pagenum=","limit="])
+        opts, args = getopt.getopt(argv,"hi:o:s:u:Hm:",["ifile=","ofile=","status=","userdir=","HEADLESS","mode","parallel_inst=","inst_num=","limit="])
     except getopt.GetoptError:
         print( 'follower.py -i <inputfile> -o <outputfile> -u <userdir> -s <statusfile> -m <MODE>' )
         sys.exit(2)
@@ -505,10 +505,10 @@ def main( argv ):
             output_file = arg
         elif opt in ("-H", "--HEADLESS"):
             is_headless = True
-        elif opt in ( "--pagesize" ):
-            pagesize = int( arg )
-        elif opt in ( "--pagenum" ):
-            pagenum = int( arg )
+        elif opt in ( "--parallel_inst" ):
+            parallel_inst = int( arg )
+        elif opt in ( "--inst_num" ):
+            inst_num = int( arg )
         elif opt in ( "--limit" ):
             limit = int( arg )
         elif opt in ("-m", "--mode"):
@@ -528,8 +528,8 @@ def main( argv ):
     print_debug( "status file = {}".format( status_filename ) )
     print_debug( "user dir    = {}".format( user_dir ) )
     print_debug( "output file = {}".format( outputfile ) )
-    print_debug( "pagesize    = {}".format( pagesize ) )
-    print_debug( "pagenum     = {}".format( pagenum ) )
+    print_debug( "parallel_inst    = {}".format( parallel_inst ) )
+    print_debug( "inst_num    = {}".format( inst_num ) )
     print_debug( "limit       = {}".format( limit ) )
 
     if not user_file:
@@ -540,12 +540,12 @@ def main( argv ):
         print_fatal( "user dir is not given" )
         quit()
 
-    if pagesize < 0:
-        print_fatal( "pagesize < 0" )
+    if parallel_inst < 0:
+        print_fatal( "parallel_inst < 0" )
         quit()
 
-    if pagenum < 0:
-        print_fatal( "pagenum < 0" )
+    if inst_num < 0:
+        print_fatal( "inst_num < 0" )
         quit()
 
     if limit < 0:
@@ -565,7 +565,7 @@ def main( argv ):
     if not status_filename:
         status_filename      = user_dir + "status.csv"
 
-    process( user_file, credentials_filename, status_filename, cookies_dir, mode, is_headless, limit, pagesize, pagenum )
+    process( user_file, credentials_filename, status_filename, cookies_dir, mode, is_headless, limit, parallel_inst, inst_num )
 
 ##########################################################
 
