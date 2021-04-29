@@ -480,8 +480,8 @@ def main( argv ):
     is_headless = False
     mode = MODE_FOLLOW
 
-    parallel_inst = 0
-    inst_num = 0
+    parallel_inst = 1
+    inst_num = 1
     limit   = 0
 
     outputfile = ''
@@ -540,12 +540,12 @@ def main( argv ):
         print_fatal( "user dir is not given" )
         quit()
 
-    if parallel_inst < 0:
-        print_fatal( "parallel_inst < 0" )
+    if parallel_inst < 1:
+        print_fatal( "parallel_inst < 1" )
         quit()
 
-    if inst_num < 0:
-        print_fatal( "inst_num < 0" )
+    if inst_num < 1:
+        print_fatal( "inst_num < 1" )
         quit()
 
     if limit < 0:
