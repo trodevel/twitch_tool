@@ -433,16 +433,9 @@ def load_credentials( credentials_filename ):
 
 ##########################################################
 
-def calculate_page_size( num_users, parallel_inst, inst_num ):
+def calculate_page_size( num_users, parallel_inst ):
 
-    res = int( num_users / parallel_inst )
-
-    if inst_num == parallel_inst:
-        rest = int( num_users % parallel_inst )
-
-        res += rest
-
-    return res
+    return int( num_users / parallel_inst )
 
 ##########################################################
 
@@ -459,7 +452,7 @@ def process( user_file, credentials_filename, status_filename, cookies_dir, mode
 
         users_0 = determine_notfollowed_users( status, users_all )
 
-        pagesize = calculate_page_size( len( users_0 ), parallel_inst, inst_num )
+        pagesize = calculate_page_size( len( users_0 ), parallel_inst )
 
         pagenum = inst_num - 1
 
