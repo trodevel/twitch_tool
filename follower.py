@@ -173,22 +173,22 @@ def follow_user_core( driver, username ):
 
     if b1 == BTN_UNFOLLOW:
         print_warning( "user {} is already followed".format( username ) )
-        return True, status_file.FOLLOWING
+        return STAT_SKIPPED, status_file.FOLLOWING
 
     if b1 == BTN_NONE:
         print_error( "user {} doesn't have follow/unfollow button".format( username ) )
-        return True, status_file.BROKEN
+        return STAT_FAILED, status_file.BROKEN
 
     if not click_follow_user( driver ):
-        return False, status_file.NOT_FOLLOWING
+        return STAT_FAILED, status_file.NOT_FOLLOWING
 
     helpers.sleep( 2, False )
 
     if has_follow_button( driver ):
         print_error( "failed to follow user {}".format( username ) )
-        return False, status_file.NOT_FOLLOWING
+        return STAT_FAILED, status_file.NOT_FOLLOWING
 
-    return True, status_file.FOLLOWING
+    return STAT_UPDATED, status_file.FOLLOWING
 
 ##########################################################
 
