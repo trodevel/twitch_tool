@@ -181,13 +181,13 @@ def follow_user_core( driver, username ):
         return STAT_FAILED, status_file.BROKEN
 
     if not click_follow_user( driver ):
-        return STAT_FAILED, status_file.NOT_FOLLOWING
+        return STAT_RETRY, status_file.NOT_FOLLOWING
 
     helpers.sleep( 2, False )
 
     if has_follow_button( driver ):
         print_error( "failed to follow user {}".format( username ) )
-        return STAT_FAILED, status_file.NOT_FOLLOWING
+        return STAT_RETRY, status_file.NOT_FOLLOWING
 
     return STAT_UPDATED, status_file.FOLLOWING
 
