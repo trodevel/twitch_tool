@@ -90,6 +90,12 @@ BTN_UNFOLLOW = 2
 
 ##########################################################
 
+STAT_UPDATED = 0
+STAT_SKIPPED = 1
+STAT_FAILED  = 2
+
+##########################################################
+
 def detect_follow_unfollow_button( driver ):
 
     b1 = has_follow_button( driver )
