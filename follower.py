@@ -334,6 +334,8 @@ def process_users( driver, status, status_filename, users, mode ):
 
     i = 0
 
+    stat_cntr = [ 0, 0, 0, 0 ]
+
     for u in users:
 
         i += 1
@@ -341,6 +343,8 @@ def process_users( driver, status, status_filename, users, mode ):
         print_info( "{} user {} / {} - {}".format( mode_to_text( mode ), i, num_users, u ) )
 
         stat, follow_status = process_user( driver, u, mode )
+
+        stat_cntr[ stat ] += 1
 
         if mode == MODE_UNFOLLOW:
             if stat:
