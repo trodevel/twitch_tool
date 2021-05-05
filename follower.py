@@ -275,6 +275,20 @@ def mode_to_text( mode ):
 
 ##########################################################
 
+def mode_to_text_2( mode ):
+    if mode == MODE_UNFOLLOW:
+        return "unfollowed"
+    elif mode == MODE_FOLLOW:
+        return "followed"
+    elif mode == MODE_FOLLOW_UNFOLLOW:
+        return "followed/unfollowed"
+    elif mode == MODE_REFOLLOW:
+        return "refollowed"
+    else:
+        return "?"
+
+##########################################################
+
 def mode_to_string( mode ):
     if mode == MODE_UNFOLLOW:
         return "MODE_UNFOLLOW"
@@ -346,24 +360,16 @@ def process_users( driver, status, status_filename, users, mode ):
 
         stat_cntr[ stat ] += 1
 
-        if mode == MODE_UNFOLLOW:
-            if stat:
-                print_info( "unfollowed user {} / {} - {}".format( i, num_users, u ) )
-            else:
-                print_error( "failed to unfollow user {} / {} - {}".format( i, num_users, u ) )
-        elif mode == MODE_FOLLOW:
-            if stat:
-                print_info( "followed user {} / {} - {}".format( i, num_users, u ) )
-            else:
-                print_error( "failed to follow user {} / {} - {}".format( i, num_users, u ) )
+        if stat == STAT_UPDATED:
+            print_info( "{} user {} / {} - {}".format( mode_to_text_2( mode ), i, num_users, u ) )
+        elif stat == STAT_SKIPPED:
+            print_warning( "{} skipped for user {} / {} - {}".format( mode_to_text( mode ), i, num_users, u ) )
+        elif stat == STAT_RETRY:
+            print_warning( "retry {} for user {} / {} - {}".format( mode_to_text( mode ), i, num_users, u ) )
+        else:
+            print_error( "{} failed for user {} / {} - {}".format( mode_to_text( mode ), i, num_users, u ) )
 
-        elif mode == MODE_FOLLOW_UNFOLLOW:
-            if stat:
-                print_info( "followed and unfollowed user {} / {} - {}".format( i, num_users, u ) )
-            else:
-                print_error( "failed to follow/unfollow user {} / {} - {}".format( i, num_users, u ) )
-
-        if stat:
+        if stat == STAT_UPDATED or stat == STAT_SKIPPED or stat == STAT_FAILED:
             status_file.set_follow_status( status, u, follow_status )
             status_file.save_status_file( status_filename, status )
 
