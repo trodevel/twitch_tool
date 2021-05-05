@@ -54,18 +54,18 @@ def read_users( filename ):
 
 class StreamUser:
     timestamp    = 0
-    follow_type = False
+    follow_status = False
 
     def __str__(self):
-        return str( self.timestamp ) + ";" + str( int( self.follow_type ) )
+        return str( self.timestamp ) + ";" + str( int( self.follow_status ) )
 
 ##########################################################
 
-def to_follow_type( v ):
+def to_follow_status( v ):
     t = int( v )
 
     if t != NOT_FOLLOWING and t != FOLLOWING and t != UNFOLLOWED and t != BROKEN:
-        print( "FATAL: to_follow_type(): invalid value {}".format( v ) )
+        print( "FATAL: to_follow_status(): invalid value {}".format( v ) )
         quit()
 
     return t
@@ -79,11 +79,11 @@ def load_status_file( filename ):
     with open( filename ) as csvfile:
         reader = csv.reader( csvfile, delimiter=';' )
         for row in reader:
-            ( username, timestamp, follow_type ) = row[0:3]
-            #print( "DEBUG: {}, {}, {}".format( username, timestamp, follow_type ) )
+            ( username, timestamp, follow_status ) = row[0:3]
+            #print( "DEBUG: {}, {}, {}".format( username, timestamp, follow_status ) )
             s = StreamUser()
             s.timestamp    = timestamp
-            s.follow_type  = to_follow_type( follow_type )
+            s.follow_status  = to_follow_status( follow_status )
             #print( "DEBUG: s = {}".format( s ) )
             status[ username ] = s
 
@@ -123,12 +123,12 @@ def save_status_file( filename, status ):
 
 ##########################################################
 
-def set_follow_type( status, username, follow_type ):
+def set_follow_status( status, username, follow_status ):
 
     s = StreamUser()
 
     s.timestamp    = int( time.time() )
-    s.follow_type  = follow_type
+    s.follow_status  = follow_status
 
     status[username] = s
 

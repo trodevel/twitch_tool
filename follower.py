@@ -292,19 +292,19 @@ def mode_to_string( mode ):
 def process_user__throwing( driver, user, mode ):
 
     is_dirty = False
-    follow_type = None
+    follow_status = None
 
     if mode == MODE_UNFOLLOW:
-        is_dirty, follow_type = unfollow_user( driver, user )
+        is_dirty, follow_status = unfollow_user( driver, user )
     elif mode == MODE_FOLLOW:
-        is_dirty, follow_type = follow_user( driver, user )
+        is_dirty, follow_status = follow_user( driver, user )
     elif mode == MODE_FOLLOW_UNFOLLOW:
-        is_dirty, follow_type = follow_unfollow_user( driver, user )
+        is_dirty, follow_status = follow_unfollow_user( driver, user )
     else:
         print_fatal( "unsupported mode" )
         quit()
 
-    return is_dirty, follow_type
+    return is_dirty, follow_status
 
 ##########################################################
 
@@ -340,7 +340,7 @@ def process_users( driver, status, status_filename, users, mode ):
 
         print_info( "{} user {} / {} - {}".format( mode_to_text( mode ), i, num_users, u ) )
 
-        is_dirty, follow_type = process_user( driver, u, mode )
+        is_dirty, follow_status = process_user( driver, u, mode )
 
         if mode == MODE_UNFOLLOW:
             if is_dirty:
@@ -360,7 +360,7 @@ def process_users( driver, status, status_filename, users, mode ):
                 print_error( "failed to follow/unfollow user {} / {} - {}".format( i, num_users, u ) )
 
         if is_dirty:
-            status_file.set_follow_type( status, u, follow_type )
+            status_file.set_follow_status( status, u, follow_status )
             status_file.save_status_file( status_filename, status )
 
 ##########################################################
@@ -371,7 +371,7 @@ def determine_notfollowed_users( status, users_list ):
 
     for u in users_list:
         if u in status:
-            if status[u].follow_type == status_file.NOT_FOLLOWING:
+            if status[u].follow_status == status_file.NOT_FOLLOWING:
                 res.append( u )
         else:
             res.append( u )
@@ -385,7 +385,7 @@ def determine_followed_users( status ):
     res = []
 
     for u in status:
-        if status[u].follow_type == status_file.FOLLOWING:
+        if status[u].follow_status == status_file.FOLLOWING:
             res.append( u )
 
     return res
