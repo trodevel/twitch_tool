@@ -340,26 +340,26 @@ def process_users( driver, status, status_filename, users, mode ):
 
         print_info( "{} user {} / {} - {}".format( mode_to_text( mode ), i, num_users, u ) )
 
-        is_dirty, follow_status = process_user( driver, u, mode )
+        stat, follow_status = process_user( driver, u, mode )
 
         if mode == MODE_UNFOLLOW:
-            if is_dirty:
+            if stat:
                 print_info( "unfollowed user {} / {} - {}".format( i, num_users, u ) )
             else:
                 print_error( "failed to unfollow user {} / {} - {}".format( i, num_users, u ) )
         elif mode == MODE_FOLLOW:
-            if is_dirty:
+            if stat:
                 print_info( "followed user {} / {} - {}".format( i, num_users, u ) )
             else:
                 print_error( "failed to follow user {} / {} - {}".format( i, num_users, u ) )
 
         elif mode == MODE_FOLLOW_UNFOLLOW:
-            if is_dirty:
+            if stat:
                 print_info( "followed and unfollowed user {} / {} - {}".format( i, num_users, u ) )
             else:
                 print_error( "failed to follow/unfollow user {} / {} - {}".format( i, num_users, u ) )
 
-        if is_dirty:
+        if stat:
             status_file.set_follow_status( status, u, follow_status )
             status_file.save_status_file( status_filename, status )
 
