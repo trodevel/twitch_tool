@@ -343,7 +343,7 @@ def process_user( driver, user, mode ):
 ##########################################################
 
 def print_stat( stat_cntr ):
-    print_info( "STAT: upd {}, skipped {}, failed {}, retry {} CSV;{};{};{};{}".format( stat_cntr[STAT_UPDATED],stat_cntr[STAT_SKIPPED],stat_cntr[STAT_FAILED],stat_cntr[STAT_RETRY],stat_cntr[STAT_UPDATED],stat_cntr[STAT_SKIPPED],stat_cntr[STAT_FAILED],stat_cntr[STAT_RETRY] ) )
+    print_info( "STAT: upd {}, skipped {}, failed {}, retry {}, CSV;{};{};{};{}".format( stat_cntr[STAT_UPDATED],stat_cntr[STAT_SKIPPED],stat_cntr[STAT_FAILED],stat_cntr[STAT_RETRY],stat_cntr[STAT_UPDATED],stat_cntr[STAT_SKIPPED],stat_cntr[STAT_FAILED],stat_cntr[STAT_RETRY] ) )
 
 ##########################################################
 
