@@ -291,20 +291,20 @@ def mode_to_string( mode ):
 
 def process_user__throwing( driver, user, mode ):
 
-    is_dirty = False
+    stat = None
     follow_status = None
 
     if mode == MODE_UNFOLLOW:
-        is_dirty, follow_status = unfollow_user( driver, user )
+        stat, follow_status = unfollow_user( driver, user )
     elif mode == MODE_FOLLOW:
-        is_dirty, follow_status = follow_user( driver, user )
+        stat, follow_status = follow_user( driver, user )
     elif mode == MODE_FOLLOW_UNFOLLOW:
-        is_dirty, follow_status = follow_unfollow_user( driver, user )
+        stat, follow_status = follow_unfollow_user( driver, user )
     else:
         print_fatal( "unsupported mode" )
         quit()
 
-    return is_dirty, follow_status
+    return stat, follow_status
 
 ##########################################################
 
