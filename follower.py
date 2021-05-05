@@ -342,6 +342,11 @@ def process_user( driver, user, mode ):
 
 ##########################################################
 
+def print_stat( stat_cntr ):
+    print_info( "STAT: upd {}, skipped {}, failed {}, retry {} CSV;{},{},{},{}".format( stat_cntr[STAT_UPDATED],stat_cntr[STAT_SKIPPED],stat_cntr[STAT_FAILED],stat_cntr[STAT_RETRY],stat_cntr[STAT_UPDATED],stat_cntr[STAT_SKIPPED],stat_cntr[STAT_FAILED],stat_cntr[STAT_RETRY] ) )
+
+##########################################################
+
 def process_users( driver, status, status_filename, users, mode ):
 
     num_users = len( users )
@@ -368,6 +373,8 @@ def process_users( driver, status, status_filename, users, mode ):
             print_warning( "retry {} for user {} / {} - {}".format( mode_to_text( mode ), i, num_users, u ) )
         else:
             print_error( "{} failed for user {} / {} - {}".format( mode_to_text( mode ), i, num_users, u ) )
+
+        print_stat( stat_cntr )
 
         if stat == STAT_UPDATED or stat == STAT_SKIPPED or stat == STAT_FAILED:
             status_file.set_follow_status( status, u, follow_status )
