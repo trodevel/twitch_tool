@@ -249,15 +249,15 @@ def follow_unfollow_user( driver, username ):
 
     b1, status = follow_user_core( driver, username )
 
-    if not b1:
-        return False, status
+    if b1 != STAT_UPDATED and b1 != STAT_SKIPPED:
+        return b1, status
 
     b2, status = unfollow_user_core( driver, username )
 
-    if not b2:
-        return False, status
+    if b2 != STAT_UPDATED and b2 != STAT_RETRY:
+        return b2, status
 
-    return True, status
+    return b2, status
 
 ##########################################################
 
