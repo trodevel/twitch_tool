@@ -90,6 +90,13 @@ BTN_UNFOLLOW = 2
 
 ##########################################################
 
+STAT_UPDATED = 0
+STAT_SKIPPED = 1
+STAT_FAILED  = 2
+STAT_RETRY   = 3
+
+##########################################################
+
 def detect_follow_unfollow_button( driver ):
 
     b1 = has_follow_button( driver )
@@ -167,22 +174,22 @@ def follow_user_core( driver, username ):
 
     if b1 == BTN_UNFOLLOW:
         print_warning( "user {} is already followed".format( username ) )
-        return True, status_file.FOLLOWING
+        return STAT_SKIPPED, status_file.FOLLOWING
 
     if b1 == BTN_NONE:
         print_error( "user {} doesn't have follow/unfollow button".format( username ) )
-        return True, status_file.BROKEN
+        return STAT_FAILED, status_file.BROKEN
 
     if not click_follow_user( driver ):
-        return False, status_file.NOT_FOLLOWING
+        return STAT_RETRY, status_file.NOT_FOLLOWING
 
     helpers.sleep( 2, False )
 
     if has_follow_button( driver ):
         print_error( "failed to follow user {}".format( username ) )
-        return False, status_file.NOT_FOLLOWING
+        return STAT_RETRY, status_file.NOT_FOLLOWING
 
-    return True, status_file.FOLLOWING
+    return STAT_UPDATED, status_file.FOLLOWING
 
 ##########################################################
 
@@ -202,25 +209,25 @@ def unfollow_user_core( driver, username ):
 
     if b1 == BTN_FOLLOW:
         print_warning( "user {} is already unfollowed".format( username ) )
-        return True, status_file.NOT_FOLLOWING
+        return STAT_SKIPPED, status_file.NOT_FOLLOWING
 
     if b1 == BTN_NONE:
         print_error( "user {} doesn't have follow/unfollow button".format( username ) )
-        return True, status_file.BROKEN
+        return STAT_FAILED, status_file.BROKEN
 
     if not click_follow_user( driver ):
-        return False, status_file.FOLLOWING
+        return STAT_RETRY, status_file.FOLLOWING
 
     if not click_modal_unfollow_user( driver ):
-        return False, status_file.FOLLOWING
+        return STAT_RETRY, status_file.FOLLOWING
 
     helpers.sleep( 2, False )
 
     if has_unfollow_button( driver ):
         print_error( "failed to unfollow user {}".format( username ) )
-        return False, status_file.FOLLOWING
+        return STAT_RETRY, status_file.FOLLOWING
 
-    return True, status_file.UNFOLLOWED
+    return STAT_UPDATED, status_file.UNFOLLOWED
 
 ##########################################################
 
@@ -242,15 +249,15 @@ def follow_unfollow_user( driver, username ):
 
     b1, status = follow_user_core( driver, username )
 
-    if not b1:
-        return False, status
+    if b1 != STAT_UPDATED and b1 != STAT_SKIPPED:
+        return b1, status
 
     b2, status = unfollow_user_core( driver, username )
 
-    if not b2:
-        return False, status
+    if b2 != STAT_UPDATED and b2 != STAT_RETRY:
+        return b2, status
 
-    return True, status
+    return b2, status
 
 ##########################################################
 
@@ -263,6 +270,20 @@ def mode_to_text( mode ):
         return "following/unfollowing"
     elif mode == MODE_REFOLLOW:
         return "refollowing"
+    else:
+        return "?"
+
+##########################################################
+
+def mode_to_text_2( mode ):
+    if mode == MODE_UNFOLLOW:
+        return "unfollowed"
+    elif mode == MODE_FOLLOW:
+        return "followed"
+    elif mode == MODE_FOLLOW_UNFOLLOW:
+        return "followed/unfollowed"
+    elif mode == MODE_REFOLLOW:
+        return "refollowed"
     else:
         return "?"
 
@@ -284,20 +305,20 @@ def mode_to_string( mode ):
 
 def process_user__throwing( driver, user, mode ):
 
-    is_dirty = False
-    follow_type = None
+    stat = None
+    follow_status = None
 
     if mode == MODE_UNFOLLOW:
-        is_dirty, follow_type = unfollow_user( driver, user )
+        stat, follow_status = unfollow_user( driver, user )
     elif mode == MODE_FOLLOW:
-        is_dirty, follow_type = follow_user( driver, user )
+        stat, follow_status = follow_user( driver, user )
     elif mode == MODE_FOLLOW_UNFOLLOW:
-        is_dirty, follow_type = follow_unfollow_user( driver, user )
+        stat, follow_status = follow_unfollow_user( driver, user )
     else:
         print_fatal( "unsupported mode" )
         quit()
 
-    return is_dirty, follow_type
+    return stat, follow_status
 
 ##########################################################
 
@@ -321,11 +342,18 @@ def process_user( driver, user, mode ):
 
 ##########################################################
 
+def print_stat( stat_cntr ):
+    print_info( "STAT: upd {}, skipped {}, failed {}, retry {}, CSV;{};{};{};{}".format( stat_cntr[STAT_UPDATED],stat_cntr[STAT_SKIPPED],stat_cntr[STAT_FAILED],stat_cntr[STAT_RETRY],stat_cntr[STAT_UPDATED],stat_cntr[STAT_SKIPPED],stat_cntr[STAT_FAILED],stat_cntr[STAT_RETRY] ) )
+
+##########################################################
+
 def process_users( driver, status, status_filename, users, mode ):
 
     num_users = len( users )
 
     i = 0
+
+    stat_cntr = [ 0, 0, 0, 0 ]
 
     for u in users:
 
@@ -333,27 +361,23 @@ def process_users( driver, status, status_filename, users, mode ):
 
         print_info( "{} user {} / {} - {}".format( mode_to_text( mode ), i, num_users, u ) )
 
-        is_dirty, follow_type = process_user( driver, u, mode )
+        stat, follow_status = process_user( driver, u, mode )
 
-        if mode == MODE_UNFOLLOW:
-            if is_dirty:
-                print_info( "unfollowed user {} / {} - {}".format( i, num_users, u ) )
-            else:
-                print_error( "failed to unfollow user {} / {} - {}".format( i, num_users, u ) )
-        elif mode == MODE_FOLLOW:
-            if is_dirty:
-                print_info( "followed user {} / {} - {}".format( i, num_users, u ) )
-            else:
-                print_error( "failed to follow user {} / {} - {}".format( i, num_users, u ) )
+        stat_cntr[ stat ] += 1
 
-        elif mode == MODE_FOLLOW_UNFOLLOW:
-            if is_dirty:
-                print_info( "followed and unfollowed user {} / {} - {}".format( i, num_users, u ) )
-            else:
-                print_error( "failed to follow/unfollow user {} / {} - {}".format( i, num_users, u ) )
+        if stat == STAT_UPDATED:
+            print_info( "{} user {} / {} - {}".format( mode_to_text_2( mode ), i, num_users, u ) )
+        elif stat == STAT_SKIPPED:
+            print_warning( "{} skipped for user {} / {} - {}".format( mode_to_text( mode ), i, num_users, u ) )
+        elif stat == STAT_RETRY:
+            print_warning( "retry {} for user {} / {} - {}".format( mode_to_text( mode ), i, num_users, u ) )
+        else:
+            print_error( "{} failed for user {} / {} - {}".format( mode_to_text( mode ), i, num_users, u ) )
 
-        if is_dirty:
-            status_file.set_follow_type( status, u, follow_type )
+        print_stat( stat_cntr )
+
+        if stat == STAT_UPDATED or stat == STAT_SKIPPED or stat == STAT_FAILED:
+            status_file.set_follow_status( status, u, follow_status )
             status_file.save_status_file( status_filename, status )
 
 ##########################################################
@@ -364,7 +388,7 @@ def determine_notfollowed_users( status, users_list ):
 
     for u in users_list:
         if u in status:
-            if status[u].follow_type == status_file.NOT_FOLLOWING:
+            if status[u].follow_status == status_file.NOT_FOLLOWING:
                 res.append( u )
         else:
             res.append( u )
@@ -378,7 +402,7 @@ def determine_followed_users( status ):
     res = []
 
     for u in status:
-        if status[u].follow_type == status_file.FOLLOWING:
+        if status[u].follow_status == status_file.FOLLOWING:
             res.append( u )
 
     return res
