@@ -28,10 +28,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 
 import config         # DRIVER_PATH
-import credentials    # LOGIN
 import helpers        # find_element_by_tag_and_class_name
-import loginer        # login
-#import product_parser # parse_product
 import re
 import time
 
@@ -190,7 +187,7 @@ def generate_filename():
 
 ##########################################################
 
-driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY, harmonize_link( config.COOKIES_DIR ) + credentials.LOGIN )
+driver = helpers.init_driver( config.DRIVER_PATH, config.BROWSER_BINARY )
 
 link = 'https://www.twitch.tv/' + config.TEST_STREAM if config.TEST_STREAM else find_first_top_stream( driver )
 
